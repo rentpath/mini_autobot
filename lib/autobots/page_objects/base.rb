@@ -1,6 +1,8 @@
 require "selenium-webdriver"
 require "test/unit"
 require "yaml"
+require 'autobots'
+require 'autobots/page_objects'
 
 class Autobots::PageObjects::Base
 
