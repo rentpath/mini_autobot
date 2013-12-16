@@ -1,0 +1,11 @@
+url:
+  qa: "http:/www.qa.rent.com"
+  stg : "http://www.stg.rent.com"
+
+signin:
+  username: "endeca-test@rent.com"
+  password: 'endeca-test"
+
+
+
+
