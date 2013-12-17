@@ -1,11 +1,8 @@
 url:
   qa: "http:/www.qa.rent.com"
   stg : "http://www.stg.rent.com"
+  jw : "http://www.jw.rent.com"
 
 signin:
   username: "endeca-test@rent.com"
-  password: 'endeca-test"
-
-
-
-
+  password: "endeca-test"
