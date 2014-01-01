@@ -37,7 +37,7 @@ module Autobots
         end
       end
 
-      def test(name, opts = {}, &block)
+      def test(name, **opts, &block)
         method_name = test_name(name)
         already_defined = instance_method(method_name) rescue false
         raise TestAlreadyDefined, "Test #{method_name} already exists in #{self}" if already_defined
