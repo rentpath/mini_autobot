@@ -39,9 +39,16 @@ module Autobots
 
       def test(name, opts = {}, &block)
         method_name = test_name(name)
+        already_defined = instance_method(method_name) rescue false
+        raise TestAlreadyDefined, "Test #{method_name} already exists in #{self}" if already_defined
+
         self.options ||= {}
         self.options[method_name] = opts
-        define_method(method_name, &block)
+        if block_given?
+          define_method(method_name, &block)
+        else
+          flunk "No implementation was provided for test '#{method_name}' in #{self}"
+        end
       end
 
       def test_name(name)
