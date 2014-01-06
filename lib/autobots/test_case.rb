@@ -1,11 +1,15 @@
 
 require 'active_support/inflector'
-
 require 'autobots'
 
 module Autobots
-  class TestCase < Test::Unit::TestCase
+  class TestCase < Minitest::Test
 
+    # Standard exception class that signals that the test with that name has
+    # already been defined.
+    class TestAlreadyDefined < ::StandardError; end
+
+    # Include helper modules
     include Autobots::Utils::AssertionHelper
     include Autobots::Utils::PageObjectHelper
 
@@ -32,7 +36,7 @@ module Autobots
 
       def teardown(&block)
         define_method(:teardown) do
-          setup
+          super
           instance_eval(&block)
         end
       end
