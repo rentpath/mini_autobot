@@ -6,3 +6,11 @@ url:
 signin:
   username: "endeca-test@rent.com"
   password: "endeca-test"
+
+database:
+  vqa:
+    database: "VQA"
+    username: "VIVA"
+    password: "vq5pdhwo"
+    host: "10.63.13.35"
+    post: "1521"
