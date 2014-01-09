@@ -24,6 +24,11 @@ module Minitest
     parser.on('--env ENV', 'Run against a specific environment') do |value|
       options[:env] = value
     end
+
+    parser.on('-t', '--tag TAGLIST', 'Run only tests matching a specific tag or tags') do |value|
+      options[:tags] ||= [ ]
+      options[:tags] << value.to_s.split(',').map { |t| t.to_sym }
+    end
   end
 
 end
