@@ -3,6 +3,9 @@ require 'active_support/inflector'
 require 'autobots'
 
 module Autobots
+
+  # An Autobots-specific test case container, which extends the default ones,
+  # adds convenience helper methods, and manages page objects automatically.
   class TestCase < Minitest::Test
 
     # Standard exception class that signals that the test with that name has
@@ -59,13 +62,24 @@ module Autobots
       #            test case. For example, this can be used to store the serial
       #            number for the test case.
       def test(name, **opts, &block)
+        # Ensure that the test isn't already defined to prevent tests from being
+        # swallowed silently
         method_name = test_name(name)
         check_not_defined!(method_name)
 
-        self.options ||= {}
-        self.options[method_name] = opts
+        # If a logic block was provided, evaluate the set of tags (if provided).
+        # Otherwise, mark the test as skipped.
         if block_given?
-          define_method(method_name, &block)
+          tags = opts[:tags] rescue nil
+
+          # See +tags_selected?+ for the logic
+          if Autobots::Settings.tags_selected?(tags)
+            define_method(method_name, &block)
+          else
+            define_method(method_name) do
+              skip "Test case skipped because it doesn't match the tags requested"
+            end
+          end
         else
           flunk "No implementation was provided for test '#{method_name}' in #{self}"
         end
@@ -97,5 +111,6 @@ module Autobots
     end
 
   end
+
 end
 
