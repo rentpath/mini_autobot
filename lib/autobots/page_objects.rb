@@ -10,7 +10,7 @@ module Autobots
       autoload :Home,       'autobots/page_objects/home'
       autoload :Search,     'autobots/page_objects/search'
       autoload :PropertySelection, 'autobots/page_objects/property_selection'
-      autoload :LrPage1,    'autobots/page_objects/lr_page1'
+      autoload :LeaseReportPage1,    'autobots/page_objects/lease_report_page1'
     end
 end
 
