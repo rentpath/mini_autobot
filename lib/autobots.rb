@@ -8,6 +8,8 @@ module Autobots #:nodoc:
   autoload :Settings, 'autobots/settings'
   autoload :Utils, 'autobots/utils'
 
+  autoload :Emails, 'autobots/emails'
+
   def self.root
     @@__root__ ||= Pathname.new(File.realpath(File.join(File.dirname(__FILE__), '..')))
   end
