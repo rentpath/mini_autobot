@@ -1,6 +1,4 @@
 
-#require 'autobots/settings'
-
 module Minitest
 
   # Minitest plugin: autobot_settings

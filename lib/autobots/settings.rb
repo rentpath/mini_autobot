@@ -19,14 +19,20 @@ module Autobots
     class <<self
       undef_method :[]
 
+      # Inspect the singleton object's contents.
+      #
+      # @param args [Enumerable<Object>]
+      # @return [String]
       def inspect(*args)
         self.instance.inspect(*args)
       end
 
+      # Delegate to pass all method calls to the singleton object.
       def method_missing(name, *args, &block)
         self.instance.send(name, *args, &block)
       end
 
+      # Message responder to pass all method calls to the singleton object.
       def respond_to?(name, include_private = false)
         self.instance.respond_to?(name, include_private)
       end

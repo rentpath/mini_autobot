@@ -8,6 +8,9 @@ module Autobots
   # into this module so that requires are taken care of automatically.
   module PageObjects
 
+    # Exception to capture validation problems when instantiating a new page
+    # object. The message contains the page object being instantiated as well
+    # as the original, underlying error message if any.
     class InvalidePageState < Exception
     end
 
