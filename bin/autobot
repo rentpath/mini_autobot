@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+
+$LOAD_PATH.unshift 'lib'
+require 'minitest/autorun'
+
+Dir.glob('lib/autobots/test_cases/*.rb') do |f|
+  f.sub!(/^lib\//, '')
+  require f
+end
+
