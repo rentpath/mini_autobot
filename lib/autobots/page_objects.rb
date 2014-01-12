@@ -8,6 +8,9 @@ module Autobots
   # into this module so that requires are taken care of automatically.
   module PageObjects
 
+    class InvalidePageState < Exception
+    end
+
     # Autoloads for major classes and modules
     autoload :Base,       'autobots/page_objects/base'
     autoload :Overlays,   'autobots/page_objects/overlays'

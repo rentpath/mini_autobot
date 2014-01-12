@@ -18,17 +18,50 @@ module Autobots
 
     class <<self
 
+      # @!attribute [rw] options
+      #   @return [Hash] test case options
       attr_accessor :options
 
-      # Explicitly remove _all_ tests from the class +klass+. This will also
+      # Explicitly remove _all_ tests from the current class. This will also
       # remove inherited test cases.
-      def remove_tests(klass)
-        klass.public_instance_methods.grep(/^test_/).each do |method|
+      #
+      # @return [TestCase] self
+      def remove_tests
+        klass = class <<self; self; end
+        public_instance_methods.grep(/^test_/).each do |method|
           klass.send(:undef_method, method.to_sym)
         end
+        self
+      end
+
+      # Call this at the top of your test case class in order to run all tests
+      # in alphabetical order
+      #
+      # @return [TestCase] self
+      # @example
+      #   class SomeName < TestCase
+      #     run_in_order!
+      #
+      #     test :feature_search_01 { ... }
+      #     test :feature_search_02 { ... }
+      #   end
+      def run_in_order!
+        # `self` is the class, so we want to reopen the metaclass instead, and
+        # redefine the methods there
+        class <<self
+          undef_method :test_order if method_defined? :test_order
+          define_method :test_order do
+            :alpha
+          end
+        end
+
+        # Be nice and return the class back
+        self
       end
 
       # Filter out anything not matching our tag selection, if any.
+      #
+      # @return [Enumerable<Symbol>] the methods marked runnable
       def runnable_methods
         methods  = super
         selected = Autobots::Settings[:tags]
@@ -51,6 +84,8 @@ module Autobots
       end
 
       # Install a setup method that runs before every test.
+      #
+      # @return [void]
       def setup(&block)
         define_method(:setup) do
           super
@@ -59,6 +94,8 @@ module Autobots
       end
 
       # Install a teardown method that runs after every test.
+      #
+      # @return [void]
       def teardown(&block)
         define_method(:teardown) do
           super
@@ -66,23 +103,25 @@ module Autobots
         end
       end
 
-      # Define a test case, given a +name+, which is recommended to be a symbol,
-      # a set of options, and a +block+ of logic.
+      # Defines a test case.
       #
-      # The +name+ should be unique in the class, and preferably unique across
-      # all the classes.
+      # It can take the following options:
       #
-      # The options should be a hash with the following keys:
-      #
-      # +tags+:: An array of any number of tags associated with the test case.
+      # * `tags`: An array of any number of tags associated with the test case.
       #          When not specified, the test will always be run even when only
       #          certain tags are run. When specified but an empty array, the
       #          test will only be run if all tags are set to run. When the array
       #          contains one or more tags, then the test will only be run if at
       #          least one tag matches.
-      # +serial+:: An arbitrary string that is used to refer to all a specific
+      # * `serial`: An arbitrary string that is used to refer to all a specific
       #            test case. For example, this can be used to store the serial
       #            number for the test case.
+      #
+      # @param name [String, Symbol] an arbitrary but unique name for the test,
+      #   preferably unique across all test classes, but not required
+      # @param opts [Hash]
+      # @param block [Proc] the testing logic
+      # @return [void]
       def test(name, **opts, &block)
         # Ensure that the test isn't already defined to prevent tests from being
         # swallowed silently
@@ -101,6 +140,9 @@ module Autobots
 
       # Check that +method_name+ hasn't already been defined as an instance
       # method in the current class, or in any superclasses.
+      #
+      # @param method_name [Symbol] the method name to check
+      # @return [void]
       protected
       def check_not_defined!(method_name)
         already_defined = instance_method(method_name) rescue false
@@ -108,7 +150,11 @@ module Autobots
       end
 
       # Transform the test +name+ into a snake-case name, prefixed with "test_".
-      # For example, +:search_zip+ becomes +test_search_zip".
+      #
+      # @param name [#to_s] the test name
+      # @return [Symbol] the transformed test name symbol
+      # @example
+      #   test_name(:search_zip) # => :test_search_zip
       private
       def test_name(name)
         undercased_name = sanitize_name(name).gsub(/\s+/, '_')
@@ -117,6 +163,12 @@ module Autobots
 
       # Sanitize the +name+ by removing consecutive non-word characters into a
       # single whitespace.
+      #
+      # @param name [#to_s] the name to sanitize
+      # @return [String] the sanitized value
+      # @example
+      #   sanitize_name('The Best  Thing [#5]') # => 'The Best Thing 5'
+      #   sanitize_name(:ReallySuper___awesome) # => 'ReallySuper Awesome'
       private
       def sanitize_name(name)
         name.to_s.gsub(/\W+/, ' ').strip
