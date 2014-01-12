@@ -1,5 +1,6 @@
 
 module Autobots
+
   # This is the overarching module that contains page objects, modules, and
   # widgets. 
   #
@@ -7,17 +8,24 @@ module Autobots
   # into this module so that requires are taken care of automatically.
   module PageObjects
 
+    # Autoloads for major classes and modules
     autoload :Base,       'autobots/page_objects/base'
     autoload :Overlays,   'autobots/page_objects/overlays'
     autoload :Widgets,    'autobots/page_objects/widgets'
 
-    autoload :MainNavigation,      'autobots/page_objects/main_navigation'
+    # Autoloads for page modules and components
+    autoload :Common,         'autobots/page_objects/common'
+    autoload :MainFooter,     'autobots/page_objects/main_footer'
+    autoload :MainNavigation, 'autobots/page_objects/main_navigation'
 
-    autoload :Home,       'autobots/page_objects/home'
-    autoload :Search,     'autobots/page_objects/search'
-    autoload :PropertySelection, 'autobots/page_objects/property_selection'
-    autoload :LrPage1,    'autobots/page_objects/lr_page1'
+    # Autoloads for page objects
+    autoload :Home,               'autobots/page_objects/home'
+    autoload :Search,             'autobots/page_objects/search'
+    autoload :PropertySelection,  'autobots/page_objects/property_selection'
+    autoload :LeaseReportPage1,   'autobots/page_objects/lease_report_page1'
+
   end
+
 end
 
 
