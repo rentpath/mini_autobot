@@ -31,22 +31,6 @@ module Autobots
         self.instance.respond_to?(name, include_private)
       end
 
-      def tags_selected?(members)
-        # Retrieve the tags selected on the command line
-        selected = self.tags rescue nil
-
-        # Always select the tag if none were explicitly selected
-        return true if selected.nil? || selected.empty?
-
-        # Check that at least one tag-set matches, and that in each tag-set,
-        # all tags match
-        selected.each do |tag_set|
-          return true if tag_set.all? { |tag| members.include?(tag) }
-        end
-
-        # Fail by default
-        return false
-      end
     end
 
   end

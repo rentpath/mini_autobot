@@ -28,6 +28,28 @@ module Autobots
         end
       end
 
+      # Filter out anything not matching our tag selection, if any.
+      def runnable_methods
+        methods  = super
+        selected = Autobots::Settings[:tags]
+
+        # If no tags are selected, run all tests
+        return methods if selected.nil? || selected.empty?
+
+        return methods.select do |method|
+          # If the method's tags match any of the tag sets, allow it to run
+          selected.any? do |tag_set|
+            # Retrieve the tags for that method
+            method_options = self.options[method.to_sym] rescue nil
+            tags           = method_options[:tags]       rescue nil
+
+            # If the method's tags match ALL of the tags in the tag set, allow
+            # it to run; in the event of a problem, allow the test to run
+            tag_set.all? { |tag| tags.include?(tag.to_sym) rescue true }
+          end
+        end
+      end
+
       # Install a setup method that runs before every test.
       def setup(&block)
         define_method(:setup) do
@@ -67,19 +89,11 @@ module Autobots
         method_name = test_name(name)
         check_not_defined!(method_name)
 
-        # If a logic block was provided, evaluate the set of tags (if provided).
-        # Otherwise, mark the test as skipped.
+        # Flunk unless a logic block was provided
         if block_given?
-          tags = opts[:tags] rescue nil
-
-          # See +tags_selected?+ for the logic
-          if Autobots::Settings.tags_selected?(tags)
-            define_method(method_name, &block)
-          else
-            define_method(method_name) do
-              skip "Test case skipped because it doesn't match the tags requested"
-            end
-          end
+          self.options ||= {}
+          self.options[method_name.to_sym] = opts.deep_symbolize_keys
+          define_method(method_name, &block)
         else
           flunk "No implementation was provided for test '#{method_name}' in #{self}"
         end

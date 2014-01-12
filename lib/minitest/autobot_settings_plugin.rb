@@ -17,11 +17,11 @@ module Minitest
   # This plugin for minitest injects autobot-specific command-line arguments, and
   # passes it along to autobot.
   def self.plugin_autobot_settings_options(parser, options)
-    parser.on('--connector TYPE', 'Run using a specific connector profile') do |value|
+    parser.on('-c', '--connector TYPE', 'Run using a specific connector profile') do |value|
       options[:connector] = value
     end
 
-    parser.on('--env ENV', 'Run against a specific environment') do |value|
+    parser.on('-e', '--env ENV', 'Run against a specific environment') do |value|
       options[:env] = value
     end
 
