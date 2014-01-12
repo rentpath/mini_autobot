@@ -15,8 +15,13 @@ module Autobots
       include Minitest::Assertions
 
       # Attempts to create a new page object from a driver state. Use the
-      # instance method for convenience. Raises +NameError+ if the page could
+      # instance method for convenience. Raises `NameError` if the page could
       # not be found.
+      #
+      # @param driver [Selenium::WebDriver] The instance of the current
+      #   WebDriver.
+      # @param name [#to_s] The name of the page object to instantiate.
+      # @return [Base] A subclass of `Base` representing the page object.
       def self.cast(driver, name)
         # Transform the name string into a file path and then into a module name
         klass_name = "autobots/page_objects/#{name}".camelize
@@ -42,33 +47,52 @@ module Autobots
 
       # Given a set of arguments (no arguments by default), return the expected
       # path to the page, which must only have file path and query-string.
+      #
+      # @param args [String] one or more arguments to be used in calculating
+      #   the expected path, if any.
+      # @return [String] the expected path.
       def self.expected_path(*args)
         raise NotImplementedError, "expected_path is not defined for #{self}"
       end
 
       # Initializes a new page object from the driver. When a page is initialized,
       # no validation occurs. As such, do not call this method directly. Rather,
-      # use +page(...)+ in a test case, or +cast(...)+ in another page object.
-      def initialize(driver) # :nodoc:
+      # use PageObjectHelper#page in a test case, or #cast in another page object.
+      #
+      # @param driver [Selenium::WebDriver] The WebDriver instance.
+      def initialize(driver)
         @driver = driver
       end
 
-      # Attempts to create a new page object from the current driver state.
-      # Raises a +NameError+ if the page could not be found.
+      # The preferred way to create a new page object from the current page's
+      # driver state. Raises a NameError if the page could not be found.
+      #
+      # @param name [String] see {Base.cast}
+      # @return [Base] The casted page object.
+      # @raise NameError
       def cast(name)
         self.class.cast(@driver, name)
       end
 
       # Returns the current path loaded in the driver.
+      #
+      # @return [String] The current path, without hostname.
       def current_path
         URI.parse(@driver.current_url).path
       end
 
-      # Create widgets of type +name+ from +items+, where +name+ is the widget
-      # class name, and +items+ is a single or an array of WebDriver elements.
+      # Create widgets of type `name` from `items`, where `name` is the widget
+      # class name, and `items` is a single or an array of WebDriver elements.
+      #
+      # @param name [#to_s] the name of the widget, under `autobots/page_objects/widgets`
+      #   to load.
+      # @param items [Enumerable<Selenium::WebDriver::Element>] WebDriver elements.
+      # @return [Enumerable<Autobots::PageObjects::Widgets::Base>]
+      # @raise NameError
       def get_widgets!(name, items)
         return [] if items.empty?
 
+        # Load the widget class
         klass_name = "autobots/page_objects/widgets/#{name}".camelize
         klass = begin
           klass_name.constantize
@@ -88,36 +112,20 @@ module Autobots
         end
       end
 
-      # Instructs the driver to visit the +expected_path+.
+      # Instructs the driver to visit the `expected_path`.
+      #
+      # @param args [*Object] optional parameters to pass into expected_path.
       def go!(*args)
         @driver.get(@driver.url_for(self.class.expected_path(*args)))
       end
 
-      # Retrieves all META tags with a +name+ attribute on the current page.
+      # Retrieves all META tags with a `name` attribute on the current page.
       def meta
         tags = @driver.all(:css, 'meta[name]')
         tags.inject(Hash.new) do |vals, tag|
           vals[tag.attribute(:name)] = tag.attribute(:content) if tag.attribute(:name)
           vals
         end
-      end
-
-      LINK_SIGNIN="//span[@id='signin-text']/span[2]"
-      INPUT_EMAIL="email_form_input"
-      INPUT_PASSOWORD="password"
-      BUTTON_SIGNIN="sign-in-button"
-
-      def sign_in
-        @driver.find_element(:xpath, LINK_SIGNIN.click)
-        @driver.find_element(:id, INPUT_EMAIL).send_keys @QA_USERNAME
-        @driver.find_element(:id, INPUT_PASSOWORD).send_keys @QA_PASSWORD
-        @driver.find_element(:id, BUTTON_SIGNIN).click
-      end
-
-      def register
-      end
-
-      def sign_out
       end
 
       # By default, any driver state is accepted for any page. This method
