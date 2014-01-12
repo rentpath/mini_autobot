@@ -14,6 +14,7 @@ module Autobots
 
     # Include helper modules
     include Autobots::Utils::AssertionHelper
+    include Autobots::Utils::DataGeneratorHelper
     include Autobots::Utils::PageObjectHelper
 
     class <<self
