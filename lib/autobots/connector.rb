@@ -15,6 +15,10 @@ module Autobots
     class Config
       attr_reader :connector, :env
 
+      # Initialize a new configuration object. This object should never be
+      # instantiated directly.
+      #
+      # @api private
       def initialize(connector, env)
         @connector, @env = connector, env
       end
@@ -24,6 +28,10 @@ module Autobots
     # Given a connector profile and an environment profile, this method will
     # instantiate a connector object with the correct WebDriver instance and
     # settings.
+    #
+    # @param connector [#to_s] the name of the connector profile to use.
+    # @param env [#to_s] the name of the environment profile to use.
+    # @return [Connector] an initialized connector object
     def self.get(connector, env)
       # Ensure arguments are at least provided
       raise ArgumentError, "A connector must be provided" if connector.blank?
@@ -47,6 +55,9 @@ module Autobots
     end
 
     # Initialize a new connector with a set of configuration files.
+    #
+    # @see Connector.get
+    # @api private
     def initialize(config)
       @config = config
 
@@ -81,6 +92,9 @@ module Autobots
     # Forward any other method call to the configuration container; if that
     # fails, forward it to the WebDriver. The WebDriver will take care of any
     # method resolution errors.
+    #
+    # @param name [#to_sym] symbol representing the method call
+    # @param args [*Object] arguments to be passed along
     def method_missing(name, *args, &block)
       if @config.respond_to?(name)
         @config.send(name, *args, *block)
@@ -91,6 +105,9 @@ module Autobots
 
     # Compose a URL from the provided +path+ and the environment profile. The 
     # latter contains things like the hostname, port, SSL settings.
+    #
+    # @param path [#to_s] the path to append after the root URL.
+    # @return [URI] the composed URL.
     def url_for(path)
       root = @config.env[:root]
       raise ArgumentError, "The 'root' attribute is missing from the environment profile" unless root
