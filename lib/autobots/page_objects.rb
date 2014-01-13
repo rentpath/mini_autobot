@@ -21,6 +21,7 @@ module Autobots
     # Autoloads for page objects
     autoload :Home,               'autobots/page_objects/home'
     autoload :Search,             'autobots/page_objects/search'
+    autoload :PropertyDetails,    'autobots/page_objects/property_details'
     autoload :PropertySelection,  'autobots/page_objects/property_selection'
     autoload :LeaseReportPage1,   'autobots/page_objects/lease_report_page1'
 
