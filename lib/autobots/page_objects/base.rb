@@ -147,6 +147,14 @@ module Autobots
         @driver.get(@driver.url_for(self.class.expected_path(*args)))
       end
 
+      # Check that the page includes a certain string.
+      # 
+      # @param value [String] the string to search
+      # @return [Boolean]
+      def include?(value)
+        @driver.page_source.include?(value)
+      end
+
       # Retrieves all META tags with a `name` attribute on the current page.
       def meta
         tags = @driver.all(:css, 'meta[name]')
