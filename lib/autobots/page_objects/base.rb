@@ -109,6 +109,13 @@ module Autobots
         URI.parse(@driver.current_url).path
       end
 
+      # Returns the current URL loaded in the driver.
+      #
+      # @return [String] The current URL, including hostname.
+      def current_url
+        URI.parse(@driver.current_url)
+      end
+
       # Create widgets of type `name` from `items`, where `name` is the widget
       # class name, and `items` is a single or an array of WebDriver elements.
       #
