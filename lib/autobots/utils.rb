@@ -5,6 +5,7 @@ module Autobots
   module Utils
 
     autoload :AssertionHelper,     'autobots/utils/assertion_helper'
+    autoload :CastableObject,      'autobots/utils/castable_object'
     autoload :DataGeneratorHelper, 'autobots/utils/data_generator_helper'
     autoload :PageObjectHelper,    'autobots/utils/page_object_helper'
 
