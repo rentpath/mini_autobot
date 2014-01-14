@@ -38,20 +38,39 @@ module Autobots
       raise ArgumentError, "An environment must be provided" if env.blank?
 
       # Find the connector profile and load it
-      connector_path = Autobots.root.join('config', 'connectors', "#{connector}.yml")
-      raise ArgumentError, "Cannot load connector profile '#{connector}' because '#{connector_path}' does not exist" unless connector_path.exist?
-      connector_cfg = YAML.load(File.read(connector_path))
-      connector_cfg.deep_symbolize_keys!
+      connector_cfg = self.load(Autobots.root.join('config', 'connectors'), connector)
 
       # Find the environment profile and load it
-      env_path = Autobots.root.join('config', 'environments', "#{env}.yml")
-      raise ArgumentError, "Cannot load environment profile '#{env}' because '#{env_path}' does not exist" unless env_path.exist?
-      env_cfg = YAML.load(File.read(env_path))
-      env_cfg.deep_symbolize_keys!
+      env_cfg = self.load(Autobots.root.join('config', 'environments'), env)
 
       # Instantiate a connector, which will take care of instantiating the
       # WebDriver and configure its options
       Connector.new(Config.new(connector_cfg, env_cfg))
+    end
+
+    def self.load(path, selector)
+      overrides = selector.to_s.split(/:/)
+      name      = overrides.shift
+      filepath  = path.join("#{name}.yml")
+      raise ArgumentError, "Cannot load profile #{name.inspect} because #{filepath.inspect} does not exist" unless filepath.exist?
+
+      cfg = YAML.load(File.read(filepath))
+      self.resolve(cfg, overrides)
+    end
+
+    def self.resolve(cfg, overrides)
+      cfg = cfg.dup.with_indifferent_access
+
+      if options = cfg.delete(:overrides)
+        # Evaluate each override in turn
+        overrides.each do |override|
+          if tree = options[override]
+            cfg.deep_merge!(tree)
+          end
+        end
+      end
+
+      cfg
     end
 
     # Initialize a new connector with a set of configuration files.
@@ -77,6 +96,15 @@ module Autobots
           client = Selenium::WebDriver::Remote::Http::Default.new
           client.timeout = timeouts[:driver]
           driver_config[:http_client] = client
+        end
+
+        # Handle archetypal capability lists
+        if archetype = concon[:archetype]
+          caps = Selenium::WebDriver::Remote::Capabilities.send(archetype)
+          if caps_set = concon[:capabilities]
+            caps.merge!(caps_set)
+          end
+          driver_config[:desired_capabilities] = caps
         end
 
         # Initialize the driver and declare explicit browser timeouts
