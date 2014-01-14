@@ -16,7 +16,7 @@ module Autobots
         # @return [Base] A subclass of `Base` representing the page object.
         # @raise InvalidPageState if the page cannot be casted to
         # @raise NameError if the page object doesn't exist
-        def self.cast(driver, name)
+        def cast(driver, name)
           # Transform the name string into a file path and then into a module name
           klass_name = "autobots/page_objects/#{name}".camelize
 
