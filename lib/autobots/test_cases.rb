@@ -8,7 +8,10 @@ Bundler.require(*envs)
 require 'autobots/test_case'
 
 module Autobots
-  module TestCases #:nodoc:
+
+  # An empty container for actual test cases and test classes.
+  module TestCases
   end
+
 end
 
