@@ -14,6 +14,13 @@ module Autobots
           @element = element
         end
 
+        # Clicks on the element
+        #
+        # @return  [Boolean]
+        def click
+          @element.click
+        end
+
       end
 
     end
