@@ -29,6 +29,7 @@ module Autobots
     # instantiate a connector object with the correct WebDriver instance and
     # settings.
     #
+    # @raise ArgumentError
     # @param connector [#to_s] the name of the connector profile to use.
     # @param env [#to_s] the name of the environment profile to use.
     # @return [Connector] an initialized connector object
@@ -48,6 +49,12 @@ module Autobots
       Connector.new(Config.new(connector_cfg, env_cfg))
     end
 
+    # Load profile from a specific path using the selector(s) specified.
+    #
+    # @raise ArgumentError
+    # @param path [#to_path, #to_s] the path in which to find the profile
+    # @param selector [String] semicolon-delimited selector set
+    # @return [Hash] configuration values
     def self.load(path, selector)
       overrides = selector.to_s.split(/:/)
       name      = overrides.shift
@@ -58,6 +65,12 @@ module Autobots
       self.resolve(cfg, overrides)
     end
 
+    # Resolve a set of profile overrides.
+    #
+    # @param cfg [Hash] the configuration structure optionally containing a
+    #   key of `:overrides`
+    # @param overrides [Enumerable<String>]
+    # @return [Hash] the resolved configuration
     def self.resolve(cfg, overrides)
       cfg = cfg.dup.with_indifferent_access
 
@@ -71,6 +84,12 @@ module Autobots
       end
 
       cfg
+    end
+
+    def finalize!
+      self.reset!
+      @driver.quit
+      true
     end
 
     # Initialize a new connector with a set of configuration files.
@@ -129,6 +148,17 @@ module Autobots
       else
         @driver.send(name, *args, &block)
       end
+    end
+
+    # Resets the current session by deleting all cookies and clearing all
+    # local and session storage.
+    #
+    # @return [Boolean]
+    def reset!
+      @driver.deleteAllCookies
+      @driver.clearLocalStorage
+      @driver.clearSessionStorage
+      true
     end
 
     # Compose a URL from the provided +path+ and the environment profile. The 
