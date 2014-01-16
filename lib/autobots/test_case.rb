@@ -98,7 +98,7 @@ module Autobots
       # @return [void]
       def setup(&block)
         define_method(:setup) do
-          super
+          super()
           instance_eval(&block)
         end
       end
@@ -108,7 +108,7 @@ module Autobots
       # @return [void]
       def teardown(&block)
         define_method(:teardown) do
-          super
+          super()
           instance_eval(&block)
         end
       end
