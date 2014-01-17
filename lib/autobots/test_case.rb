@@ -1,5 +1,7 @@
 
 require 'active_support/inflector'
+require 'active_support/core_ext/date_time/conversions'
+require 'active_support/core_ext/numeric/time'
 require 'autobots'
 
 ActiveSupport::Inflector.inflections(:en) do |inflector|
@@ -10,6 +12,8 @@ ActiveSupport::Inflector.inflections(:en) do |inflector|
   inflector.acronym 'RC'
   inflector.acronym 'SRP'
 end
+
+Time::DATE_FORMATS[:month_day_year] = "%m/%d/%Y"
 
 module Autobots
 
