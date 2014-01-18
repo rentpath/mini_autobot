@@ -54,7 +54,7 @@ module Autobots
     # @raise ArgumentError
     # @param path [#to_path, #to_s] the path in which to find the profile
     # @param selector [String] semicolon-delimited selector set
-    # @return [Hash] configuration values
+    # @return [Hash] immutable configuration values
     def self.load(path, selector)
       overrides = selector.to_s.split(/:/)
       name      = overrides.shift
@@ -62,7 +62,8 @@ module Autobots
       raise ArgumentError, "Cannot load profile #{name.inspect} because #{filepath.inspect} does not exist" unless filepath.exist?
 
       cfg = YAML.load(File.read(filepath))
-      self.resolve(cfg, overrides)
+      cfg = self.resolve(cfg, overrides)
+      cfg.freeze
     end
 
     # Resolve a set of profile overrides.
