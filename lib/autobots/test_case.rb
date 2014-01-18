@@ -1,20 +1,4 @@
 
-require 'active_support/inflector'
-require 'active_support/core_ext/date_time/conversions'
-require 'active_support/core_ext/numeric/time'
-require 'autobots'
-
-ActiveSupport::Inflector.inflections(:en) do |inflector|
-  inflector.acronym 'LR'
-  inflector.acronym 'LRR'
-  inflector.acronym 'PDP'
-  inflector.acronym 'PSP'
-  inflector.acronym 'RC'
-  inflector.acronym 'SRP'
-end
-
-Time::DATE_FORMATS[:month_day_year] = "%m/%d/%Y"
-
 module Autobots
 
   # An Autobots-specific test case container, which extends the default ones,
