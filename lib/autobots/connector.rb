@@ -5,13 +5,13 @@ module Autobots
   # access to the WebDriver. It's a thin layer in that, other than #initialize,
   # it is a drop-in replacement for WebDriver calls.
   #
-  # For example, if you usually access a method as +@driver.find_element+, you
-  # can still access them as the same method under +@connector.find_element+.
+  # For example, if you usually access a method as `@driver.find_element`, you
+  # can still access them as the same method under `@connector.find_element`.
   class Connector
 
-    # Simple configuration container for all profiles. +Struct+ is not used here
-    # because it contaminates the class with +Enumerable+ methods, which will
-    # cause +method_missing+ in +Connector+ to get confused.
+    # Simple configuration container for all profiles. Struct is not used here
+    # because it contaminates the class with Enumerable methods, which will
+    # cause #method_missing in Connector to get confused.
     class Config
       attr_reader :connector, :env
 
@@ -75,7 +75,8 @@ module Autobots
       cfg = cfg.dup.with_indifferent_access
 
       if options = cfg.delete(:overrides)
-        # Evaluate each override in turn
+        # Evaluate each override in turn, allowing each override to--well,
+        # override--anything coming before it
         overrides.each do |override|
           if tree = options[override]
             cfg.deep_merge!(tree)
