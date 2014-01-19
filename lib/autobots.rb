@@ -56,6 +56,8 @@ module Autobots
   autoload :Utils, 'autobots/utils'
 
   autoload :Emails, 'autobots/emails'
+  autoload :TestCase, 'autobots/test_case'
+  autoload :TestCases, 'autobots/test_cases'
 
   # Magical method that automatically figures out the root directory of the
   # automation repository, which is the directory that contains `lib` and
