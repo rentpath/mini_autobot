@@ -13,7 +13,17 @@ module Autobots
     # because it contaminates the class with Enumerable methods, which will
     # cause #method_missing in Connector to get confused.
     class Config
-      attr_reader :connector, :env
+      attr_accessor :connector, :env
+
+      def ==(other)
+        self.class == other.class && self.connector == other.connector && self.env == other.env
+      end
+
+      alias_method :eql?, :==
+
+      def hash
+        @connector.hash ^ @env.hash
+      end
 
       # Initialize a new configuration object. This object should never be
       # instantiated directly.
@@ -25,6 +35,19 @@ module Autobots
 
     end
 
+    class <<self
+      protected
+      attr_accessor :pool
+    end
+
+    def self.finalize!
+      return unless self.pool
+      self.pool.values.each do |connector|
+        connector.finalize!
+      end
+      self.pool.clear
+    end
+
     # Given a connector profile and an environment profile, this method will
     # instantiate a connector object with the correct WebDriver instance and
     # settings.
@@ -34,6 +57,8 @@ module Autobots
     # @param env [#to_s] the name of the environment profile to use.
     # @return [Connector] an initialized connector object
     def self.get(connector, env)
+      self.pool ||= {}
+
       # Ensure arguments are at least provided
       raise ArgumentError, "A connector must be provided" if connector.blank?
       raise ArgumentError, "An environment must be provided" if env.blank?
@@ -44,9 +69,16 @@ module Autobots
       # Find the environment profile and load it
       env_cfg = self.load(Autobots.root.join('config', 'environments'), env)
 
+      # Grab an existing instance, if once already exists, but make sure to
+      # reset the driver first
+      cfg = Config.new(connector_cfg, env_cfg)
+      if self.pool.has_key?(cfg)
+        return self.pool[cfg].tap(:reset!)
+      end
+
       # Instantiate a connector, which will take care of instantiating the
       # WebDriver and configure its options
-      Connector.new(Config.new(connector_cfg, env_cfg))
+      self.pool[cfg] = Connector.new(cfg)
     end
 
     # Load profile from a specific path using the selector(s) specified.
@@ -88,8 +120,8 @@ module Autobots
       cfg
     end
 
+    # Perform cleanup on the connector and driver.
     def finalize!
-      self.reset!
       @driver.quit
       true
     end
