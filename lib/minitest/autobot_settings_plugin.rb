@@ -15,9 +15,9 @@ module Minitest
   # This plugin for minitest injects autobot-specific command-line arguments, and
   # passes it along to autobot.
   def self.plugin_autobot_settings_options(parser, options)
-    options[:auto_quit_driver] = true
+    options[:auto_finalize] = true
     parser.on('-Q', '--no-auto-quit-driver', "Don't automatically quit the driver after a test case") do |value|
-      options[:auto_quit_driver] = value
+      options[:auto_finalize] = value
     end
 
     parser.on('-c', '--connector TYPE', 'Run using a specific connector profile') do |value|

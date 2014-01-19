@@ -1,7 +1,4 @@
 
-require 'active_support/core_ext/hash'
-require 'singleton'
-
 module Autobots
   # A global, singleton object that preserves runtime settings. Normally, we
   # would avoid using a root object pattern, but settings are simple and

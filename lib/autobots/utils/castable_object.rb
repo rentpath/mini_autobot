@@ -45,6 +45,11 @@ module Autobots
 
       end
 
+      # Extend the base class in which this module is included in order to
+      # inject class methods.
+      #
+      # @param base [Class]
+      # @return [void]
       def self.included(base)
         base.extend(ClassMethods)
       end
