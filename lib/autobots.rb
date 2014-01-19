@@ -1,9 +1,18 @@
 
+require 'bundler'
+
+envs = [:default]
+envs << ENV['AUTOBOT_ENV'].to_sym if ENV.has_key?('AUTOBOT_ENV')
+Bundler.require(*envs)
+
 require 'cgi'
 require 'pathname'
+require 'singleton'
 
 require 'active_support/core_ext/date_time/conversions'
+require 'active_support/core_ext/hash'
 require 'active_support/core_ext/module/attr_internal'
+require 'active_support/core_ext/module/attribute_accessors'
 require 'active_support/core_ext/numeric/time'
 require 'active_support/core_ext/object/blank'
 require 'active_support/core_ext/object/conversions'
