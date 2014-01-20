@@ -55,14 +55,20 @@ module Autobots
       end
 
       # The preferred way to create a new page object from the current page's
-      # driver state. Raises a NameError if the page could not be found.
+      # driver state. Raises a NameError if the page could not be found. If
+      # casting causes a StaleElementReferenceError, the method will retry up
+      # to 2 more times.
       #
       # @param name [String] see {Base.cast}
       # @return [Base] The casted page object.
       # @raise InvalidPageState if the page cannot be casted to
       # @raise NameError if the page object doesn't exist
       def cast(name)
+        tries ||= 3
         self.class.cast(@driver, name)
+      rescue Selenium::WebDriver::Error::StaleElementReferenceError => sere
+        sleep 1
+        retry unless (tries -= 1).zero?
       end
 
       # Cast the page to any of the listed `names`, in order of specification.
