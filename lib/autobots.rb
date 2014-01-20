@@ -51,6 +51,7 @@ Time::DATE_FORMATS[:month_day_year] = "%m/%d/%Y"
 module Autobots
 
   autoload :Connector, 'autobots/connector'
+  autoload :Console, 'autobots/console'
   autoload :PageObjects, 'autobots/page_objects'
   autoload :Settings, 'autobots/settings'
   autoload :Utils, 'autobots/utils'

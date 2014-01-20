@@ -28,6 +28,10 @@ module Minitest
       options[:env] = value
     end
 
+    parser.on('-i', '--console', 'Run an interactive session within the context of an empty test') do |value|
+      Autobots::Console.bootstrap!
+    end
+
     parser.on('-t', '--tag TAGLIST', 'Run only tests matching a specific tag, tags, or tagsets') do |value|
       options[:tags] ||= [ ]
       options[:tags] << value.to_s.split(',').map { |t| t.to_sym }
