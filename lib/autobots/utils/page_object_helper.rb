@@ -24,6 +24,8 @@ module Autobots
         connector = Autobots::Settings[:connector] || :ghost
         env = Autobots::Settings[:env] || :qa
 
+        Autobots.logger.debug("Instantiating page(#{name}) with (#{connector}, #{env})")
+
         driver = Autobots::Connector.get(connector, env)
         instance = klass.new(driver)
         instance.go!

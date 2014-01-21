@@ -42,6 +42,7 @@ module Autobots
 
     def self.finalize!
       return unless self.pool
+      Autobots.logger.debug("Finalizing #{self.pool.values.size} connectors")
       self.pool.values.each do |connector|
         connector.finalize!
       end
@@ -141,7 +142,12 @@ module Autobots
 
         # Handle hub-related options, like hub URLs (for remote execution)
         if hub = concon[:hub]
-          driver_config[:url] = hub[:url]
+          builder = URI.parse(hub[:url])
+          builder.user     = hub[:user] if hub.has_key?(:user)
+          builder.password = hub[:pass] if hub.has_key?(:pass)
+
+          Autobots.logger.debug("Connector(##{self.object_id}): targeting remote #{builder.to_s}")
+          driver_config[:url] = builder.to_s
         end
 
         # Handle driver-related timeouts
@@ -153,6 +159,7 @@ module Autobots
 
         # Handle archetypal capability lists
         if archetype = concon[:archetype]
+          Autobots.logger.debug("Connector(##{self.object_id}): using #{archetype.inspect} as capabilities archetype")
           caps = Selenium::WebDriver::Remote::Capabilities.send(archetype)
           if caps_set = concon[:capabilities]
             caps.merge!(caps_set)
@@ -161,6 +168,7 @@ module Autobots
         end
 
         # Initialize the driver and declare explicit browser timeouts
+        Autobots.logger.debug("Connector(##{self.object_id}): using WebDriver(#{driver.inspect}, #{driver_config.inspect})")
         @driver = Selenium::WebDriver.for(driver.to_sym, driver_config)
         if timeouts = concon[:timeouts]
           @driver.manage.timeouts.implicit_wait  = timeouts[:implicit_wait]  if timeouts[:implicit_wait]
@@ -180,7 +188,7 @@ module Autobots
       if @config.respond_to?(name)
         @config.send(name, *args, *block)
       else
-        #puts "DRIVER->#{name}"
+        Autobots.logger.debug("Connector(##{self.object_id})->#{name}(#{args.map { |a| a.inspect }.join(', ')})")
         @driver.send(name, *args, &block)
       end
     end
