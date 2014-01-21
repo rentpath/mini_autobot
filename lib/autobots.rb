@@ -24,6 +24,7 @@ require 'active_support/core_ext/string/inflections'
 require 'active_support/core_ext/string/starts_ends_with'
 require 'active_support/core_ext/string/strip'
 require 'active_support/inflector'
+require 'active_support/logger'
 
 ActiveSupport::Inflector.inflections(:en) do |inflector|
   inflector.acronym 'LR'
@@ -52,6 +53,7 @@ module Autobots
 
   autoload :Connector, 'autobots/connector'
   autoload :Console, 'autobots/console'
+  autoload :Logger, 'autobots/logger'
   autoload :PageObjects, 'autobots/page_objects'
   autoload :Settings, 'autobots/settings'
   autoload :Utils, 'autobots/utils'
@@ -59,6 +61,14 @@ module Autobots
   autoload :Emails, 'autobots/emails'
   autoload :TestCase, 'autobots/test_case'
   autoload :TestCases, 'autobots/test_cases'
+
+  def self.logger
+    @@__logger__
+  end
+
+  def self.logger=(value)
+    @@__logger__ = value
+  end
 
   # Magical method that automatically figures out the root directory of the
   # automation repository, which is the directory that contains `lib` and

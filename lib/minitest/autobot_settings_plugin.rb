@@ -7,6 +7,24 @@ module Minitest
   def self.plugin_autobot_settings_init(options)
     Autobots::Settings.merge!(options)
     Autobots::Settings.symbolize_keys!
+
+    Autobots.logger = Autobots::Logger.new('autobots.log', 'daily').tap do |logger|
+      logger.formatter = proc do |sev, ts, prog, msg|
+        msg = msg.inspect unless String === msg
+        "#{ts.strftime('%Y-%m-%dT%H:%M:%S.%6N')} #{sev}: #{String === msg ? msg : msg.inspect}\n"
+      end
+      logger.level = case Autobots::Settings[:verbosity_level]
+                     when 0
+                       Logger::WARN
+                     when 1
+                       Logger::INFO
+                     else
+                       Logger::DEBUG
+                     end
+      logger.info("Booting up with arguments: #{options[:args].inspect}")
+      at_exit { logger.info("Shutting down") }
+    end
+
     self
   end
 
@@ -35,6 +53,13 @@ module Minitest
     parser.on('-t', '--tag TAGLIST', 'Run only tests matching a specific tag, tags, or tagsets') do |value|
       options[:tags] ||= [ ]
       options[:tags] << value.to_s.split(',').map { |t| t.to_sym }
+    end
+
+    options[:verbose] = false
+    options[:verbosity_level] = 0
+    parser.on('-v', '--verbose', 'Output verbose logs to the log file') do |value|
+      options[:verbose] = true
+      options[:verbosity_level] += 1
     end
   end
 
