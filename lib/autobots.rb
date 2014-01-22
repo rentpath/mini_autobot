@@ -63,7 +63,7 @@ module Autobots
   autoload :TestCases, 'autobots/test_cases'
 
   def self.logger
-    @@__logger__
+    @@__logger__ ||= Autobots::Logger.new($stdout)
   end
 
   def self.logger=(value)
