@@ -5,6 +5,9 @@ module Autobots
     # Page object-related helper methods.
     module PageObjectHelper
 
+      # Helper method to instantiate a new page object. This method should
+      # only be used when first loadingl subsequent page objects are automatically
+      # instantiated by calling #cast on the page object.
       def page(name)
         klass_name = "autobots/page_objects/#{name}".camelize
         klass = begin
@@ -25,6 +28,13 @@ module Autobots
         instance = klass.new(driver)
         instance.go!
         instance
+      end
+
+      # Local teardown for page objects. Any page objects that are loaded will
+      # be finalized upon teardown.
+      def teardown
+        Autobots::Connector.finalize! if Autobots::Settings[:auto_finalize]
+        super()
       end
 
     end

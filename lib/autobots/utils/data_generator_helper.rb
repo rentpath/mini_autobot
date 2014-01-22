@@ -40,16 +40,39 @@ module Autobots
 
       # Generate a handsome first name.
       #
+      # @param length [#to_i, nil]
       # @return [String]
-      def generate_first_name
-        Faker::Name.first_name
+      def generate_first_name(length = nil)
+        if length.nil?
+          Faker::Name.first_name
+        else
+          # Ensure a name with requested length is generated
+          name_length = Faker::Name.first_name.length
+          if length > name_length
+            Faker::Lorem.characters(length)
+          else
+            Faker::Name.first_name[0..length.to_i]
+          end
+        end
       end
 
       # Generate a gosh-darn awesome last name.
       #
+      # @param length [#to_i, nil]
       # @return [String]
-      def generate_last_name
-        Faker::Name.last_name
+      def generate_last_name(length = nil)
+        if length.nil?
+          Faker::Name.last_name
+        else
+          # Ensure a name with requested length is generated
+          name_length = Faker::Name.last_name.length
+          if length > name_length
+            Faker::Lorem.characters(length)
+          else
+            Faker::Name.last_name[0..length.to_i]
+          end
+        end
+
       end
 
       # Generate an email address in the domain `mailinator.com`.
@@ -65,10 +88,15 @@ module Autobots
 
       # Generate a random password of a certain length.
       #
-      # @param length [Fixnum]
+      # @param length [#to_i, nil]
       # @return [String]
-      def generate_password(length = 4)
-        Faker::Internet.password(length)
+      def generate_password(length = nil)
+        if length.nil?
+          Faker::Internet.password
+        else
+          Faker::Internet.password[0..length]
+        end
+
       end
 
       # Generates a U.S. phone number (NANPA-aware).
@@ -88,6 +116,16 @@ module Autobots
           NPA.sample + NXX.sample + generate_digits(4)
         end
       end
+
+      # Generate a random date.
+      #
+      # @param start_date [Integer] minimum date range
+      # @param end_date [Integer] maximum date range
+      # @return [String] the generated date
+      def generate_date(start_date, end_date)
+        random_date = rand start_date..end_date
+        return random_date.to_formatted_s(:month_day_year)
+       end
 
     end
 

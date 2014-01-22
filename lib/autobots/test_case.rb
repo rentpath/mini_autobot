@@ -1,16 +1,4 @@
 
-require 'active_support/inflector'
-require 'autobots'
-
-ActiveSupport::Inflector.inflections(:en) do |inflector|
-  inflector.acronym 'LR'
-  inflector.acronym 'LRR'
-  inflector.acronym 'PDP'
-  inflector.acronym 'PSP'
-  inflector.acronym 'RC'
-  inflector.acronym 'SRP'
-end
-
 module Autobots
 
   # An Autobots-specific test case container, which extends the default ones,
