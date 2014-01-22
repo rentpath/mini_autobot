@@ -198,9 +198,9 @@ module Autobots
     #
     # @return [Boolean]
     def reset!
-      @driver.deleteAllCookies
-      @driver.clearLocalStorage
-      @driver.clearSessionStorage
+      @driver.manage.delete_all_cookies
+      @driver.try(:local_storage).try(:clear)
+      @driver.try(:session_storage).try(:clear)
       true
     end
 
