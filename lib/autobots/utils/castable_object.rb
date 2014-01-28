@@ -65,8 +65,11 @@ module Autobots
       # @raise NameError if the page object doesn't exist
       def cast(name)
         tries ||= 3
-        self.class.cast(@driver, name)
+        self.class.cast(@driver, name).tap do |new_page|
+          Autobots.logger.debug("#{new_page.class} casted from #{self.class}(Connector(##{@driver.object_id}))")
+        end
       rescue Selenium::WebDriver::Error::StaleElementReferenceError => sere
+        Autobots.logger.debug("Connector(##{@driver.object_id})->cast(#{name}) raised a potentially-swallowed StaleElementReferenceError")
         sleep 1
         retry unless (tries -= 1).zero?
       end
