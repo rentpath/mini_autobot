@@ -66,7 +66,7 @@ module Autobots
       def cast(name)
         tries ||= 3
         self.class.cast(@driver, name).tap do |new_page|
-          Autobots.logger.debug("Casting #{self.class}(#{self.object_id}) into #{new_page.class}(#{new_page.object_id})")
+          Autobots.logger.debug("Casting #{self.class}(##{self.object_id}) into #{new_page.class}(##{new_page.object_id})")
         end
       rescue Selenium::WebDriver::Error::StaleElementReferenceError => sere
         Autobots.logger.debug("#{self.class}(##{@driver.object_id})->cast(#{name}) raised a potentially-swallowed StaleElementReferenceError")
