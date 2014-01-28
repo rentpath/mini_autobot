@@ -1,3 +1,4 @@
+require 'minitest/assertions'
 
 module Autobots
   module Utils
