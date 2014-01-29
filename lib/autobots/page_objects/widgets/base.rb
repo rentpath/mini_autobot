@@ -7,7 +7,7 @@ module Autobots
       # or reproduced multiple times, either on the same page, or across multiple
       # page objects or page modules.
       class Base
-        include Utils::CastableObject
+        include Utils::Castable
 
         def initialize(page, element)
           @driver = page.driver
