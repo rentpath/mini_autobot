@@ -2,7 +2,7 @@
 module Autobots
   module Utils
 
-    module CastableObject
+    module Castable
 
       module ClassMethods
 
