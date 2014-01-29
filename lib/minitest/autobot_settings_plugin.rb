@@ -25,6 +25,11 @@ module Minitest
       at_exit { logger.info("Shutting down") }
     end
 
+    if options[:console]
+      Autobots::Settings[:tags] = [[:__dummy__]]
+      Autobots::Console.bootstrap!
+    end
+
     self
   end
 
@@ -46,8 +51,9 @@ module Minitest
       options[:env] = value
     end
 
+    options[:console] = false
     parser.on('-i', '--console', 'Run an interactive session within the context of an empty test') do |value|
-      Autobots::Console.bootstrap!
+      options[:console] = true
     end
 
     parser.on('-t', '--tag TAGLIST', 'Run only tests matching a specific tag, tags, or tagsets') do |value|

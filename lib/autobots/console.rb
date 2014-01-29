@@ -4,7 +4,7 @@ module Autobots
   class Console < TestCase
 
     def self.bootstrap!
-      exit self.new(:test_dummy).test_dummy
+      true
     end
 
     test :dummy, tags: [:__dummy__], serial: 'DUMMY' do
