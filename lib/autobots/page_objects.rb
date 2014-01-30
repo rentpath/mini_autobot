@@ -31,6 +31,7 @@ module Autobots
     autoload :PropertySelection,  'autobots/page_objects/property_selection'
     autoload :LeaseReportPage1,   'autobots/page_objects/lease_report_page1'
     autoload :LeaseReportPage2,   'autobots/page_objects/lease_report_page2'
+    autoload :LeaseReportConfirmation, 'autobots/page_objects/lease_report_confirmation'
   end
 
 end
