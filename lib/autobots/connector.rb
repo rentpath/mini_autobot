@@ -15,12 +15,15 @@ module Autobots
     class Config
       attr_accessor :connector, :env
 
+      # Override equality checks.
       def ==(other)
         self.class == other.class && self.connector == other.connector && self.env == other.env
       end
 
       alias_method :eql?, :==
 
+      # Override hashing mechanism to take into account the connector and
+      # environment values
       def hash
         @connector.hash ^ @env.hash
       end
@@ -35,16 +38,22 @@ module Autobots
 
     end
 
-    class <<self
+    class <<self # :nodoc:
       protected
       attr_accessor :pool
     end
 
+    # Finalize connectors in the pool that are no longer used, and then clear
+    # the pool if it should be empty.
     def self.finalize!
       return unless self.pool
       Autobots.logger.debug("Finalizing #{self.pool.values.size} connectors")
       self.pool.values.each do |connector|
-        connector.finalize!
+        begin
+          connector.finalize!
+        rescue => e
+          Autobots.logger.error("Could not finalize Connector(##{connector.object_id}): #{e.message}")
+        end
       end
       self.pool.clear
     end
@@ -82,6 +91,19 @@ module Autobots
       # Instantiate a connector, which will take care of instantiating the
       # WebDriver and configure its options
       self.pool[cfg] = Connector.new(cfg)
+    end
+
+    # Retrieve the default connector for the current environment.
+    #
+    # @raise ArgumentError
+    # @return [Connector] an initialized connector object
+    def self.get_default
+      connector = Autobots::Settings[:connector] || :ghost
+      env = Autobots::Settings[:env] || :qa
+      Autobots.logger.debug("Retrieving connector with settings (#{connector}, #{env})")
+
+      # Get a connector instance and use it in the new page object
+      self.get(connector, env)
     end
 
     # Load profile from a specific path using the selector(s) specified.
@@ -195,8 +217,10 @@ module Autobots
       end
     end
 
-    # Resets the current session by deleting all cookies and clearing all
-    # local and session storage.
+    # Resets the current session by deleting all cookies and clearing all local
+    # and session storage. Local and session storage are only cleared if the
+    # underlying driver supports it, and even then, only if the storage
+    # supports atomic clearing.
     #
     # @return [Boolean]
     def reset!

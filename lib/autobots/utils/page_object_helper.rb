@@ -25,19 +25,18 @@ module Autobots
           raise NameError, msg
         end
 
-        # Set a default connector and environment
-        connector = Autobots::Settings[:connector] || :ghost
-        env = Autobots::Settings[:env] || :qa
-
-        Autobots.logger.debug("Instantiating page(#{name}) with (#{connector}, #{env})")
-
-        # Get a connector instance and use it in the new page object
-        driver = Autobots::Connector.get(connector, env)
+        # Get a default connector
+        driver = Autobots::Connector.get_default
         instance = klass.new(driver)
 
-        # Before visiting the page, do any pre-processing necessary, if any
-        yield instance if block_given?
-        instance.go!
+        # Before visiting the page, do any pre-processing necessary, if any,
+        # but only visit the page if the pre-processing succeeds
+        if block_given?
+          retval = yield instance
+          instance.go! if retval
+        else
+          instance.go!
+        end
 
         # Return the instance as-is
         instance
