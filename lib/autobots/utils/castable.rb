@@ -66,6 +66,7 @@ module Autobots
       def cast(name)
         tries ||= 3
         self.class.cast(@driver, name).tap do |new_page|
+          self.freeze
           Autobots.logger.debug("Casting #{self.class}(##{self.object_id}) into #{new_page.class}(##{new_page.object_id})")
         end
       rescue Selenium::WebDriver::Error::StaleElementReferenceError => sere
