@@ -206,6 +206,14 @@ module Autobots
       true
     end
 
+    # Forward unhandled message checks to the configuration and driver.
+    #
+    # @param name [#to_sym]
+    # @return [Boolean]
+    def respond_to?(name)
+      super || @config.respond_to?(name) || @driver.respond_to?(name)
+    end
+
     # Compose a URL from the provided +path+ and the environment profile. The 
     # latter contains things like the hostname, port, SSL settings.
     #
