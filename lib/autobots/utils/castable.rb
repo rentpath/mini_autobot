@@ -38,7 +38,7 @@ module Autobots
           begin
             instance.validate!
           rescue Minitest::Assertion => exc
-            raise InvalidePageState, "#{klass}: #{exc.message}"
+            raise Autobots::PageObjects::InvalidePageState, "#{klass}: #{exc.message}"
           end
           instance
         end
