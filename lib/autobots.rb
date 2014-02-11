@@ -27,6 +27,7 @@ require 'active_support/inflector'
 require 'active_support/logger'
 
 ActiveSupport::Inflector.inflections(:en) do |inflector|
+  inflector.acronym 'DAO'
   inflector.acronym 'LR'
   inflector.acronym 'LRR'
   inflector.acronym 'PDP'
@@ -53,6 +54,7 @@ module Autobots
 
   autoload :Connector, 'autobots/connector'
   autoload :Console, 'autobots/console'
+  autoload :DAO, 'autobots/dao'
   autoload :Logger, 'autobots/logger'
   autoload :PageObjects, 'autobots/page_objects'
   autoload :Settings, 'autobots/settings'
