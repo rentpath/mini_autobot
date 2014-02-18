@@ -77,7 +77,13 @@ module Autobots
 
             # If the method's tags match ALL of the tags in the tag set, allow
             # it to run; in the event of a problem, allow the test to run
-            tag_set.all? { |tag| tags.include?(tag.to_sym) rescue true }
+            tag_set.all? do |tag| 
+              if tag =~ %r/^!/
+                !tags.include?(tag[%r/^!(.*)/,1].to_sym) || nil
+              else
+                tags.include?(tag.to_sym) || nil
+              end rescue true
+            end
           end
         end
       end
