@@ -43,10 +43,12 @@ module Minitest
       options[:auto_finalize] = value
     end
 
+    options[:connector] = ENV['AUTOBOT_CONNECTOR'] if ENV.has_key?('AUTOBOT_CONNECTOR')
     parser.on('-c', '--connector TYPE', 'Run using a specific connector profile') do |value|
       options[:connector] = value
     end
 
+    options[:connector] = ENV['AUTOBOT_ENV'] if ENV.has_key?('AUTOBOT_ENV')
     parser.on('-e', '--env ENV', 'Run against a specific environment') do |value|
       options[:env] = value
     end
