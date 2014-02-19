@@ -2,7 +2,7 @@
 require 'bundler'
 
 envs = [:default]
-envs << ENV['AUTOBOT_ENV'].to_sym if ENV.has_key?('AUTOBOT_ENV')
+envs << ENV['AUTOBOT_BUNDLE'].to_sym if ENV.has_key?('AUTOBOT_BUNDLE')
 Bundler.require(*envs)
 
 require 'cgi'
