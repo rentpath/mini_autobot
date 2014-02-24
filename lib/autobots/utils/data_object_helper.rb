@@ -1,3 +1,5 @@
+require 'oci8'
+
 module Autobots
   module Utils
     module DataObjectHelper
@@ -19,26 +21,25 @@ module Autobots
 
         # Get a connector instance and use it in the new data access object
         driver = Autobots::Connector.get_default
-        db_name = driver.env['viva_db']['service']
-        db_username = driver.env['viva_db']['user']
-        db_password = driver.env['viva_db']['pass']
 
-        cpool = Autobots::DAO::Base.pool ||= OCI8::ConnectionPool.new(1, 5, 2, db_username, db_password, db_name)
-        db_connection = OCI8.new(db_name, db_username, cpool)
+        # Read values from specified connector
+        db_name = driver.env[:viva_db][:service]
+        db_username = driver.env[:viva_db][:user]
+        db_password = driver.env[:viva_db][:pass]
+
+        # Default values for required Connection Pool params
+        cpool_min_limit = 1
+        cpool_max_limit = 5
+        cpool_increment = 2
+
+        cpool = Autobots::DAO::Base.pool ||= OCI8::ConnectionPool.new(cpool_min_limit, cpool_max_limit, cpool_increment, db_username, db_password, db_name)
+        db_connection = OCI8.new(db_username, db_password, cpool)
         instance = klass.new(db_connection)
 
         # Return the instance as-is
         instance
       end
 
-      # Local teardown for data access objects. Any data access objects that are loaded will
-      # be finalized upon teardown.
-      #
-      # @return [void]
-      def teardown
-        Autobots::Connector.finalize! if Autobots::Settings[:auto_finalize]
-        super()
-      end
     end
   end
 end
