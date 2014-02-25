@@ -16,7 +16,7 @@ module Autobots
 
     # Autoloads for major classes and modules
     autoload :Base,       'autobots/page_objects/base'
-    autoload :Overlays,   'autobots/page_objects/overlays'
+    autoload :Overlay,    'autobots/page_objects/overlay'
     autoload :Widgets,    'autobots/page_objects/widgets'
 
     # Autoloads for page modules and components
