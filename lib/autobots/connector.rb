@@ -191,6 +191,11 @@ module Autobots
           driver_config[:desired_capabilities] = caps
         end
 
+        # Load Firefox profile if specified - applicable only when using the firefoxdriver
+        if profile = concon[:profile]
+          driver_config[:profile] = profile
+        end
+
         # Initialize the driver and declare explicit browser timeouts
         Autobots.logger.debug("Connector(##{self.object_id}): using WebDriver(#{driver.inspect}, #{driver_config.inspect})")
         @driver = Selenium::WebDriver.for(driver.to_sym, driver_config)
