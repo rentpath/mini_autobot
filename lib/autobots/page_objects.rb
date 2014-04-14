@@ -29,6 +29,7 @@ module Autobots
     autoload :Search,             'autobots/page_objects/search'
     autoload :PropertyDetails,    'autobots/page_objects/property_details'
     autoload :PropertySelection,  'autobots/page_objects/property_selection'
+    autoload :RewardCard,         'autobots/page_objects/reward_card'
     autoload :LeaseReportPage1,   'autobots/page_objects/lease_report_page1'
     autoload :LeaseReportPage2,   'autobots/page_objects/lease_report_page2'
     autoload :LeaseReportConfirmation, 'autobots/page_objects/lease_report_confirmation'
