@@ -1,4 +1,3 @@
-
 module Autobots
   module PageObjects
     module Widgets
@@ -13,8 +12,8 @@ module Autobots
           @driver = page.driver
           @page = page
           @element = element
-        end
-
+        end        
+        
       end
 
     end
