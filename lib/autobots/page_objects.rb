@@ -34,6 +34,7 @@ module Autobots
     autoload :LeaseReportPage2,   'autobots/page_objects/lease_report_page2'
     autoload :LeaseReportConfirmation, 'autobots/page_objects/lease_report_confirmation'
     autoload :MyRent,             'autobots/page_objects/my_rent'
+    autoload :Mbs,                'autobots/page_objects/mbs'
 
   end
 
