@@ -82,11 +82,13 @@ module Autobots
       # Grab an existing instance, if once already exists, but make sure to
       # reset the driver first
       cfg = Config.new(connector_cfg, env_cfg)
-      if c = self.pool[cfg]
-        c.reset!
-        Autobots.logger.debug("Connector(##{c.object_id}): reusing, with reset")
-        return c
-      end
+      
+      ##Commenting this out for parallellization
+      #if c = self.pool[cfg]
+      #  c.reset!
+      #  Autobots.logger.debug("Connector(##{c.object_id}): reusing, with reset")
+      #  return c
+      #end
 
       # Instantiate a connector, which will take care of instantiating the
       # WebDriver and configure its options
