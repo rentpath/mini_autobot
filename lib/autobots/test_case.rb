@@ -5,7 +5,7 @@ module Autobots
   # adds convenience helper methods, and manages page objects automatically.
   class TestCase < Minitest::Test
 
-    parallelize_me!
+    #parallelize_me!
 
     # Standard exception class that signals that the test with that name has
     # already been defined.
