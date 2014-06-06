@@ -58,6 +58,7 @@ module Autobots
         # where are we parsing info from run command to in the code?
         connector = Autobots::Settings[:connector] # eg. saucelabs:phu:win7_ie11
         overrides = connector.to_s.split(/:/)
+        new_tags = overrides[2]+"_by_"+overrides[1]
         file_name = overrides.shift
         path = Autobots.root.join('config', 'connectors')
         filepath  = path.join("#{file_name}.yml")
@@ -73,7 +74,7 @@ module Autobots
         session_id = @driver.session_id
         http_auth = "https://#{username}:#{access_key}@saucelabs.com/rest/v1/#{username}/jobs/#{session_id}"
         # to_json need to: require "active_support/core_ext", but will mess up the whole framework, require 'json' in this method solved it
-        body = {"name" => name()}.to_json
+        body = {"name" => name(), "tags" => [new_tags]}.to_json
         # RestClient need to: gem install rest-client, 
         # then to add it to library, add line "gem rest-client" to GemFile first, then do "bundle install"
         RestClient.put(http_auth, body, {:content_type => "application/json"})
