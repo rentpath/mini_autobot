@@ -22,6 +22,16 @@ module Autobots
         end
         false
       end
+
+      # return true only if test is running on chrome
+      # @return [boolean]
+      def browser_is_chrome
+        userAgent = @driver.execute_script("return navigator.userAgent","").downcase
+        if( userAgent.include?('chrome') )
+          return true
+        end
+        false
+      end
             
     end
     
