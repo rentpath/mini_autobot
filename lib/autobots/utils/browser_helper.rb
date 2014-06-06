@@ -12,6 +12,15 @@ module Autobots
         false
       end
 
+      # @return [boolean]
+      def browser_is_ie
+        userAgent = @driver.execute_script("return navigator.userAgent","").downcase
+        if( userAgent.include?('firefox') )
+          return true
+        end
+        false
+      end
+            
     end
     
   end

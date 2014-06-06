@@ -125,7 +125,11 @@ module Autobots
       def generate_date(start_date, end_date)
         random_date = rand start_date..end_date
         return random_date.to_formatted_s(:month_day_year)
-       end
+      end
+      
+      def generate_unique_id
+        SecureRandom.hex(3) + Time.current.to_i.to_s
+      end
 
     end
 
