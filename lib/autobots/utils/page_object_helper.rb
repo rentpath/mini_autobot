@@ -84,6 +84,12 @@ module Autobots
         return true if Autobots::Settings[:connector].include?('saucelabs')
         return false
       end
+      
+      
+      def put_value(web_element, value)
+        web_element.clear
+        web_element.send_keys(value)
+      end
 
     end
 
