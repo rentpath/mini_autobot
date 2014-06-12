@@ -36,6 +36,7 @@ module Autobots
     autoload :MyRent,             'autobots/page_objects/my_rent'
     autoload :Mbs,                'autobots/page_objects/mbs'
     autoload :SearchBy,                'autobots/page_objects/search_by'
+    autoload :MovingCenter,       'autobots/page_objects/moving_center'
 
   end
 
