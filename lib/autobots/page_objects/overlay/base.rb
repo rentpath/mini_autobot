@@ -8,6 +8,7 @@ module Autobots
       # page objects or page modules.
       class Base
         include Utils::Castable
+        include Utils::BrowserHelper
       
         def initialize(page)
           @driver = page.driver
