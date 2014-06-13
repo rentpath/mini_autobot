@@ -86,19 +86,6 @@ module Autobots
         rand(max)
       end
 
-      # Generate a random password of a certain length.
-      #
-      # @param length [#to_i, nil]
-      # @return [String]
-      def generate_password(length = nil)
-        if length.nil?
-          Faker::Internet.password
-        else
-          Faker::Internet.password[0..length]
-        end
-
-      end
-
       # Generates a U.S. phone number (NANPA-aware).
       #
       # @param format [Symbol, nil] the format of the phone, one of: nil,
@@ -127,8 +114,22 @@ module Autobots
         return random_date.to_formatted_s(:month_day_year)
       end
       
+      # Generate a unique id with a random hex string and time stamp string
       def generate_unique_id
         SecureRandom.hex(3) + Time.current.to_i.to_s
+      end
+
+      # Generate a random password of a certain length, or default length 12
+      #
+      # @param length [#to_i, nil]
+      # @return [String]
+      def generate_password(length = nil)
+        if length.nil?
+          SecureRandom.hex(6) # result length = 12
+        else
+          chars = (('a'..'z').to_a + ('0'..'9').to_a) - %w(i o 0 1 l 0)
+          (1..length).collect{|a| chars[rand(chars.length)] }.join
+        end
       end
 
     end
