@@ -6,7 +6,7 @@ module Autobots
       # A Overlay represents a portion (an element) of a page that is repeated
       # or reproduced multiple times, either on the same page, or across multiple
       # page objects or page modules.
-      class Base
+      class Base < PageObjects::Base
         include Utils::Castable
         include Utils::BrowserHelper
       
@@ -14,6 +14,7 @@ module Autobots
           @driver = page.driver
           @page = page
         end
+        
       end
 
     end
