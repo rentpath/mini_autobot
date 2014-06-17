@@ -47,7 +47,7 @@ module Autobots
       #
       # @return [void]
       def teardown
-        set_sauce_session_name if connector_is_saucelabs
+        set_sauce_session_name if connector_is_saucelabs && !@driver.nil?
         Autobots::Connector.finalize! if Autobots::Settings[:auto_finalize]
         super()
       end
@@ -84,8 +84,9 @@ module Autobots
         return true if Autobots::Settings[:connector].include?('saucelabs')
         return false
       end
-      
-      
+
+      # Generic page object helper method to clear and send keys to a web element found by driver
+      # @param [Element, String]
       def put_value(web_element, value)
         web_element.clear
         web_element.send_keys(value)
