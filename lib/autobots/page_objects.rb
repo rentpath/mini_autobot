@@ -34,7 +34,7 @@ module Autobots
     autoload :LeaseReportPage2,   'autobots/page_objects/lease_report_page2'
     autoload :MyRent,             'autobots/page_objects/my_rent'
     autoload :Mbs,                'autobots/page_objects/mbs'
-    autoload :SearchBy,                'autobots/page_objects/search_by'
+    autoload :SearchBy,           'autobots/page_objects/search_by'
     autoload :MovingCenter,       'autobots/page_objects/moving_center'
 
   end
