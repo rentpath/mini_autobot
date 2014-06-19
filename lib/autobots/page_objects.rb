@@ -36,6 +36,7 @@ module Autobots
     autoload :Mbs,                'autobots/page_objects/mbs'
     autoload :SearchBy,           'autobots/page_objects/search_by'
     autoload :MovingCenter,       'autobots/page_objects/moving_center'
+    autoload :SiteMap,            'autobots/page_objects/site_map'
 
   end
 
