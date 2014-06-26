@@ -66,30 +66,27 @@ module Autobots
       # @return [Enumerable<Symbol>] the methods marked runnable
       def runnable_methods
         methods  = super
-        orig_tag_set = Autobots::Settings[:tags]
+        selected = Autobots::Settings[:tags]
 
         # If no tags are selected, run all tests
-        return methods if orig_tag_set.nil? || orig_tag_set.empty?
-
-        # eg. mbs:sort   #=>   ['mbs', 'sort']
-        tag_set = orig_tag_set.join.split(/:/)
+        return methods if selected.nil? || selected.empty?
 
         return methods.select do |method|
-          # If the method's tags match ALL of the tags in the tag set, allow
-          # it to run; in the event of a problem, allow the test to run
-          # selected.any? do |tag_set|
-          tag_set.all? do |tag|
+          # If the method's tags match any of the tag sets, allow it to run
+          selected.any? do |tag_set|
             # Retrieve the tags for that method
             method_options = self.options[method.to_sym] rescue nil
-            method_tags    = method_options[:tags]       rescue nil
+            tags           = method_options[:tags]       rescue nil
 
-            # tag_set.all? do |tag|
+            # If the method's tags match ALL of the tags in the tag set, allow
+            # it to run; in the event of a problem, allow the test to run
+            tag_set.all? do |tag|
               if tag =~ %r/^!/
-                !method_tags.include?(tag[%r/^!(.*)/,1].to_sym) || nil
+                !tags.include?(tag[%r/^!(.*)/,1].to_sym) || nil
               else
-                method_tags.include?(tag.to_sym) || nil
+                tags.include?(tag.to_sym) || nil
               end rescue true
-            # end
+            end
           end
         end
       end
