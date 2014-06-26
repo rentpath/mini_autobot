@@ -139,6 +139,10 @@ module Autobots
         method_name = test_name(name)
         check_not_defined!(method_name)
 
+        # Add an additional tag, which is unique for each test class, to all tests
+        # To allow user to run tests with option '-t t_classNameOfTheTest' without duplicate run
+        opts[:tags] << ('t_'+class_name.downcase).to_sym
+
         # Flunk unless a logic block was provided
         if block_given?
           self.options ||= {}
