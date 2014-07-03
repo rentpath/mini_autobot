@@ -92,6 +92,18 @@ module Autobots
         web_element.send_keys(value)
       end
 
+      # Check if a web element exists on page or not, without wait
+      # @param  eg. (:css, 'button.cancel') or (*BUTTON_GETSTARTED)
+      # @return [boolean]
+      def is_element_present(how, what)
+        @driver.manage.timeouts.implicit_wait = 0
+        result = @driver.find_elements(how, what).size() > 0
+        if result
+          result = @driver.find_element(how, what).displayed?
+        end
+        @driver.manage.timeouts.implicit_wait = 30
+        return result
+      end
     end
 
   end
