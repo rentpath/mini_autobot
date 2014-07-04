@@ -13,6 +13,14 @@ module Autobots
         false
       end
 
+      def browser_is_ie_8
+        userAgent = @driver.execute_script("return navigator.userAgent","").downcase
+        if( userAgent.include?('msie 8.0') )
+          return true
+        end
+        false
+      end
+
       # return true only if test is running on firefox
       # @return [boolean]
       def browser_is_firefox
