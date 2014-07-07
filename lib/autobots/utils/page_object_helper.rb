@@ -8,10 +8,11 @@ module Autobots
       # Helper method to instantiate a new page object. This method should only
       # be used when first loading; subsequent page objects are automatically
       # instantiated by calling #cast on the page object.
+      # Pass optional parameter Driver, which can be initialized in test and will override the global driver here.
       #
-      # @param name [String, Symbol]
+      # @param name [String, Driver]
       # @return [PageObject::Base]
-      def page(name)
+      def page(name, override_driver=nil)
         # Get the fully-qualified class name
         klass_name = "autobots/page_objects/#{name}".camelize
         klass = begin
@@ -26,7 +27,8 @@ module Autobots
         end
 
         # Get a default connector
-        @driver = Autobots::Connector.get_default
+        @driver = Autobots::Connector.get_default if override_driver.nil?
+        @driver = override_driver if !override_driver.nil?
         instance = klass.new(@driver)
 
         # Before visiting the page, do any pre-processing necessary, if any,
@@ -35,7 +37,7 @@ module Autobots
           retval = yield instance
           instance.go! if retval
         else
-          instance.go!
+          instance.go! if override_driver.nil?
         end
 
         # Return the instance as-is
