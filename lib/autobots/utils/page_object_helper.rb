@@ -107,7 +107,7 @@ module Autobots
         if result
           result = @driver.find_element(how, what).displayed?
         end
-        @driver.manage.timeouts.implicit_wait = 30
+        @driver.manage.timeouts.implicit_wait = 60
         return result
       end
     end
