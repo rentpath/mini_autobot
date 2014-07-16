@@ -75,12 +75,12 @@ module Autobots
 
       end
 
-      # Generate an email address in the domain `mailinator.com`.
+      # Generate an email address in the domain `rent.com`.
       def generate_mailinator(name = nil)
-        [ Faker::Internet.user_name(name), 'mailinator.com' ].join('@')
+        [ Faker::Internet.user_name(name), 'rent.com' ].join('@')
       end
 
-      # Generate a unique random email ends with @mailinator.com
+      # Generate a unique random email ends with @rent.com
       def generate_random_email
         generate_mailinator([ generate_last_name(), generate_unique_id() ].join('.'))
       end
