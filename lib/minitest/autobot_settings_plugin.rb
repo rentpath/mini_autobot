@@ -69,6 +69,10 @@ module Minitest
       options[:verbose] = true
       options[:verbosity_level] += 1
     end
+
+    parser.on('-p', '--parallel', 'Run in parallel') do |value|
+      options[:parallel] = value
+    end
   end
 
 end

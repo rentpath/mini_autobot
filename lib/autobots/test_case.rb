@@ -4,8 +4,10 @@ module Autobots
   # An Autobots-specific test case container, which extends the default ones,
   # adds convenience helper methods, and manages page objects automatically.
   class TestCase < Minitest::Test
+    @@all_tests = Array.new
+    @@already_executed = false
 
-    #parallelize_me!
+    # parallelize_me!
 
     # Standard exception class that signals that the test with that name has
     # already been defined.
@@ -68,6 +70,20 @@ module Autobots
       def runnable_methods
         methods  = super
         selected = Autobots::Settings[:tags]
+
+        # run tests in parallel when option "-p" is provided in command line
+        is_parallel = true if Autobots::Settings[:parallel]
+        if is_parallel
+          # check this because I don't know why this runnable_methods gets called three times consecutively when one starts running tests
+          if @@already_executed
+            exit
+          end
+          parallel = Parallel.new(nil, @@all_tests) # todo make n, all_tests in Parallel initialize
+          # todo get the number value from "-p=" and replace nil with it
+          # first parameter comes from number after "-p=", may be null(then will use default 10)
+          parallel.run_in_parallel!
+          @@already_executed = true
+        end
 
         # If no tags are selected, run all tests
         return methods if selected.nil? || selected.empty?
@@ -149,6 +165,7 @@ module Autobots
         else
           flunk "No implementation was provided for test '#{method_name}' in #{self}"
         end
+        @@all_tests << method_name
       end
 
       # Check that +method_name+ hasn't already been defined as an instance

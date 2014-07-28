@@ -57,6 +57,7 @@ module Autobots
   autoload :DAO, 'autobots/dao'
   autoload :Logger, 'autobots/logger'
   autoload :PageObjects, 'autobots/page_objects'
+  autoload :Parallel, 'autobots/parallel'
   autoload :Settings, 'autobots/settings'
   autoload :Utils, 'autobots/utils'
 
