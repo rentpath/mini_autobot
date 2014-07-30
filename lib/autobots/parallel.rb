@@ -17,16 +17,10 @@ module Autobots
     end
 
     # summarize and aggregate results after all tests are done
+    # return unsuccessful_count
     def compute_result!(exec_time)
       counts = [0, 0, 0, 0, 0]
       File.open(@RESULT_FILE, 'r').each_line do |line|
-        # if line.match(/Finished in \d+/)
-        #   array = line.split(',')
-        #   puts array[0]
-        #   array = array[0].gsub('Finished in ', '').split('.')
-        #   puts array[0]
-        #   time += array[0].to_i
-        # end
         if line.match(/\d+ runs, \d+ assertions, \d+ failures, \d+ errors, \d+ skips/)
           array = line.split(',')
           int_array = Array.new
@@ -45,6 +39,7 @@ module Autobots
             Finished in #{formatted_time} H:M:S\n
                #{counts[0]} runs, #{counts[1]} assertions, #{counts[2]} failures, #{counts[3]} errors, #{counts[4]} skips"
       end
+      return unsuccessful_count = counts[2] + counts[3]
     end
 
     # call this after finishing logging output
@@ -68,6 +63,16 @@ module Autobots
         end
       end
       FileUtils.mv "#{@RESULT_FILE}.tmp", @RESULT_FILE
+    end
+
+    # For Jenkins to tell the right status of the build,
+    # Prints out (to jenkins console output) a proper exit status based on test result
+    def result_status(unsuccessful_count)
+      if unsuccessful_count > 0
+        puts 'There are test errors/failures, will mark build as unstable.'
+      else
+        puts 'All passed, will mark build as stable.'
+      end
     end
 
     # run multiple commands with logging to start multiple tests in parallel
@@ -100,7 +105,8 @@ module Autobots
       end
       finish_time = Time.now
       exec_time = (finish_time - start_time).to_s.split('.')[0].to_i
-      compute_result!(exec_time)
+      unsuccessful_count = compute_result!(exec_time)
+      result_status(unsuccessful_count)
     end
 
     # run tests set by set, size of set: n
