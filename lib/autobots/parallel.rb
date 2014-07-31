@@ -81,7 +81,7 @@ module Autobots
     # @param [Integer, Array]
     # n = number of tests will be running in parallel, default 10
     def run_in_parallel!
-      @n = 10 if @n.nil?
+      @n = 1 if @n.nil?
       clean_result!
       start_time = Time.now
       @size = @all_tests.size
