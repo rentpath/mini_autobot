@@ -165,9 +165,14 @@ module Autobots
         else
           flunk "No implementation was provided for test '#{method_name}' in #{self}"
         end
-        @@all_tests << method_name if not_cube_tracking(method_name)
+        if ( not_cube_tracking(method_name) rescue true ) # try to exclude cube_tracking tests
+          @@all_tests << method_name # add all tests to @@all_tests
+        end
       end
 
+      # Check if a method_name presents as a test in cube_tracking.rb
+      # @param [Symbol]
+      # @return [Boolean]
       def not_cube_tracking(method_name)
         File.open("lib/autobots/test_cases/cube_tracking.rb", 'r').each_line do |line|
           if line.include?("test :"+method_name.to_s[5..-1])
