@@ -78,9 +78,9 @@ module Autobots
           if @@already_executed
             exit
           end
-          parallel = Parallel.new(nil, @@all_tests) # todo make n, all_tests in Parallel initialize
+          parallel = Parallel.new(nil, @@all_tests)
           # todo get the number value from "-p=" and replace nil with it
-          # first parameter comes from number after "-p=", may be null(then will use default 10)
+          # first parameter comes from number after "-p=", may be null(then will use default 15)
           parallel.run_in_parallel!
           @@already_executed = true
         end
@@ -165,7 +165,16 @@ module Autobots
         else
           flunk "No implementation was provided for test '#{method_name}' in #{self}"
         end
-        @@all_tests << method_name
+        @@all_tests << method_name if not_cube_tracking(method_name)
+      end
+
+      def not_cube_tracking(method_name)
+        File.open("lib/autobots/test_cases/cube_tracking.rb", 'r').each_line do |line|
+          if line.include?("test :"+method_name.to_s[5..-1])
+            return false
+          end
+        end
+        return true
       end
 
       # Check that +method_name+ hasn't already been defined as an instance
