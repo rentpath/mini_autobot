@@ -174,10 +174,11 @@ module Autobots
       # @param [Symbol]
       # @return [Boolean]
       def not_cube_tracking(method_name)
-        File.open("lib/autobots/test_cases/cube_tracking.rb", 'r').each_line do |line|
-          if line.include?("test :"+method_name.to_s[5..-1])
-            return false
+        File.open("lib/autobots/test_cases/cube_tracking.rb", 'r') do |f|
+          f.each_line do |line|
+            return false if line.include?("test :"+method_name.to_s[5..-1])
           end
+          f.close
         end
         return true
       end

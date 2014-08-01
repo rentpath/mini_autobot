@@ -13,24 +13,29 @@ module Autobots
 
     # clean everything from result.txt before a new parallel execution of tests
     def clean_result!
-      File.open(@RESULT_FILE, 'w') {} rescue self.logger.debug "can NOT clean #{@RESULT_FILE}"
+      f = File.open(@RESULT_FILE, 'w') rescue self.logger.debug("can NOT clean #{@RESULT_FILE}")
+      puts "result file"
+      f.close
     end
 
     # summarize and aggregate results after all tests are done
     # return unsuccessful_count
     def compute_result!(exec_time)
       counts = [0, 0, 0, 0, 0]
-      File.open(@RESULT_FILE, 'r').each_line do |line|
-        if line.match(/\d+ runs, \d+ assertions, \d+ failures, \d+ errors, \d+ skips/)
-          array = line.split(',')
-          int_array = Array.new
-          array.each do |s|
-            int_array << s.gsub(/\D/, '').to_i
-          end
-          int_array.each_with_index do |int, index|
-            counts[index] += int
+      File.open(@RESULT_FILE, 'r') do |f|
+        f.each_line do |line|
+          if line.match(/\d+ runs, \d+ assertions, \d+ failures, \d+ errors, \d+ skips/)
+            array = line.split(',')
+            int_array = Array.new
+            array.each do |s|
+              int_array << s.gsub(/\D/, '').to_i
+            end
+            int_array.each_with_index do |int, index|
+              counts[index] += int
+            end
           end
         end
+        f.close
       end
       filter_noise!
       File.open(@RESULT_FILE, 'a') do |f|
@@ -38,6 +43,7 @@ module Autobots
         f.puts "\n\nTotal:\n
             Finished in #{formatted_time} H:M:S\n
                #{counts[0]} runs, #{counts[1]} assertions, #{counts[2]} failures, #{counts[3]} errors, #{counts[4]} skips"
+        f.close
       end
       return unsuccessful_count = counts[2] + counts[3]
     end
@@ -60,7 +66,9 @@ module Autobots
               end
             end
           end
+          f2.close
         end
+        f.close
       end
       FileUtils.mv "#{@RESULT_FILE}.tmp", @RESULT_FILE
     end
