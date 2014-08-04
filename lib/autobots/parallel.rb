@@ -6,7 +6,8 @@ module Autobots
     def initialize(n, all_tests)
       @n = n
       @all_tests = all_tests
-      @RESULT_FILE = "logs/result.txt"
+      test_on = Autobots::Settings[:connector].split(':')[2]
+      @RESULT_FILE = "logs/result-#{test_on}.txt"
       @static_run_command = "bin/autobot >> #{@RESULT_FILE} --connector="+Autobots::Settings[:connector]+" --env="+Autobots::Settings[:env]
     end
 
@@ -14,7 +15,7 @@ module Autobots
     # clean everything from result.txt before a new parallel execution of tests
     def clean_result!
       f = File.open(@RESULT_FILE, 'w') rescue self.logger.debug("can NOT clean #{@RESULT_FILE}")
-      puts "result file"
+      puts "Cleaning result file.\n"
       f.close
     end
 
@@ -40,10 +41,12 @@ module Autobots
       filter_noise!
       File.open(@RESULT_FILE, 'a') do |f|
         formatted_time = Time.at(exec_time).utc.strftime("%H:%M:%S") # convert seconds to H:M:S
-        f.puts "\n\nTotal:\n
+        result_summary = "\n\nTotal:\n
             Finished in #{formatted_time} H:M:S\n
-               #{counts[0]} runs, #{counts[1]} assertions, #{counts[2]} failures, #{counts[3]} errors, #{counts[4]} skips"
+        #{counts[0]} runs, #{counts[1]} assertions, #{counts[2]} failures, #{counts[3]} errors, #{counts[4]} skips"
+        f.puts result_summary
         f.close
+        puts "Updated result file, result summary preview:#{result_summary}\n"
       end
       return unsuccessful_count = counts[2] + counts[3]
     end
@@ -151,7 +154,7 @@ module Autobots
         run_by_set(iters, i, new_complete)
       else
         system('wait')
-        puts "All Complete!"
+        puts "\nAll Complete!\n"
         return
       end
     end
