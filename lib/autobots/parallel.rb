@@ -15,7 +15,7 @@ module Autobots
     # clean everything from result.txt before a new parallel execution of tests
     def clean_result!
       f = File.open(@RESULT_FILE, 'w') rescue self.logger.debug("can NOT clean #{@RESULT_FILE}")
-      # puts "Cleaning result file.\n"
+      puts "Cleaning result file.\n"
       f.close
     end
 
@@ -46,7 +46,7 @@ module Autobots
         #{counts[0]} runs, #{counts[1]} assertions, #{counts[2]} failures, #{counts[3]} errors, #{counts[4]} skips"
         f.puts result_summary
         f.close
-        # puts "Updated result file, result summary preview:#{result_summary}\n"
+        puts "Updated result file, result summary preview:#{result_summary}\n"
       end
       return unsuccessful_count = counts[2] + counts[3]
     end
@@ -81,6 +81,7 @@ module Autobots
     def result_status(unsuccessful_count)
       if unsuccessful_count > 0
         puts 'There are test errors/failures, will mark build as unstable.'
+        system('exit')
       else
         puts 'All passed, will mark build as stable.'
       end
