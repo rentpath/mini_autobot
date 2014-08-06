@@ -81,7 +81,6 @@ module Autobots
     def result_status(unsuccessful_count)
       if unsuccessful_count > 0
         puts 'There are test errors/failures, will mark build as unstable.'
-        system('exit')
       else
         puts 'All passed, will mark build as stable.'
       end
