@@ -153,7 +153,9 @@ module Autobots
         end
         run_by_set(iters, i, new_complete)
       else
-        system('wait')
+        # system('wait') # wait only waits for the last command to finish, so wait_all_done_saucelabs instead
+        # make sure all tests are done on saucelabs
+        wait_all_done_saucelabs
         puts "\nAll Complete!\n"
         return
       end
@@ -167,6 +169,16 @@ module Autobots
         end
       end
       return new_complete
+    end
+
+    def wait_all_done_saucelabs
+      puts size = @all_tests.size
+      job_statuses = saucelabs_last_n_statuses(size)
+      while job_statuses.include?('in progress')
+        puts "There are tests still running, waiting..."
+        sleep 20
+        job_statuses = saucelabs_last_n_statuses(size)
+      end
     end
 
     # call saucelabs REST API to get last #{limit} jobs' statuses
