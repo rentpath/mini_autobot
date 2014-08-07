@@ -46,7 +46,7 @@ module Autobots
         #{counts[0]} runs, #{counts[1]} assertions, #{counts[2]} failures, #{counts[3]} errors, #{counts[4]} skips"
         f.puts result_summary
         f.close
-        puts "Updated result file, result summary preview:#{result_summary}\n"
+        puts "Updated result file #{@RESULT_FILE}, result summary preview:#{result_summary}\n"
       end
       return unsuccessful_count = counts[2] + counts[3]
     end
@@ -138,7 +138,7 @@ module Autobots
           end
         end
         i += 1
-        puts "Test Set #{i} is running"
+        puts "\nTest Set #{i} is running:"
         puts test_set
         system(run_command)
 
@@ -172,7 +172,7 @@ module Autobots
     end
 
     def wait_all_done_saucelabs
-      puts size = @all_tests.size
+      size = @all_tests.size
       job_statuses = saucelabs_last_n_statuses(size)
       while job_statuses.include?('in progress')
         puts "There are tests still running, waiting..."
