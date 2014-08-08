@@ -56,6 +56,15 @@ module Autobots
         end
         Autobots::Connector.finalize! if Autobots::Settings[:auto_finalize]
         super()
+        print_sauce_link_if_fail
+      end
+
+      # Print out a link of a saucelabs's job when a test is not passed
+      def print_sauce_link_if_fail
+        if !passed? && !skipped? && !@driver.nil?
+          puts '========================================================================================'
+          puts "Find test on saucelabs: https://saucelabs.com/tests/#{@driver.session_id}"
+        end
       end
 
       # update session name on saucelabs in teardown for every test

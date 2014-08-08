@@ -52,18 +52,27 @@ module Autobots
     end
 
     # call this after finishing logging output
-    # remove irrelevant output, eg. "# Running:"
+    # remove irrelevant output, eg. "# Running:", "E"
+    # keep and re-organize some lines, eg. exception, link to saucelabs
     def filter_noise!
       # maintain a count, for when it finds error or failure, then replace the number before 'error' or 'failure' to the count
       count = 0
       File.open(@RESULT_FILE, 'r') do |f|
         File.open("#{@RESULT_FILE}.tmp", 'w') do |f2|
           f.each_line do |line|
-            if !(line.match(/^$\n/) || line.match(/Run options:/) || line.match(/Finished in \d+/) || line.match(/\d+ runs/) || line.match(/# Running:/) || line.start_with?('E') || line.start_with?('F') || line.start_with?('.'))
-              if line.match(/1\) Error/) || line.match(/1\) Failure/)
+            if !(line.match(/^$\n/) || line.match(/Run options:/) ||
+                line.match(/Finished in \d+/) || line.match(/\d+ runs/) ||
+                line.match(/# Running:/) || line.start_with?('.') ||
+                line.gsub(/\W+/, '')=='E' || line.gsub(/\W+/, '')=='F' ||
+                line.gsub(/\W+/, '')=='S' || line.start_with?('You have skipped tests'))
+              if line.start_with?('========')
+                f2.write("\n\n#{line}")
+              elsif line.start_with?('Find test on saucelabs')
+                f2.write("\n#{line}")
+              elsif line.match(/1\) Error/) || line.match(/1\) Failure/)
                 count += 1
                 new_line = line.gsub("1)", "#{count})")
-                f2.write("\n\n#{new_line}")
+                f2.write("\n#{new_line}")
               else
                 f2.write(line)
               end
