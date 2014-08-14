@@ -60,10 +60,15 @@ module Autobots
       end
 
       # Print out a link of a saucelabs's job when a test is not passed
+      # Rescue to skip this step for tests like cube tracking
       def print_sauce_link_if_fail
-        if !passed? && !skipped? && !@driver.nil?
+        if !passed? && !skipped?
           puts '========================================================================================'
-          puts "Find test on saucelabs: https://saucelabs.com/tests/#{@driver.session_id}"
+          begin
+            puts "Find test on saucelabs: https://saucelabs.com/tests/#{@driver.session_id}"
+          rescue
+            puts 'can not retrieve driver session id, no link to saucelabs'
+          end
         end
       end
 
