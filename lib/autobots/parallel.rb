@@ -12,6 +12,15 @@ module Autobots
     end
 
 
+    # return true only if specified to run on mac in connector
+    # @return [boolean]
+    def run_on_mac
+      connector = Autobots::Settings[:connector]
+      platform = connector.split(/:/)[2]
+      return true if platform.include?('osx')
+      return false
+    end
+
     # clean everything from result.txt before a new parallel execution of tests
     def clean_result!
       f = File.open(@RESULT_FILE, 'w') rescue self.logger.debug("can NOT clean #{@RESULT_FILE}")
@@ -101,7 +110,13 @@ module Autobots
     # @param [Integer, Array]
     # n = number of tests will be running in parallel, default 10
     def run_in_parallel!
-      @n = 15 if @n.nil?
+      if @n.nil?
+        if run_on_mac
+          @n = 10
+        else
+          @n = 15
+        end
+      end
       clean_result!
       start_time = Time.now
       @size = @all_tests.size
