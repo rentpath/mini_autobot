@@ -200,12 +200,25 @@ module Autobots
         # Initialize the driver and declare explicit browser timeouts
         Autobots.logger.debug("Connector(##{self.object_id}): using WebDriver(#{driver.inspect}, #{driver_config.inspect})")
         @driver = Selenium::WebDriver.for(driver.to_sym, driver_config)
-        if timeouts = concon[:timeouts]
-          @driver.manage.timeouts.implicit_wait  = timeouts[:implicit_wait]  if timeouts[:implicit_wait]
-          @driver.manage.timeouts.page_load      = timeouts[:page_load]      if timeouts[:page_load]
-          @driver.manage.timeouts.script_timeout = timeouts[:script_timeout] if timeouts[:script_timeout]
+        # setTimeout is undefined for safari driver so skip these steps for it
+        if !run_on_safari
+          if timeouts = concon[:timeouts]
+            @driver.manage.timeouts.implicit_wait  = timeouts[:implicit_wait]  if timeouts[:implicit_wait]
+            @driver.manage.timeouts.page_load      = timeouts[:page_load]      if timeouts[:page_load]
+            @driver.manage.timeouts.script_timeout = timeouts[:script_timeout] if timeouts[:script_timeout]
+          end
         end
       end
+    end
+
+    # return true only if specified to run on mac in connector
+    # we may also have another method called browser_is_safari in browser_helper which is accessible for tests/pages
+    # @return [boolean]
+    def run_on_safari
+      connector = Autobots::Settings[:connector]
+      platform = connector.split(/:/)[2]
+      return true if platform.include?('safari')
+      return false
     end
 
     # Forward any other method call to the configuration container; if that
