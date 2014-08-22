@@ -6,8 +6,9 @@ module Autobots
     def initialize(n, all_tests)
       @n = n
       @all_tests = all_tests
-      test_on = Autobots::Settings[:connector].split(':')[2]
-      @RESULT_FILE = "logs/result-#{test_on}.txt"
+      server_env = Autobots::Settings[:env]
+      @PLATFORM = Autobots::Settings[:connector].split(':')[2]
+      @RESULT_FILE = "logs/result-#{server_env}-#{@PLATFORM}.txt"
       @static_run_command = "bin/autobot >> #{@RESULT_FILE} --connector="+Autobots::Settings[:connector]+" --env="+Autobots::Settings[:env]
     end
 
@@ -15,9 +16,7 @@ module Autobots
     # return true only if specified to run on mac in connector
     # @return [boolean]
     def run_on_mac
-      connector = Autobots::Settings[:connector]
-      platform = connector.split(/:/)[2]
-      return true if platform.include?('osx')
+      return true if @PLATFORM.include?('osx')
       return false
     end
 
