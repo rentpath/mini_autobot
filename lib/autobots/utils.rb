@@ -11,6 +11,7 @@ module Autobots
     autoload :Loggable,            'autobots/utils/loggable'
     autoload :PageObjectHelper,    'autobots/utils/page_object_helper'
     autoload :BrowserHelper,       'autobots/utils/browser_helper'
+    autoload :WidgetHelper,        'autobots/utils/widget_helper'
 
   end
 end
