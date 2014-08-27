@@ -9,7 +9,7 @@ module Autobots
         include Utils::Castable
         include Utils::PageObjectHelper
         include Utils::BrowserHelper
-        include Utils::WidgetHelper
+        include Utils::OverlayAndWidgetHelper
 
         def initialize(page, element)
           @driver = page.driver
@@ -17,7 +17,7 @@ module Autobots
           @element = element
         end
 
-        ## for widgets that include Utils::WidgetHelper
+        ## for widgets that include Utils::OverlayAndWidgetHelper
         def page_object
           @page
         end
