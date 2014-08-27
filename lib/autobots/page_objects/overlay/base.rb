@@ -10,10 +10,16 @@ module Autobots
         include Utils::Castable
         include Utils::BrowserHelper
         include Utils::PageObjectHelper
+        include Utils::OverlayAndWidgetHelper
 
         def initialize(page)
           @driver = page.driver
           @page = page
+        end
+
+        ## for overlay that include Utils::OverlayAndWidgetHelper
+        def page_object
+          @page
         end
 
         # Explicitly wait for a certain condition to be true:
