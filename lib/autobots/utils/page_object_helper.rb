@@ -117,11 +117,16 @@ module Autobots
       # @return [boolean]
       def is_element_present(how, what)
         @driver.manage.timeouts.implicit_wait = 0
-        result = @driver.find_elements(how, what).size() > 0
-        if result
-          result = @driver.find_element(how, what).displayed?
+        result = false
+        elements = @driver.find_elements(how, what)
+        begin
+          if elements.size() > 0 && elements[0].displayed?
+            result = true
+          end
+        rescue
+          result = false
         end
-        @driver.manage.timeouts.implicit_wait = 60
+        @driver.manage.timeouts.implicit_wait = 60 # todo set it to the original which should be in a variable
         return result
       end
     end
