@@ -31,6 +31,7 @@ module Autobots
     # return unsuccessful_count
     def compute_result!(exec_time)
       counts = [0, 0, 0, 0, 0]
+      skipped_tests = String.new
       File.open(@RESULT_FILE, 'r') do |f|
         f.each_line do |line|
           if line.match(/\d+ runs, \d+ assertions, \d+ failures, \d+ errors, \d+ skips/)
@@ -42,6 +43,8 @@ module Autobots
             int_array.each_with_index do |int, index|
               counts[index] += int
             end
+          elsif line.start_with?('Skipped test:')
+            skipped_tests += line.gsub('Skipped test: ', '')
           end
         end
         f.close
@@ -53,6 +56,7 @@ module Autobots
             Finished in #{formatted_time} H:M:S\n
         #{counts[0]} runs, #{counts[1]} assertions, #{counts[2]} failures, #{counts[3]} errors, #{counts[4]} skips"
         f.puts result_summary
+        f.puts "\nSkipped tests:\n#{skipped_tests}"
         f.close
         puts "Updated result file #{@RESULT_FILE}, result summary preview:#{result_summary}\n"
       end
@@ -72,7 +76,7 @@ module Autobots
                 line.match(/Finished in \d+/) || line.match(/\d+ runs/) ||
                 line.match(/# Running:/) || line.start_with?('.') ||
                 line.gsub(/\W+/, '')=='E' || line.gsub(/\W+/, '')=='F' ||
-                line.gsub(/\W+/, '')=='S' || line.start_with?('You have skipped tests'))
+                line.gsub(/\W+/, '')=='S' || line.start_with?('You have skipped tests') || line.start_with?('Skipped test'))
               if line.start_with?('========')
                 f2.write("\n\n#{line}")
               elsif line.start_with?('Find test on saucelabs')
@@ -129,8 +133,8 @@ module Autobots
           end
         end
         puts "CAUTION! All tests are starting at the same time!"
-        puts "will not really run it since computer will die"
-        # system(run_command)
+        puts "will not really run it since computer will die" if @size > 30
+        system(run_command) if @size < 30
       else
         iters = @size / @n + 1
         i = 0
