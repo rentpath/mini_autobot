@@ -40,6 +40,12 @@ module Autobots
           instance.go! if override_driver.nil?
         end
 
+        # similar like casting a page, necessary to validate some element on a page
+        begin
+          instance.validate!
+        rescue Minitest::Assertion => exc
+          raise Autobots::PageObjects::InvalidePageState, "#{klass}: #{exc.message}"
+        end
         # Return the instance as-is
         instance
       end

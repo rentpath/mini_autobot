@@ -57,7 +57,15 @@ module Autobots
           raise NameError, msg
         end
         page = self.page_object
-        klass.new(page)
+        instance = klass.new(page)
+        # Overlay is triggered to show when there's certain interaction on the page
+        # So validate! is necessary for loading some elements on some overlays
+        begin
+          instance.validate!
+        rescue Minitest::Assertion => exc
+          raise Autobots::PageObjects::InvalidePageState, "#{klass}: #{exc.message}"
+        end
+        instance
       end
 
 
