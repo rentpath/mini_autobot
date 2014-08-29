@@ -41,6 +41,16 @@ module Autobots
         false
       end
 
+      # return true only if test is running on safari
+      # @return [boolean]
+      def browser_is_safari
+        userAgent = @driver.execute_script("return navigator.userAgent","").downcase
+        if( userAgent.include?('safari') )
+          return true
+        end
+        false
+      end
+
 
       # cube_tracking helper method
       # @param [Har, String] eg. cubetrack_value(@proxy.har, 'trackname')
