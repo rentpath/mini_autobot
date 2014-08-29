@@ -22,6 +22,12 @@ module Autobots
           @page
         end
 
+        # By default, any driver state is accepted for any page. This method
+        # should be overridden in subclasses.
+        def validate!
+          true
+        end
+
         # Explicitly wait for a certain condition to be true:
         #
         #   wait.until { @driver.find_element(:css, 'body.tmpl-srp') }
