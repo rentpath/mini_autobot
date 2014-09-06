@@ -211,13 +211,12 @@ module Autobots
       end
     end
 
-    # return true only if specified to run on mac in connector
+    # return true only if specified to run on safari in connector
     # we may also have another method called browser_is_safari in browser_helper which is accessible for tests/pages
     # @return [boolean]
     def run_on_safari
       connector = Autobots::Settings[:connector]
-      platform = connector.split(/:/)[2]
-      return true if platform.include?('safari')
+      return true if connector.include?('safari')
       return false
     end
 
