@@ -130,6 +130,7 @@ module Autobots
       # @param  eg. (:css, 'button.cancel') or (*BUTTON_GETSTARTED)
       # @return [boolean]
       def is_element_present(how, what)
+        original_timeout = read_yml("config/connectors/saucelabs.yml", "timeouts:implicit_wait")
         @driver.manage.timeouts.implicit_wait = 0
         result = false
         elements = @driver.find_elements(how, what)
@@ -140,9 +141,31 @@ module Autobots
         rescue
           result = false
         end
-        @driver.manage.timeouts.implicit_wait = 60 # todo set it to the original which should be in a variable
+        @driver.manage.timeouts.implicit_wait = original_timeout
         return result
       end
+
+      # Helper method for retrieving value from yml file
+      # todo should be moved to FileHelper.rb once we created this file in utils
+      # @param [String, String]
+      # keys, eg. "timeouts:implicit_wait"
+      def read_yml(file_name, keys)
+        data = Hash.new
+        begin
+          data = YAML.load_file "#{file_name}"
+        rescue
+          raise Exception, "File #{file_name} doesn't exist" unless File.exist?(file_name)
+        rescue
+          raise YAMLErrors, "Failed to load #{file_name}"
+        end
+        keys_array = keys.split(/:/)
+        value = data
+        keys_array.each do |key|
+          value = value[key]
+        end
+        return value
+      end
+
     end
 
   end
