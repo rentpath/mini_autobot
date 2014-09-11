@@ -37,7 +37,7 @@ module Autobots
     autoload :SearchBy,           'autobots/page_objects/search_by'
     autoload :MovingCenter,       'autobots/page_objects/moving_center'
     autoload :SiteMap,            'autobots/page_objects/site_map'
-    autoload :FBSignin,           'autobots/page_objects/fb_signin'
+    autoload :FbSignin,           'autobots/page_objects/fb_signin'
 
   end
 
