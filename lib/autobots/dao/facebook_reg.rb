@@ -4,13 +4,14 @@ module Autobots
     class FacebookReg < Base
       def facebook_del(person_id)
         result = @connection.exec('delete from external_auth_profiles_t where person_id = :1', person_id)
+        @connection.commit;
         unless result.nil? || result == 0
       end
       end
 
     # Check that facebook user is deleted
       def facebook_check(person_id)
-        result = @connection.exec('select * from external_auth_profiles_t where person_id = :1', person_id)
+        result = @connection.exec('select EMAIL from external_auth_profiles_t where person_id = :1', person_id)
         unless result.nil? || result == 0
           result.fetch.first
       end
