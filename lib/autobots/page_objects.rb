@@ -38,6 +38,7 @@ module Autobots
     autoload :MovingCenter,       'autobots/page_objects/moving_center'
     autoload :SiteMap,            'autobots/page_objects/site_map'
     autoload :FbSignin,           'autobots/page_objects/fb_signin'
+    autoload :GplusSignin,        'autobots/page_objects/gplus_signin'
 
   end
 
