@@ -165,7 +165,7 @@ module Autobots
         else
           flunk "No implementation was provided for test '#{method_name}' in #{self}"
         end
-        if ( not_cube_tracking(method_name) rescue true ) # try to exclude cube_tracking tests
+        if (not_cube_tracking(method_name) rescue true) # try to exclude cube_tracking tests
           @@all_tests << method_name # add all tests to @@all_tests
         end
       end
