@@ -57,8 +57,9 @@ module Autobots
       def teardown
         begin
           set_sauce_session_name if connector_is_saucelabs && !@driver.nil?
+          self.logger.debug "Finished setting saucelabs session name for #{name()}"
         rescue
-          self.logger.debug "Failed to set saucelabs session name for #{name()}"
+          self.logger.debug "Failed setting saucelabs session name for #{name()}"
         end
         Autobots::Connector.finalize! if Autobots::Settings[:auto_finalize]
         super()

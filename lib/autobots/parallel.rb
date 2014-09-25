@@ -52,8 +52,9 @@ module Autobots
       filter_noise!
       File.open(@RESULT_FILE, 'a') do |f|
         formatted_time = Time.at(exec_time).utc.strftime("%H:%M:%S") # convert seconds to H:M:S
+        time_stamp = Time.now
         result_summary = "\n\nTotal:\n
-            Finished in #{formatted_time} H:M:S\n
+            Finished in #{formatted_time} H:M:S, time stamp: #{time_stamp}\n
         #{counts[0]} runs, #{counts[1]} assertions, #{counts[2]} failures, #{counts[3]} errors, #{counts[4]} skips"
         f.puts result_summary
         f.puts "\nSkipped tests:\n#{skipped_tests}"
@@ -132,7 +133,7 @@ module Autobots
             run_command += "#{@static_run_command} -n #{test} &\n"
           end
         end
-        puts "CAUTION! All tests are starting at the same time!"
+        puts "CAUTION! All #{@size} tests are starting at the same time!"
         puts "will not really run it since computer will die" if @size > 30
         system(run_command) if @size < 30
       else
