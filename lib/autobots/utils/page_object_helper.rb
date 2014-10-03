@@ -130,11 +130,13 @@ module Autobots
       # Check if a web element exists on page or not, without wait
       # @param  eg. (:css, 'button.cancel') or (*BUTTON_GETSTARTED)
       # @return [boolean]
-      def is_element_present(how, what)
+      def is_element_present(driver = nil, how, what)
         original_timeout = read_yml("config/connectors/saucelabs.yml", "timeouts:implicit_wait")
         @driver.manage.timeouts.implicit_wait = 0
         result = false
-        elements = @driver.find_elements(how, what)
+        parent_element = @driver if driver == nil
+        parent_element = driver if driver != nil
+        elements = parent_element.find_elements(how, what)
         begin
           if elements.size() > 0 && elements[0].displayed?
             result = true
