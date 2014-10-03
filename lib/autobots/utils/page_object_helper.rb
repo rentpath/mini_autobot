@@ -129,8 +129,9 @@ module Autobots
 
       # Check if a web element exists on page or not, without wait
       # @param  eg. (:css, 'button.cancel') or (*BUTTON_GETSTARTED)
+      # @param  also has an optional parameter-driver, which can be @element when calling this method in a widget object
       # @return [boolean]
-      def is_element_present(driver = nil, how, what)
+      def is_element_present(how, what, driver = nil)
         original_timeout = read_yml("config/connectors/saucelabs.yml", "timeouts:implicit_wait")
         @driver.manage.timeouts.implicit_wait = 0
         result = false
