@@ -12,6 +12,7 @@ module Autobots
     autoload :PageObjectHelper,    'autobots/utils/page_object_helper'
     autoload :BrowserHelper,       'autobots/utils/browser_helper'
     autoload :OverlayAndWidgetHelper,'autobots/utils/overlay_and_widget_helper'
+    autoload :MyRentHelper,        'autobots/utils/my_rent_helper'
 
   end
 end
