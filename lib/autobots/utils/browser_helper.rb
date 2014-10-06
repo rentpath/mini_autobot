@@ -23,9 +23,13 @@ module Autobots
 
       # return true only if test is running on firefox
       # @return [boolean]
-      def browser_is_firefox?
+      def browser_is_firefox?(version_regexp: nil)
         userAgent = @driver.execute_script("return navigator.userAgent","").downcase
         if( userAgent.include?('firefox') )
+          if !version_regexp.nil?
+            return true if userAgent.match(version_regexp)
+            return false
+          end
           return true
         end
         false
