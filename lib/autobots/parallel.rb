@@ -15,7 +15,7 @@ module Autobots
 
     # return true only if specified to run on mac in connector
     # @return [boolean]
-    def run_on_mac
+    def run_on_mac?
       return true if @PLATFORM.include?('osx')
       return false
     end
@@ -115,7 +115,7 @@ module Autobots
     # n = number of tests will be running in parallel, default 10
     def run_in_parallel!
       if @n.nil?
-        if run_on_mac
+        if run_on_mac?
           @n = 10
         else
           @n = 15

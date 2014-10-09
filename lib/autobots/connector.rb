@@ -201,7 +201,7 @@ module Autobots
         Autobots.logger.debug("Connector(##{self.object_id}): using WebDriver(#{driver.inspect}, #{driver_config.inspect})")
         @driver = Selenium::WebDriver.for(driver.to_sym, driver_config)
         # setTimeout is undefined for safari driver so skip these steps for it
-        if !run_on_safari
+        if !run_on_safari?
           if timeouts = concon[:timeouts]
             @driver.manage.timeouts.implicit_wait  = timeouts[:implicit_wait]  if timeouts[:implicit_wait]
             @driver.manage.timeouts.page_load      = timeouts[:page_load]      if timeouts[:page_load]
@@ -212,9 +212,9 @@ module Autobots
     end
 
     # return true only if specified to run on safari in connector
-    # we may also have another method called browser_is_safari in browser_helper which is accessible for tests/pages
+    # we may also have another method called browser_is_safari? in browser_helper which is accessible for tests/pages
     # @return [boolean]
-    def run_on_safari
+    def run_on_safari?
       connector = Autobots::Settings[:connector]
       return true if connector.include?('safari')
       return false

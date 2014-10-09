@@ -56,7 +56,7 @@ module Autobots
       # @return [void]
       def teardown
         begin
-          set_sauce_session_name if connector_is_saucelabs && !@driver.nil?
+          set_sauce_session_name if connector_is_saucelabs? && !@driver.nil?
           self.logger.debug "Finished setting saucelabs session name for #{name()}"
         rescue
           self.logger.debug "Failed setting saucelabs session name for #{name()}"
@@ -115,7 +115,7 @@ module Autobots
         RestClient.put(http_auth, body, {:content_type => "application/json"})
       end
       
-      def connector_is_saucelabs
+      def connector_is_saucelabs?
         return true if Autobots::Settings[:connector].include?('saucelabs')
         return false
       end
@@ -129,8 +129,9 @@ module Autobots
 
       # Check if a web element exists on page or not, without wait
       # @param  eg. (:css, 'button.cancel') or (*BUTTON_GETSTARTED)
+      # @param  also has an optional parameter-driver, which can be @element when calling this method in a widget object
       # @return [boolean]
-      def is_element_present(driver = nil, how, what)
+      def is_element_present?(how, what, driver = nil)
         original_timeout = read_yml("config/connectors/saucelabs.yml", "timeouts:implicit_wait")
         @driver.manage.timeouts.implicit_wait = 0
         result = false
