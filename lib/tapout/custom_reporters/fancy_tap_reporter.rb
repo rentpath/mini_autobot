@@ -80,7 +80,7 @@ class FancyTapReporter < Tapout::Reporters::Abstract
 
     ending = []
     ending << ""
-    ending << tally_message(entry)
+    # ending << tally_message(entry)
     ending << "[%s %.2ft/s %.4fs/t] " % [delta, rate, avg] + "Finished at: #{Time.now}"
     ending = ending.join("\n").gsub(/^/, '  # ')
 
