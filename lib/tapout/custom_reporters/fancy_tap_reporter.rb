@@ -21,7 +21,8 @@ class FancyTapReporter < Tapout::Reporters::Abstract
     @i += 1
     #desc = entry['message'] #+ " #{ok.arguments.inspect}"
 
-    puts "ok".ansi(*config.pass) + highlight(" #{@i} - #{entry['label']}")
+    # puts "ok".ansi(*config.pass) + highlight(" #{@i} - #{entry['label']}")
+    puts "ok #{@i} - #{entry['label']}"
   end
 
   #
@@ -41,7 +42,8 @@ class FancyTapReporter < Tapout::Reporters::Abstract
     body << entry['stdout']
     body = body.join("\n").gsub(/^/, '  # ')
 
-    puts "not ok".ansi(*config.fail) + highlight(" #{@i} - #{entry['label']}")
+    # puts "not ok".ansi(*config.fail) + highlight(" #{@i} - #{entry['label']}")
+    puts "not ok #{@i} - #{entry['label']}"
     puts body
   end
 
@@ -62,7 +64,8 @@ class FancyTapReporter < Tapout::Reporters::Abstract
     body << entry['stdout']
     body = body.join("\n").gsub(/^/, '  # ')
 
-    puts "not ok".ansi(*config.error) + highlight(" #{@i} - #{entry['label']}")
+    # puts "not ok".ansi(*config.error) + highlight(" #{@i} - #{entry['label']}")
+    puts "not ok #{@i} - #{entry['label']}"
     puts body
   end
 

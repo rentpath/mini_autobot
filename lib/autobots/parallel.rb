@@ -130,9 +130,9 @@ module Autobots
         run_command = String.new
         @all_tests.each do |test|
           if test == @all_tests[@size-1]
-            run_command += "(#{@static_run_command} -n #{test} #{@pipe_tap} > logs/tap_results/#{test}) \nwait\n"
+            run_command += "(#{@static_run_command} -n #{test} #{@pipe_tap} > logs/tap_results/#{test}.t) \nwait\n"
           else
-            run_command += "(#{@static_run_command} -n #{test} #{@pipe_tap} > logs/tap_results/#{test}) &\n"
+            run_command += "(#{@static_run_command} -n #{test} #{@pipe_tap} > logs/tap_results/#{test}.t) &\n"
           end
         end
         puts "CAUTION! All #{@size} tests are starting at the same time!"
@@ -162,14 +162,14 @@ module Autobots
         end
         test_set.each do |test|
           if test == test_set[test_set.size-1]
-            run_command += "(#{@static_run_command} -n #{test} #{@pipe_tap} > logs/tap_results/#{test})\n"
+            run_command += "(#{@static_run_command} -n #{test} #{@pipe_tap} > logs/tap_results/#{test}.t)\n"
           else
-            run_command += "(#{@static_run_command} -n #{test} #{@pipe_tap} > logs/tap_results/#{test}) &\n"
+            run_command += "(#{@static_run_command} -n #{test} #{@pipe_tap} > logs/tap_results/#{test}.t) &\n"
           end
         end
         i += 1
         system(run_command)
-        puts "\nTest Set #{i} is running:"
+        puts "\n\nTest Set #{i} is running:"
         puts test_set
 
         # initially wait 60 sec after starting n tests
