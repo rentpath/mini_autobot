@@ -11,7 +11,7 @@ module Autobots
       @RESULT_FILE = "logs/result-#{server_env}-#{@PLATFORM}.txt"
       # @static_run_command = "bin/autobot >> #{@RESULT_FILE} --connector="+Autobots::Settings[:connector]+" --env="+Autobots::Settings[:env]
       @static_run_command = "bin/autobot -c "+Autobots::Settings[:connector]+" -e "+Autobots::Settings[:env]
-      @pipe_tap = " --tapy | tapout -r ./lib/tapout/custom_reporters/fancy_tap_reporter.rb fancytap "
+      @pipe_tap = "--tapy | tapout -r ./lib/tapout/custom_reporters/fancy_tap_reporter.rb fancytap"
     end
 
 
@@ -156,21 +156,21 @@ module Autobots
       if i<iters
         run_command = String.new
         if (i+1)*@n > @size
-          test_set = @all_tests[i*@n, @size-@n]
+          test_set = @all_tests[i*@n, @size-i*@n]
         else
           test_set = @all_tests[i*@n, @n]
         end
         test_set.each do |test|
-          if test == test_set[@n-1]
+          if test == test_set[test_set.size-1]
             run_command += "(#{@static_run_command} -n #{test} #{@pipe_tap} > logs/tap_results/#{test})\n"
           else
             run_command += "(#{@static_run_command} -n #{test} #{@pipe_tap} > logs/tap_results/#{test}) &\n"
           end
         end
         i += 1
+        system(run_command)
         puts "\nTest Set #{i} is running:"
         puts test_set
-        system(run_command)
 
         # initially wait 60 sec after starting n tests
         # then periodically (every 20 sec) check status
