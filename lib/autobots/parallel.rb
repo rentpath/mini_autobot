@@ -11,7 +11,7 @@ module Autobots
       @RESULT_FILE = "logs/result-#{server_env}-#{@PLATFORM}.txt"
       # @static_run_command = "bin/autobot >> #{@RESULT_FILE} --connector="+Autobots::Settings[:connector]+" --env="+Autobots::Settings[:env]
       @static_run_command = "bin/autobot -c "+Autobots::Settings[:connector]+" -e "+Autobots::Settings[:env]
-      @pipe_tap = "--tapy | tapout -r ./lib/tapout/custom_reporters/fancy_tap_reporter.rb fancytap"
+      @pipe_tap = "--tapy | tapout --no-color -r ./lib/tapout/custom_reporters/fancy_tap_reporter.rb fancytap"
     end
 
 
