@@ -9,7 +9,9 @@ module Autobots
       server_env = Autobots::Settings[:env]
       @PLATFORM = Autobots::Settings[:connector].split(':')[2]
       @RESULT_FILE = "logs/result-#{server_env}-#{@PLATFORM}.txt"
-      @static_run_command = "bin/autobot >> #{@RESULT_FILE} --connector="+Autobots::Settings[:connector]+" --env="+Autobots::Settings[:env]
+      # @static_run_command = "bin/autobot >> #{@RESULT_FILE} --connector="+Autobots::Settings[:connector]+" --env="+Autobots::Settings[:env]
+      @static_run_command = "bin/autobot -c "+Autobots::Settings[:connector]+" -e "+Autobots::Settings[:env]
+      @pipe_tap = " --tapy | tapout -r ./lib/tapout/custom_reporters/fancy_tap_reporter.rb fancytap "
     end
 
 
@@ -121,16 +123,16 @@ module Autobots
           @n = 15
         end
       end
-      clean_result!
+      #clean_result!
       start_time = Time.now
       @size = @all_tests.size
       if @size <= @n
         run_command = String.new
         @all_tests.each do |test|
           if test == @all_tests[@size-1]
-            run_command += "#{@static_run_command} -n #{test}\nwait\n"
+            run_command += "(#{@static_run_command} -n #{test} #{@pipe_tap} > logs/tap_results/#{test}) \nwait\n"
           else
-            run_command += "#{@static_run_command} -n #{test} &\n"
+            run_command += "(#{@static_run_command} -n #{test} #{@pipe_tap} > logs/tap_results/#{test}) &\n"
           end
         end
         puts "CAUTION! All #{@size} tests are starting at the same time!"
@@ -144,8 +146,8 @@ module Autobots
       end
       finish_time = Time.now
       exec_time = (finish_time - start_time).to_s.split('.')[0].to_i
-      unsuccessful_count = compute_result!(exec_time)
-      result_status(unsuccessful_count)
+      #unsuccessful_count = compute_result!(exec_time)
+      #result_status(unsuccessful_count)
     end
 
     # run tests set by set, size of set: n
@@ -160,9 +162,9 @@ module Autobots
         end
         test_set.each do |test|
           if test == test_set[@n-1]
-            run_command += "#{@static_run_command} -n #{test}\n"
+            run_command += "(#{@static_run_command} -n #{test} #{@pipe_tap} > logs/tap_results/#{test})\n"
           else
-            run_command += "#{@static_run_command} -n #{test} &\n"
+            run_command += "(#{@static_run_command} -n #{test} #{@pipe_tap} > logs/tap_results/#{test}) &\n"
           end
         end
         i += 1
