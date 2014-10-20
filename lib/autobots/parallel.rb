@@ -9,7 +9,9 @@ module Autobots
       server_env = Autobots::Settings[:env]
       @PLATFORM = Autobots::Settings[:connector].split(':')[2]
       @RESULT_FILE = "logs/result-#{server_env}-#{@PLATFORM}.txt"
-      @static_run_command = "bin/autobot >> #{@RESULT_FILE} --connector="+Autobots::Settings[:connector]+" --env="+Autobots::Settings[:env]
+      # @static_run_command = "bin/autobot >> #{@RESULT_FILE} --connector="+Autobots::Settings[:connector]+" --env="+Autobots::Settings[:env]
+      @static_run_command = "bin/autobot -c "+Autobots::Settings[:connector]+" -e "+Autobots::Settings[:env]
+      @pipe_tap = "--tapy | tapout --no-color -r ./lib/tapout/custom_reporters/fancy_tap_reporter.rb fancytap"
     end
 
 
@@ -121,16 +123,16 @@ module Autobots
           @n = 15
         end
       end
-      clean_result!
+      #clean_result!
       start_time = Time.now
       @size = @all_tests.size
       if @size <= @n
         run_command = String.new
         @all_tests.each do |test|
           if test == @all_tests[@size-1]
-            run_command += "#{@static_run_command} -n #{test}\nwait\n"
+            run_command += "(#{@static_run_command} -n #{test} #{@pipe_tap} > logs/tap_results/#{test}.t) \nwait\n"
           else
-            run_command += "#{@static_run_command} -n #{test} &\n"
+            run_command += "(#{@static_run_command} -n #{test} #{@pipe_tap} > logs/tap_results/#{test}.t) &\n"
           end
         end
         puts "CAUTION! All #{@size} tests are starting at the same time!"
@@ -144,8 +146,8 @@ module Autobots
       end
       finish_time = Time.now
       exec_time = (finish_time - start_time).to_s.split('.')[0].to_i
-      unsuccessful_count = compute_result!(exec_time)
-      result_status(unsuccessful_count)
+      #unsuccessful_count = compute_result!(exec_time)
+      #result_status(unsuccessful_count)
     end
 
     # run tests set by set, size of set: n
@@ -154,21 +156,21 @@ module Autobots
       if i<iters
         run_command = String.new
         if (i+1)*@n > @size
-          test_set = @all_tests[i*@n, @size-@n]
+          test_set = @all_tests[i*@n, @size-i*@n]
         else
           test_set = @all_tests[i*@n, @n]
         end
         test_set.each do |test|
-          if test == test_set[@n-1]
-            run_command += "#{@static_run_command} -n #{test}\n"
+          if test == test_set[test_set.size-1]
+            run_command += "(#{@static_run_command} -n #{test} #{@pipe_tap} > logs/tap_results/#{test}.t)\n"
           else
-            run_command += "#{@static_run_command} -n #{test} &\n"
+            run_command += "(#{@static_run_command} -n #{test} #{@pipe_tap} > logs/tap_results/#{test}.t) &\n"
           end
         end
         i += 1
-        puts "\nTest Set #{i} is running:"
-        puts test_set
         system(run_command)
+        puts "\n\nTest Set #{i} is running:"
+        puts test_set
 
         # initially wait 60 sec after starting n tests
         # then periodically (every 20 sec) check status
