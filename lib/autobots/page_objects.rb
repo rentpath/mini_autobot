@@ -40,6 +40,10 @@ module Autobots
     autoload :FbSignin,           'autobots/page_objects/fb_signin'
     autoload :GplusSignin,        'autobots/page_objects/gplus_signin'
 
+    # Autoloads for page objects mobile
+    autoload :HomeMobile,         'autobots/page_objects/home_mobile'
+    autoload :SearchMobile,       'autobots/page_objects/search_mobile'
+    
   end
 
 end
