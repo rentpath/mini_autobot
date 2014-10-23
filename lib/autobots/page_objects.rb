@@ -23,6 +23,7 @@ module Autobots
     autoload :Common,         'autobots/page_objects/common'
     autoload :MainFooter,     'autobots/page_objects/main_footer'
     autoload :MainNavigation, 'autobots/page_objects/main_navigation'
+    autoload :CommonMobile,   'autobots/page_objects/common_mobile'
 
     # Autoloads for page objects
     autoload :Home,               'autobots/page_objects/home'
