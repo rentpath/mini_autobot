@@ -130,7 +130,7 @@ module Autobots
         run_command = String.new
         @all_tests.each do |test|
           if test == @all_tests[@size-1]
-            run_command += "(#{@static_run_command} -n #{test} #{@pipe_tap} > logs/tap_results/#{test}.t) \nwait\n"
+            run_command += "(#{@static_run_command} -n #{test} #{@pipe_tap} > logs/tap_results/#{test}.t)\n"
           else
             run_command += "(#{@static_run_command} -n #{test} #{@pipe_tap} > logs/tap_results/#{test}.t) &\n"
           end
@@ -138,6 +138,9 @@ module Autobots
         puts "CAUTION! All #{@size} tests are starting at the same time!"
         puts "will not really run it since computer will die" if @size > 30
         system(run_command) if @size < 30
+        wait_all_done_saucelabs
+        puts "\nAll Complete!\n"
+        return
       else
         iters = @size / @n + 1
         i = 0
