@@ -40,7 +40,7 @@ module Autobots
     autoload :SiteMap,            'autobots/page_objects/site_map'
     autoload :FbSignin,           'autobots/page_objects/fb_signin'
     autoload :GplusSignin,        'autobots/page_objects/gplus_signin'
-    autoload :CityGuide,          'autobots/page_objects/cityguide'
+    autoload :CityGuide,          'autobots/page_objects/city_guide'
 
     # Autoloads for page objects mobile
     autoload :HomeMobile,         'autobots/page_objects/home_mobile'
