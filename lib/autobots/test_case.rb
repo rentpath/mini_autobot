@@ -165,11 +165,22 @@ module Autobots
         else
           flunk "No implementation was provided for test '#{method_name}' in #{self}"
         end
-        if (not_cube_tracking?(method_name) rescue true) # try to exclude cube_tracking tests
+        if (skip_parallel_tests?(method_name) rescue true) # try to exclude cube_tracking and mobile tests
           @@all_tests << method_name # add all tests to @@all_tests
         end
       end
 
+      # Decide whether to skill test for parallelization
+      # @param [Symbol]
+      # @return [Boolean]
+      def skip_parallel_tests?(method_name)
+        if((not_cube_tracking?(method_name) == false) || (not_mobile?(method_name) == false))
+          return false
+        else
+          return true
+        end
+      end
+      
       # Check if a method_name presents as a test in cube_tracking.rb
       # @param [Symbol]
       # @return [Boolean]
@@ -182,6 +193,21 @@ module Autobots
         end
         return true
       end
+
+      # Check if a method_name presents as a mobile test
+      # @param [Symbol]
+      # @return [Boolean]
+      def not_mobile?(method_name)
+        #sign_in_mobile
+        File.open("lib/autobots/test_cases/sign_in_mobile.rb", 'r') do |f|
+          f.each_line do |line|
+            return false if line.include?("test :"+method_name.to_s[5..-1])
+          end
+          f.close
+        end
+        #Add more mobile files  
+        return true
+      end     
 
       # Check that +method_name+ hasn't already been defined as an instance
       # method in the current class, or in any superclasses.

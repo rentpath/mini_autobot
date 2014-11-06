@@ -2,7 +2,6 @@ module Autobots
 
   class Parallel
 
-
     def initialize(n, all_tests)
       @n = n
       @all_tests = all_tests
@@ -13,7 +12,6 @@ module Autobots
       @static_run_command = "bin/autobot -c "+Autobots::Settings[:connector]+" -e "+Autobots::Settings[:env]
       @pipe_tap = "--tapy | tapout --no-color -r ./lib/tapout/custom_reporters/fancy_tap_reporter.rb fancytap"
     end
-
 
     # return true only if specified to run on mac in connector
     # @return [boolean]
