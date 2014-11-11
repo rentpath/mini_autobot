@@ -205,6 +205,13 @@ module Autobots
           end
           f.close
         end
+        #search_mobile
+        File.open("lib/autobots/test_cases/search_mobile.rb", 'r') do |f|
+          f.each_line do |line|
+            return false if line.include?("test :"+method_name.to_s[5..-1])
+          end
+          f.close
+        end
         #Add more mobile files  
         return true
       end     
