@@ -259,10 +259,10 @@ module Autobots
           # this is a good example why using eval is dangerous, the string has to contain only proper Ruby syntax, here it has 'null' instead of 'nil'
           formatted_str = str.gsub('null', 'nil')
           hash = eval(formatted_str)
+          statuses << hash['status']
         rescue SyntaxError
           puts "SyntaxError, response from saucelabs has syntax error"
         end
-        statuses << hash['status']
       end
       return statuses
     end
