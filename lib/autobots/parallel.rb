@@ -169,7 +169,8 @@ module Autobots
           end
         end
         i += 1
-        system(run_command)
+        # system(run_command)
+        self.logger.debug "asd123123123"
         puts "\n\nTest Set #{i} is running:"
         puts test_set
 
@@ -251,7 +252,7 @@ module Autobots
           response = RestClient.get(http_auth) # returns a String
         rescue => e
           e.response
-          self.logger.warn "Exception thrown when running 'RestClient.get(#{http_auth})'"
+          puts "Exception thrown when running 'RestClient.get(#{http_auth})'"
           next
         end
         # convert response back to hash
