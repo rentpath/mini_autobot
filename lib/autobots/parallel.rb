@@ -250,7 +250,7 @@ module Autobots
         begin
           response = RestClient.get(http_auth) # returns a String
         rescue
-          puts "Failed at getting status from #{http_auth} via RestClient"
+          puts "Failed at getting response from #{http_auth} via RestClient"
         end
         begin
           # convert response back to hash
