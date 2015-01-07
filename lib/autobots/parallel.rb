@@ -169,8 +169,7 @@ module Autobots
           end
         end
         i += 1
-        # system(run_command)
-        self.logger.debug "asd123123123"
+        system(run_command)
         puts "\n\nTest Set #{i} is running:"
         puts test_set
 
