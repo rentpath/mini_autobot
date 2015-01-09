@@ -171,7 +171,7 @@ module Autobots
         i += 1
         system(run_command)
         puts "\n\nTest Set #{i} is running:"
-        puts test_set
+        # puts test_set # todo need to inspect why some tests get executed when this wasn't commented out, even when system(run_command) is commented out
 
         # initially wait 60 sec after starting n tests
         # then periodically (every 20 sec) check status
@@ -231,7 +231,7 @@ module Autobots
 
       # call api to get most recent #{limit} jobs' ids
       http_auth = "https://#{username}:#{access_key}@saucelabs.com/rest/v1/#{username}/jobs?limit=#{limit}"
-      response = RestClient.get(http_auth) # response was originally an array of hashs, but RestClient converts it to a string
+      response = get_response_with_retry(http_auth) # response was originally an array of hashs, but RestClient converts it to a string
       # convert response back to array
       response[0] = ''
       response[response.length-1] = ''
@@ -247,11 +247,7 @@ module Autobots
       statuses = Array.new
       id_array.each do |id|
         http_auth = "https://#{username}:#{access_key}@saucelabs.com/rest/v1/#{username}/jobs/#{id}"
-        begin
-          response = RestClient.get(http_auth) # returns a String
-        rescue
-          puts "Failed at getting response from #{http_auth} via RestClient"
-        end
+        response = get_response_with_retry(http_auth)
         begin
           # convert response back to hash
           str = response.gsub(':', '=>')
@@ -260,12 +256,25 @@ module Autobots
           formatted_str = str.gsub('null', 'nil')
           hash = eval(formatted_str)
           statuses << hash['status']
-        rescue SyntaxError
+        rescue SyntaxError => e
           puts "SyntaxError, response from saucelabs has syntax error"
         end
       end
       return statuses
     end
+
+    def get_response_with_retry(url)
+      retries = 5 # number of retries
+      begin
+        response = RestClient.get(url) # returns a String
+      rescue
+        puts "Failed at getting response from #{url} via RestClient \n Retrying..."
+        retries -= 1
+        retry if retries > 0
+        response = RestClient.get(url) # retry the last time, fail if it still throws exception
+      end
+    end
+
 
   end
 
