@@ -112,13 +112,15 @@ module Autobots
     # update result in @RESULT_FILE
     # call this method in test_case when user specify '-p' option when starting tests
     # @param [Integer, Array]
-    # n = number of tests will be running in parallel, default 10
+    # n = number of tests will be running in parallel
     def run_in_parallel!
+      # set number of tests to be running in parallel
+      # double the limit since it's fine to put some tests in queue in sauceclabs
       if @n.nil?
         if run_on_mac?
-          @n = 10
+          @n = 20 # saucelabs account limit for parallel is 10 for mac
         else
-          @n = 15
+          @n = 30 # saucelabs account limit for parallel is 15 for non-mac
         end
       end
       #clean_result!
@@ -170,16 +172,16 @@ module Autobots
         end
         i += 1
         system(run_command)
-        puts "\n\nTest Set #{i} is running:"
+        puts "\n\nTest Set #{i}, containing #{test_set.size} tests, is complete"
         # puts test_set # todo need to inspect why some tests get executed when this wasn't commented out, even when system(run_command) is commented out
 
-        # initially wait 60 sec after starting n tests
-        # then periodically (every 20 sec) check status
-        # run next set if complete > 80%
-        sleep 60
+        # initially wait 40 sec after starting n tests
+        # then periodically (every 15 sec) check status
+        # run next set if complete > 50%
+        sleep 40
         new_complete = compute_new_complete(new_complete)
-        while new_complete/@n < 0.80
-          sleep 20
+        while new_complete/@n < 0.50
+          sleep 15
           new_complete = compute_new_complete(new_complete)
         end
         run_by_set(iters, i, new_complete)
