@@ -4,6 +4,7 @@ module Autobots
       include Autobots::Utils::Castable
 
       SUBMARKET_NM = 'Yakutat, AK'
+      LISTING_NUM = 1
       LOAD_MORE_THRESHOLD = 20
       MAX_SEARCHES = 10
       ## As we add page objects beyond SRP/PDP/PSP, we can test filter
