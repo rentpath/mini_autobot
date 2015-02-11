@@ -43,17 +43,21 @@ module Autobots
       # @param length [#to_i, nil]
       # @return [String]
       def generate_first_name(length = nil)
+        first_name = ''
         if length.nil?
-          Faker::Name.first_name
+          first_name = Faker::Name.first_name
         else
           # Ensure a name with requested length is generated
           name_length = Faker::Name.first_name.length
           if length > name_length
-            Faker::Lorem.characters(length)
+            first_name = Faker::Lorem.characters(length)
           else
-            Faker::Name.first_name[0..length.to_i]
+            first_name = Faker::Name.first_name[0..length.to_i]
           end
         end
+        # remove all special characters since name fields on our site have this requirement
+        first_name.gsub!(/[^0-9A-Za-z]/, '')
+        first_name
       end
 
       # Generate a gosh-darn awesome last name.
@@ -61,18 +65,21 @@ module Autobots
       # @param length [#to_i, nil]
       # @return [String]
       def generate_last_name(length = nil)
+        last_name = ''
         if length.nil?
-          Faker::Name.last_name
+          last_name = Faker::Name.last_name
         else
           # Ensure a name with requested length is generated
           name_length = Faker::Name.last_name.length
           if length > name_length
-            Faker::Lorem.characters(length)
+            last_name = Faker::Lorem.characters(length)
           else
-            Faker::Name.last_name[0..length.to_i]
+            last_name = Faker::Name.last_name[0..length.to_i]
           end
         end
-
+        # remove all special characters since name fields on our site have this requirement
+        last_name.gsub!(/[^0-9A-Za-z]/, '')
+        last_name
       end
 
       # Generate an email address in the domain `rent.com`.
