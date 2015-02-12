@@ -30,7 +30,6 @@ module Autobots
             @srp = @srp.search!(locations.pop) # do a search
           rescue
             self.logger.debug "problem during search; trying again"
-            page(:search)
             next
           end
 
