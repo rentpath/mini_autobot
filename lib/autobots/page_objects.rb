@@ -42,6 +42,7 @@ module Autobots
     autoload :GplusSignin,        'autobots/page_objects/gplus_signin'
     autoload :CityGuide,          'autobots/page_objects/city_guide'
     autoload :Brochure,           'autobots/page_objects/brochure'
+    autoload :MovingCenter2,       'autobots/page_objects/moving_center2'
 
     # Autoloads for page objects mobile
     autoload :HomeMobile,         'autobots/page_objects/home_mobile'
