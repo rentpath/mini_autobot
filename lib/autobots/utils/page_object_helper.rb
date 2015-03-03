@@ -87,7 +87,7 @@ module Autobots
         end
       end
 
-      # update session name on saucelabs in teardown for every test
+      # update session name on saucelabs
       def set_sauce_session_name
         # identify the user who runs the tests and grab user's access_key
         # where are we parsing info from run command to in the code?
@@ -110,8 +110,7 @@ module Autobots
         http_auth = "https://#{username}:#{access_key}@saucelabs.com/rest/v1/#{username}/jobs/#{session_id}"
         # to_json need to: require "active_support/core_ext", but will mess up the whole framework, require 'json' in this method solved it
         body = {"name" => name(), "tags" => [new_tags]}.to_json
-        # RestClient need to: gem install rest-client, 
-        # then to add it to library, add line "gem rest-client" to GemFile first, then do "bundle install"
+        # gem 'rest-client'
         RestClient.put(http_auth, body, {:content_type => "application/json"})
       end
       
