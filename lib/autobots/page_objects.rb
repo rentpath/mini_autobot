@@ -35,7 +35,7 @@ module Autobots
     autoload :MyRent,             'autobots/page_objects/my_rent'
     autoload :Mbs,                'autobots/page_objects/mbs'
     autoload :SearchBy,           'autobots/page_objects/search_by'
-    autoload :MovingCenter,       'autobots/page_objects/moving_center'
+    autoload :MovingCenter1,       'autobots/page_objects/moving_center1'
     autoload :SiteMap,            'autobots/page_objects/site_map'
     autoload :FbSignin,           'autobots/page_objects/fb_signin'
     autoload :GplusSignin,        'autobots/page_objects/gplus_signin'
