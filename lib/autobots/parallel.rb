@@ -55,6 +55,7 @@ module Autobots
         first_test_set = @all_tests[0, @n]
         all_to_run = @all_tests[@n+1...@all_tests.size-1]
         run_test_set(first_test_set)
+        sleep 20
         # keep @n running always
         keep_running_full(all_to_run)
         wait_all_done_saucelabs
