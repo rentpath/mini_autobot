@@ -24,7 +24,7 @@ module Autobots
     end
 
     def count_autobot_process
-      counting_process = IO.popen "ps -e | grep 'ruby bin/autobot' -c"
+      counting_process = IO.popen "ps -ef | grep 'ruby bin/autobot' -c"
       count_of_processes = counting_process.readlines[0].to_i
       count_of_processes
     end
@@ -55,7 +55,6 @@ module Autobots
         first_test_set = @all_tests[0, @n]
         all_to_run = @all_tests[@n+1...@all_tests.size-1]
         run_test_set(first_test_set)
-        sleep 20
         # keep @n running always
         keep_running_full(all_to_run)
         wait_all_done_saucelabs
