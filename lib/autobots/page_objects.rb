@@ -1,4 +1,3 @@
-
 module Autobots
 
   # This is the overarching module that contains page objects, modules, and
