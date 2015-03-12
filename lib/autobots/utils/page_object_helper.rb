@@ -80,13 +80,6 @@ module Autobots
         end
       end
 
-      # Print out name of a test of it's skipped
-      def print_skipped_test
-        if skipped?
-          puts "Skipped test: #{name()}"
-        end
-      end
-
       # update session name on saucelabs
       def set_sauce_session_name
         # identify the user who runs the tests and grab user's access_key
