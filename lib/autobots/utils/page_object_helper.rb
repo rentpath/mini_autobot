@@ -64,7 +64,6 @@ module Autobots
         Autobots::Connector.finalize! if Autobots::Settings[:auto_finalize]
         super()
         print_sauce_link_if_fail
-        print_skipped_test
       end
 
       # Print out a link of a saucelabs's job when a test is not passed
