@@ -69,8 +69,8 @@ class FancyTapReporter < Tapout::Reporters::Abstract
   def todo(entry)
     super(entry)
     @i += 1
-    puts 'ok'.ansi(*config.pass) + highlight(" #{@i} - #{entry['label']} # skip")
-    puts "  # Reason: #{entry['exception']['message']}"
+    puts 'ok'.ansi(*config.pass) + highlight(" #{@i} - #{entry['label']} # skip #{entry['exception']['message']}")
+    puts "  # #{entry['exception']['message']}"
   end
 
   def highlight(anything)
