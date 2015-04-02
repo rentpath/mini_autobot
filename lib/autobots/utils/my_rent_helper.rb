@@ -4,6 +4,7 @@ module Autobots
       include Autobots::Utils::Castable
 
       SUBMARKET_NM = 'Yakutat, AK'
+      USER = { :email => 'myrent_autotester@rent.com', :password => 'test' }
       LISTING_NUM = 1
       LOAD_MORE_THRESHOLD = 20
       MAX_SEARCHES = 10
