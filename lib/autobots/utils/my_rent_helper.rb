@@ -52,14 +52,17 @@ module Autobots
             page = Autobots::PageObjects::Base.cast(@driver,:property_details)
             begin
               if callback.call(page)           # do action
+                sleep 2
                 names.push page.property_name  # save name
               else
                 self.logger.debug "PDP action failed: property name will not be recorded"
               end
+              puts "if else completed"
             rescue => error
               self.logger.debug "PDP action raised: #{error.inspect}\n\nsearching elsewhere"
               break
             end
+            puts names.length
             break if names.length == n         # stop if we've done N things
           end
         end
@@ -95,6 +98,48 @@ module Autobots
         end
       end
 
+      def view_properties(n, locations)
+        self.logger.debug "view_properties"
+        names = [] # properties processed
+        page = @mrp
+        ## run until we've processed n properties or exhausted locations
+        while names.length < n && locations.length > 0 do 
+          begin
+            @srp = page.default_search!        # go to srp
+            self.logger.debug "searching next location: '#{locations.last}'"
+            @srp = @srp.search!(locations.pop) # do a search
+          rescue
+            self.logger.debug "problem during search; trying again"
+            next
+          end
+
+          # Find and visit the first non-featured listing on the page. We
+          # ignore featured listings because they rotate randomly [~jacord]
+          nonfeatured = @srp.listings
+
+          ## if there are no non-featured results, skip this location.
+          if nonfeatured.nil? || nonfeatured.empty? 
+            self.logger.debug "no listings" 
+            next 
+          end
+
+          urls = nonfeatured.map { |l| l.url }
+          puts urls[0]
+          # process as many properties as you can from these search results
+          urls.each do |url|
+            url.slice!('qateam:wap88@')
+            self.logger.debug("going to '#{url}");
+            @driver.navigate.to(url)
+            page = Autobots::PageObjects::Base.cast(@driver,:property_details)
+            # This sleep is bad but works for now
+            sleep 5
+            names.push page.property_name
+            break if names.length == n         # stop if we've done N things
+          end
+        end
+        @mrp = page.my_rent!                   # go back to My Rent
+        return locations, names                # unused places, used names
+      end
     end #MyRentHelper
   end #Utils
 end #Autobots
