@@ -45,12 +45,14 @@ module Autobots
       # @raise NameError
       def get_overlay!(name)
         # Load the Overlay class
+        puts "Getting overlay #{name}"
         klass_name = "autobots/page_objects/overlay/#{name}".camelize
         klass = begin
           klass_name.constantize
         rescue => exc
           msg = ""
           msg << "Cannot find overlay '#{name}', "
+          puts "Cannot find overlay #{name}"
           msg << "because could not load class '#{klass_name}' "
           msg << "with underlying error:\n  #{exc.class}: #{exc.message}\n"
           msg << exc.backtrace.map { |str| "    #{str}" }.join("\n")
@@ -61,10 +63,13 @@ module Autobots
         # Overlay is triggered to show when there's certain interaction on the page
         # So validate! is necessary for loading some elements on some overlays
         begin
+          puts "validating"
           instance.validate!
         rescue Minitest::Assertion => exc
+          puts "something went wrong with validation"
           raise Autobots::PageObjects::InvalidePageState, "#{klass}: #{exc.message}"
         end
+        puts "validation complete"
         instance
       end
 

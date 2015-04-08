@@ -19,6 +19,28 @@ module Autobots
          'Seattle, WA', 'Chicago, IL', 'Miami, FL', 'Houston, TX', 
          'San Francisco, CA', 'Baltimore, MD']
 
+      def new_account_setup()
+        @srp = @hp.search(SUBMARKET_NM)
+
+        # Create username
+        @username = generate_random_email
+
+        # View first property listing with reward card on the SRP
+        loggedout_pdp = @srp.go_to_listing!(LISTING_NUM)
+
+        # Register as a new Renter on LO PDP
+        registration_overlay = loggedout_pdp.click_reg_link!
+        loggedin_pdp = registration_overlay.reg(@username, 'property_details')
+        password_overlay = loggedin_pdp.create_password
+        password_overlay.pdp_new_pwd
+        assert_match @srp.loggedin_username, @username
+
+        search = loggedin_pdp.default_search!
+       # click on MyRent, goto My Rent page
+        @mrp = search.my_rent!
+
+      end
+
       def do_property_actions(n, locations, callback)
         self.logger.debug "do_property_actions_new"
         names = [] # properties processed
@@ -28,15 +50,19 @@ module Autobots
           begin
             @srp = page.default_search!        # go to srp
             self.logger.debug "searching next location: '#{locations.last}'"
+            puts "searching next location: '#{locations.last}'"
             @srp = @srp.search!(locations.pop) # do a search
           rescue
             self.logger.debug "problem during search; trying again"
+            puts "problem during search; trying again"
             next
           end
 
           # Find and visit the first non-featured listing on the page. We
           # ignore featured listings because they rotate randomly [~jacord]
           nonfeatured = @srp.listings
+
+          puts nonfeatured[0].url
 
           ## if there are no non-featured results, skip this location.
           if nonfeatured.nil? || nonfeatured.empty? 
@@ -48,7 +74,9 @@ module Autobots
           # process as many properties as you can from these search results
           urls.each do |url|
             self.logger.debug("going to '#{url}");
+            puts "going to #{url}"
             @driver.navigate.to(url)
+            sleep 5
             page = Autobots::PageObjects::Base.cast(@driver,:property_details)
             begin
               if callback.call(page)           # do action
@@ -57,12 +85,10 @@ module Autobots
               else
                 self.logger.debug "PDP action failed: property name will not be recorded"
               end
-              puts "if else completed"
             rescue => error
               self.logger.debug "PDP action raised: #{error.inspect}\n\nsearching elsewhere"
               break
             end
-            puts names.length
             break if names.length == n         # stop if we've done N things
           end
         end
@@ -77,7 +103,11 @@ module Autobots
       def hotlead_callback
         @hotlead_callback ||= lambda do |pdp|
           begin 
-            pdp.hl_send(@new_renter_email)
+            puts "starting"
+            hotlead_confirm = pdp.hl_send(@username)
+            puts "made it back"
+            sleep 5
+            hotlead_confirm.close_confirmation_box
           rescue => error 
             self.logger.warn ":hl_send raised:\n#{error.inspect}"
           end
@@ -124,16 +154,23 @@ module Autobots
           end
 
           urls = nonfeatured.map { |l| l.url }
-          puts urls[0]
+          urls = urls.uniq
           # process as many properties as you can from these search results
           urls.each do |url|
-            url.slice!('qateam:wap88@')
+            @driver.execute_script("window.stop()")
+            #url.slice!('qateam:wap88@')
             self.logger.debug("going to '#{url}");
+            puts "going to #{url}"
             @driver.navigate.to(url)
-            page = Autobots::PageObjects::Base.cast(@driver,:property_details)
-            # This sleep is bad but works for now
+            # Using sleep as placeholder until we find something reliable to wait for on the page
             sleep 5
-            names.push page.property_name
+            @driver.execute_script("window.stop()")
+            page = Autobots::PageObjects::Base.cast(@driver,:property_details)
+            # We only want to log unique property page views
+            if !names.include?(page.property_name)
+              names.push page.property_name
+            end
+            puts names.length
             break if names.length == n         # stop if we've done N things
           end
         end
