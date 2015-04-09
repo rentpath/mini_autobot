@@ -50,19 +50,15 @@ module Autobots
           begin
             @srp = page.default_search!        # go to srp
             self.logger.debug "searching next location: '#{locations.last}'"
-            puts "searching next location: '#{locations.last}'"
             @srp = @srp.search!(locations.pop) # do a search
           rescue
             self.logger.debug "problem during search; trying again"
-            puts "problem during search; trying again"
             next
           end
 
           # Find and visit the first non-featured listing on the page. We
           # ignore featured listings because they rotate randomly [~jacord]
           nonfeatured = @srp.listings
-
-          puts nonfeatured[0].url
 
           ## if there are no non-featured results, skip this location.
           if nonfeatured.nil? || nonfeatured.empty? 
@@ -74,9 +70,7 @@ module Autobots
           # process as many properties as you can from these search results
           urls.each do |url|
             self.logger.debug("going to '#{url}");
-            puts "going to #{url}"
             @driver.navigate.to(url)
-            sleep 5
             page = Autobots::PageObjects::Base.cast(@driver,:property_details)
             begin
               if callback.call(page)           # do action
@@ -102,12 +96,9 @@ module Autobots
       ## Relocated again for further cleanup
       def hotlead_callback
         @hotlead_callback ||= lambda do |pdp|
-          begin 
-            puts "starting"
+          begin
             hotlead_confirm = pdp.hl_send(@username)
-            puts "made it back"
-            sleep 5
-            hotlead_confirm.close_confirmation_box
+            pdp = hotlead_confirm.close_confirmation_box!
           rescue => error 
             self.logger.warn ":hl_send raised:\n#{error.inspect}"
           end
