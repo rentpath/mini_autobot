@@ -6,6 +6,7 @@ module Autobots
   class TestCase < Minitest::Test
     @@all_tests = Array.new
     @@already_executed = false
+    @@serials = Array.new
 
     # parallelize_me!
 
@@ -167,6 +168,7 @@ module Autobots
         end
         if (skip_parallel_tests?(method_name) rescue true) # try to exclude cube_tracking and mobile tests
           @@all_tests << method_name # add all tests to @@all_tests
+          @@serials << opts[:serial]
         end
       end
 
