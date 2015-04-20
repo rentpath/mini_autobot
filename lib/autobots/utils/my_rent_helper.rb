@@ -21,6 +21,11 @@ module Autobots
 
       #Properties
       GRAND_AT_PARKVIEW = { :listingseopath => 'alaska/yakutat-condos/the-grand-at-parkview-4-100032535', :submarket => 'Yakutat, AK' }
+      EGG_PROPERTY_THREE = { :listingseopath => 'alaska/yakutat-apartments/egg-property-three-4-100032676', :submarket => 'Yakutat, AK' }
+      ASHLEY_PARK = { :listingseopath => 'alaska/yakutat-apartments/ashley-park-retirement-community-55-restricted-4-100032447', :submarket => 'Yakutat, AK' }
+      DPS_PROPERTY_ONE = { :listingseopath => 'alaska/yakutat-apartments/dps-property-one-4-100032425', :submarket => 'Yakutat, AK' }
+      EGG_PROPERTY_ONE = { :listingseopath => 'alaska/yakutat-apartments/egg-property-one-4-100032674', :submarket => 'Yakutat, AK' }
+      YAKUTAT_PROPS = [GRAND_AT_PARKVIEW, EGG_PROPERTY_THREE, ASHLEY_PARK, DPS_PROPERTY_ONE, EGG_PROPERTY_ONE]
 
       def new_account_setup()
         @srp = @hp.search(SUBMARKET_NM)
@@ -175,11 +180,21 @@ module Autobots
       end
 
       def save_property(property)
-        pdp = go_to_pdp!(property)
-        prop_name = pdp.property_name
-        pdp.add_favorite
-        @mrp = pdp.my_rent!        # go back to My Rent
+        @pdp = go_to_pdp!(property)
+        prop_name = @pdp.property_name
+        @pdp.add_favorite
         prop_name
+      end
+
+      def save_properties(num_props, properties = YAKUTAT_PROPS)
+        counter = 0
+        prop_names = []
+          while (counter < num_props) do
+            prop_names[counter] = save_property(properties[counter])
+            counter += 1
+          end
+        @pdp.my_rent!
+        prop_names
       end
     end #MyRentHelper
   end #Utils
