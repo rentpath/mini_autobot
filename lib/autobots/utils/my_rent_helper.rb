@@ -19,6 +19,9 @@ module Autobots
          'Seattle, WA', 'Chicago, IL', 'Miami, FL', 'Houston, TX', 
          'San Francisco, CA', 'Baltimore, MD']
 
+      #Properties
+      GRAND_AT_PARKVIEW = { :listingseopath => 'alaska/yakutat-condos/the-grand-at-parkview-4-100032535', :submarket => 'Yakutat, AK' }
+
       def new_account_setup()
         @srp = @hp.search(SUBMARKET_NM)
 
@@ -151,7 +154,6 @@ module Autobots
             @driver.execute_script("window.stop()")
             #url.slice!('qateam:wap88@')
             self.logger.debug("going to '#{url}");
-            puts "going to #{url}"
             @driver.navigate.to(url)
             # Using sleep as placeholder until we find something reliable to wait for on the page
             sleep 5
@@ -161,12 +163,23 @@ module Autobots
             if !names.include?(page.property_name)
               names.push page.property_name
             end
-            puts names.length
             break if names.length == n         # stop if we've done N things
           end
         end
         @mrp = page.my_rent!                   # go back to My Rent
         return locations, names                # unused places, used names
+      end
+
+      def go_to_pdp!(property)
+        @mrp.go_to_subpage!(property[:listingseopath], :property_details)
+      end
+
+      def save_property(property)
+        pdp = go_to_pdp!(property)
+        prop_name = pdp.property_name
+        pdp.add_favorite
+        @mrp = pdp.my_rent!        # go back to My Rent
+        prop_name
       end
     end #MyRentHelper
   end #Utils
