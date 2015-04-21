@@ -166,57 +166,21 @@ module Autobots
         else
           flunk "No implementation was provided for test '#{method_name}' in #{self}"
         end
-        if (skip_parallel_tests?(method_name) rescue true) # try to exclude cube_tracking and mobile tests
+        # add all tests to @@all_tests, excluding the ones with tags in TAGS_EXCLUDE
+        unless exclude_by_tags?(opts[:tags])
           @@all_tests << method_name # add all tests to @@all_tests
           @@serials << opts[:serial]
         end
       end
 
-      # Decide whether to skill test for parallelization
-      # @param [Symbol]
-      # @return [Boolean]
-      def skip_parallel_tests?(method_name)
-        if((not_cube_tracking?(method_name) == false) || (not_mobile?(method_name) == false))
-          return false
-        else
-          return true
-        end
-      end
-      
-      # Check if a method_name presents as a test in cube_tracking.rb
-      # @param [Symbol]
-      # @return [Boolean]
-      def not_cube_tracking?(method_name)
-        File.open("lib/autobots/test_cases/cube_tracking.rb", 'r') do |f|
-          f.each_line do |line|
-            return false if line.include?("test :"+method_name.to_s[5..-1])
-          end
-          f.close
-        end
-        return true
-      end
+      TAGS_EXCLUDE = [[:seo, :slow], [:sitemap, :slow], [:cube_tracking], [:mobile]]
+      # (:seo AND :slow) or (:sitemap AND :slow) or :cube_tracking or :mobile
 
-      # Check if a method_name presents as a mobile test
-      # @param [Symbol]
-      # @return [Boolean]
-      def not_mobile?(method_name)
-        #sign_in_mobile
-        File.open("lib/autobots/test_cases/sign_in_mobile.rb", 'r') do |f|
-          f.each_line do |line|
-            return false if line.include?("test :"+method_name.to_s[5..-1])
-          end
-          f.close
+      def exclude_by_tags?(tags)
+        TAGS_EXCLUDE.any? do |one_tags|
+          (one_tags - tags).empty?
         end
-        #search_mobile
-        File.open("lib/autobots/test_cases/search_mobile.rb", 'r') do |f|
-          f.each_line do |line|
-            return false if line.include?("test :"+method_name.to_s[5..-1])
-          end
-          f.close
-        end
-        #Add more mobile files  
-        return true
-      end     
+      end
 
       # Check that +method_name+ hasn't already been defined as an instance
       # method in the current class, or in any superclasses.
