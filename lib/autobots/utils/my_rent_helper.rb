@@ -105,10 +105,10 @@ module Autobots
       def hotlead_callback
         @hotlead_callback ||= lambda do |pdp|
           begin
-            hotlead_confirm = pdp.li_hl_send
+            hotlead_confirm = pdp.li_hl_send!('test')
             pdp = hotlead_confirm.close_confirmation_box!
           rescue => error 
-            self.logger.warn ":hl_send raised:\n#{error.inspect}"
+            self.logger.warn ":li_hl_send raised:\n#{error.inspect}"
           end
           return true;
         end
