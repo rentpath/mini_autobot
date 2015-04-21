@@ -177,8 +177,8 @@ module Autobots
       # (:seo AND :slow) or (:sitemap AND :slow) or :cube_tracking or :mobile
 
       def exclude_by_tags?(tags)
-        TAGS_EXCLUDE.any? do |one_tags|
-          (one_tags - tags).empty?
+        TAGS_EXCLUDE.any? do |one_tags| # one_tags is array, eg. [:seo, :slow]
+          (one_tags - tags).empty? # true if array tags contains all elements of array one_tags
         end
       end
 
