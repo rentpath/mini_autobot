@@ -59,8 +59,8 @@ module Autobots
         # keep @n running always
         keep_running_full(all_to_run)
       end
-      # wait_all_done_saucelabs if @on_sauce
-      wait_for_pids(@pids)
+      wait_all_done_saucelabs if @on_sauce
+      wait_for_pids(@pids) unless ENV['JENKINS_HOME']
       puts "\nAll Complete! Started at #{@start_time} and finished at #{Time.now}\n"
       exit
     end
