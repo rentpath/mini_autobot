@@ -2,10 +2,14 @@ module Autobots
   class Parallel
 
     def initialize(n, all_tests)
+      @start_time = Time.now
       clean_result!
       @n = n
       @all_tests = all_tests
-      @PLATFORM = Autobots::Settings[:connector].split(':')[2]
+      connector = Autobots::Settings[:connector]
+      @on_sauce = true if connector.include? 'saucelabs'
+      @platform = connector.split(':')[2] || ''
+      @pids = Array.new
       @static_run_command = "bin/autobot -c "+Autobots::Settings[:connector]+" -e "+Autobots::Settings[:env]
       @pipe_tap = "--tapy | tapout --no-color -r ./lib/tapout/custom_reporters/fancy_tap_reporter.rb fancytap"
     end
@@ -13,7 +17,7 @@ module Autobots
     # return true only if specified to run on mac in connector
     # @return [boolean]
     def run_on_mac?
-      return true if @PLATFORM.include?('osx')
+      return true if @platform.include?('osx')
       return false
     end
 
@@ -48,18 +52,39 @@ module Autobots
         puts "CAUTION! All #{@size} tests are starting at the same time!"
         puts "will not really run it since computer will die" if @size > 30
         sleep 20
-        wait_all_done_saucelabs
-        puts "\nAll Complete!\n"
-        return
       else
         first_test_set = @all_tests[0, @n]
         all_to_run = @all_tests[@n+1...@all_tests.size-1]
         run_test_set(first_test_set)
         # keep @n running always
         keep_running_full(all_to_run)
-        wait_all_done_saucelabs
-        puts "\nAll Complete!\n"
-        exit
+      end
+      # wait_all_done_saucelabs if @on_sauce
+      wait_for_pids(@pids)
+      puts "\nAll Complete! Started at #{@start_time} and finished at #{Time.now}\n"
+      exit
+    end
+
+    def wait_for_pids(pids)
+      running_pids = pids # assume all pids are running at this moment
+      while running_pids.size > 1
+        sleep 5
+        puts "running_pids = #{running_pids}"
+        running_pids.each do |pid|
+          unless process_running?(pid)
+            puts "#{pid} is not running, removing it from pool"
+            running_pids.delete(pid)
+          end
+        end
+      end
+    end
+
+    def process_running?(pid)
+      begin
+        Process.getpgid(pid)
+        true
+      rescue Errno::ESRCH
+        false
       end
     end
 
@@ -67,8 +92,9 @@ module Autobots
     def run_test_set(test_set)
       test_set.each do |test|
         run_command = "#{@static_run_command} -n #{test} #{@pipe_tap} > logs/tap_results/#{test}.t"
-        puts "about to run #{test}"
-        IO.popen(run_command)
+        pipe = IO.popen(run_command)
+        puts "Running #{test}  #{pipe.pid}"
+        @pids << pipe.pid
       end
     end
 
