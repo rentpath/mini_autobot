@@ -19,33 +19,56 @@ module Autobots
          'Seattle, WA', 'Chicago, IL', 'Miami, FL', 'Houston, TX', 
          'San Francisco, CA', 'Baltimore, MD']
 
+      #Users
+
+
       #Properties
       GRAND_AT_PARKVIEW = { :listingseopath => 'alaska/yakutat-condos/the-grand-at-parkview-4-100032535', :submarket => 'Yakutat, AK' }
       EGG_PROPERTY_THREE = { :listingseopath => 'alaska/yakutat-apartments/egg-property-three-4-100032676', :submarket => 'Yakutat, AK' }
       ASHLEY_PARK = { :listingseopath => 'alaska/yakutat-apartments/ashley-park-retirement-community-55-restricted-4-100032447', :submarket => 'Yakutat, AK' }
       DPS_PROPERTY_ONE = { :listingseopath => 'alaska/yakutat-apartments/dps-property-one-4-100032425', :submarket => 'Yakutat, AK' }
       EGG_PROPERTY_ONE = { :listingseopath => 'alaska/yakutat-apartments/egg-property-one-4-100032674', :submarket => 'Yakutat, AK' }
-      YAKUTAT_PROPS = [GRAND_AT_PARKVIEW, EGG_PROPERTY_THREE, ASHLEY_PARK, DPS_PROPERTY_ONE, EGG_PROPERTY_ONE]
+      PALAZZO_VILLAGE = { :listingseopath => 'alaska/yakutat-apartments/the-palazzo-village-4-100032601', :submarket => 'Yakutat, AK' }
+      TEST_YAKU = { :listingseopath => 'alaska/yakutat-apartments/test-yaku-4-62591819', :submarket => 'Yakutat, AK' }
+      EGG_PROPERTY_TWO = { :listingseopath => 'alaska/yakutat-apartments/egg-property-two-4-100032677', :submarket => 'Yakutat, AK' }
+      WEB_PROPERTY_THREE = { :listingseopath => 'alaska/yakutat-apartments/web-property-three-4-100032536', :submarket => 'Yakutat, AK' }
+      MISSION_PARK = { :listingseopath => 'california/gilroy-apartments/mission-park-4-100050849', :submarket => 'Gilroy, CA' }
+      PARKVIEW_ESTATES = { :listingseopath => 'minnesota/coon-rapids-apartments/parkview-estates-4-441951', :submarket => 'Coon Rapids, MN' }
+      TEST_YAKUTAT_H = { :listingseopath => 'minnesota/hopkins-apartments/test-yakutat-h-4-62657813', :submarket => 'm, MN' }
+      OCEAN_HOUSE_ON_PROSPECT = { :listingseopath => 'california/la-jolla-apartments/ocean-house-on-prospect-4-61715856', :submarket => 'La Jolla, CA' }
+      BAINBRIDGE_SHADY_GROVE = { :listingseopath => 'maryland/derwood-apartments/bainbridge-shady-grove-4-100051598', :submarket => 'Derwood, MD' }
+      AXIS_BRANDON = { :listingseopath => 'florida/tampa-apartments/axis-brandon-4-100050842', :submarket => 'Tampa, FL' }
+      GARFIELD_COMMONS = { :listingseopath => 'michigan/clinton-township-apartments/garfield-commons-apartment-homes-4-100012054', :submarket => 'Clinton Township, MI' }
+      JEAN_RIVARD = { :listingseopath => 'michigan/detroit-apartments/jean-rivard-4-100025217', :submarket => 'Detroit, MI' }
+      KENDALLWOOD = { :listingseopath => 'michigan/farmington-apartments/kendallwood-4-100024005', :submarket => 'Farmington, MI' }
+      TEST_YAKU_1 = { :listingseopath => 'south-dakota/redfield-apartments/test-yaku1-4-62591818', :submarket => 'Redfield, SD' }
+      YAKUTAT_PROPS = [GRAND_AT_PARKVIEW, EGG_PROPERTY_THREE, ASHLEY_PARK, DPS_PROPERTY_ONE, EGG_PROPERTY_ONE,
+                        PALAZZO_VILLAGE, TEST_YAKU, EGG_PROPERTY_TWO, WEB_PROPERTY_THREE, MISSION_PARK, PARKVIEW_ESTATES,
+                        TEST_YAKUTAT_H, OCEAN_HOUSE_ON_PROSPECT, BAINBRIDGE_SHADY_GROVE, AXIS_BRANDON, GARFIELD_COMMONS,
+                        JEAN_RIVARD, KENDALLWOOD, TEST_YAKU_1]
 
       def new_account_setup()
-        @srp = @hp.search(SUBMARKET_NM)
+        #@srp = @hp.search(SUBMARKET_NM)
 
         # Create username
         @username = generate_random_email
 
         # View first property listing with reward card on the SRP
-        loggedout_pdp = @srp.go_to_listing!(LISTING_NUM)
+        #loggedout_pdp = @srp.go_to_listing!(LISTING_NUM)
 
         # Register as a new Renter on LO PDP
-        registration_overlay = loggedout_pdp.click_reg_link!
-        loggedin_pdp = registration_overlay.reg(@username, 'property_details')
-        password_overlay = loggedin_pdp.create_password
-        password_overlay.pdp_new_pwd
-        assert_match @srp.loggedin_username, @username
+        registration_overlay = @hp.click_reg_link!
+        loggedin_hp = registration_overlay.reg(@username, 'home')
+        password_overlay = loggedin_hp.create_password
+        password_overlay.hp_new_pwd
+        assert_match loggedin_hp.loggedin_username, @username
 
-        search = loggedin_pdp.default_search!
+        #search = loggedin_pdp.default_search!
        # click on MyRent, goto My Rent page
-        @mrp = search.my_rent!
+        @mrp = loggedin_hp.my_rent!
+      end
+
+      def new_test_account()
 
       end
 
