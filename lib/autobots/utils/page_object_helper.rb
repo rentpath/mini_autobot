@@ -118,28 +118,6 @@ module Autobots
         web_element.send_keys(value)
       end
 
-      # Check if a web element exists on page or not, without wait
-      # @param  eg. (:css, 'button.cancel') or (*BUTTON_GETSTARTED)
-      # @param  also has an optional parameter-driver, which can be @element when calling this method in a widget object
-      # @return [boolean]
-      def is_element_present?(how, what, driver = nil)
-        original_timeout = read_yml("config/connectors/saucelabs.yml", "timeouts:implicit_wait")
-        @driver.manage.timeouts.implicit_wait = 0
-        result = false
-        parent_element = @driver if driver == nil
-        parent_element = driver if driver != nil
-        elements = parent_element.find_elements(how, what)
-        begin
-          if elements.size() > 0 && elements[0].displayed?
-            result = true
-          end
-        rescue
-          result = false
-        end
-        @driver.manage.timeouts.implicit_wait = original_timeout
-        return result
-      end
-
       # Helper method for retrieving value from yml file
       # todo should be moved to FileHelper.rb once we created this file in utils
       # @param [String, String]
@@ -159,6 +137,41 @@ module Autobots
           value = value[key]
         end
         return value
+      end
+
+      # Check if a web element exists on page or not, without wait
+      def is_element_present?(how, what, driver = nil)
+        element_appeared?(how, what, driver)
+      end
+
+      # Check if a web element exists and displayed on page or not, without wait
+      def is_element_present_and_displayed?(how, what, driver = nil)
+        element_appeared?(how, what, driver, check_display = true)
+      end
+
+      private
+
+      # @param  eg. (:css, 'button.cancel') or (*BUTTON_GETSTARTED)
+      # @param  also has an optional parameter-driver, which can be @element when calling this method in a widget object
+      # @return [boolean]
+      def element_appeared?(how, what, driver = nil, check_display = false)
+        original_timeout = read_yml("config/connectors/saucelabs.yml", "timeouts:implicit_wait")
+        @driver.manage.timeouts.implicit_wait = 0
+        result = false
+        parent_element = @driver if driver == nil
+        parent_element = driver if driver != nil
+        elements = parent_element.find_elements(how, what)
+        if check_display
+          begin
+            result = true if elements.size() > 0 && elements[0].displayed?
+          rescue
+            result = false
+          end
+        else
+          result = true if elements.size() > 0
+        end
+        @driver.manage.timeouts.implicit_wait = original_timeout
+        return result
       end
 
     end
