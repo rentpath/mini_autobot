@@ -200,6 +200,14 @@ module Autobots
         # Initialize the driver and declare explicit browser timeouts
         Autobots.logger.debug("Connector(##{self.object_id}): using WebDriver(#{driver.inspect}, #{driver_config.inspect})")
         @driver = Selenium::WebDriver.for(driver.to_sym, driver_config)
+
+        # Resize browser window for local browser with 'resolution'
+        if concon[:resolution]
+          width = concon[:resolution].split(/x/)[0].to_i
+          height = concon[:resolution].split(/x/)[1].to_i
+          @driver.manage.window.resize_to(width, height)
+        end
+
         # setTimeout is undefined for safari driver so skip these steps for it
         if !run_on_safari?
           if timeouts = concon[:timeouts]
