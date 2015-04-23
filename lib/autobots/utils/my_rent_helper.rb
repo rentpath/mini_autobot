@@ -150,16 +150,23 @@ module Autobots
         end
       end
 
-      def view_properties(n, locations)
+      def view_properties(properties)
+        properties.each do |property|
+          @pdp = go_to_pdp!(property)
+        end
+        @mrp = @pdp.my_rent!
+      end
+
+      def generate_list_of_properties(num_props, locations)
         self.logger.debug "view_properties"
-        names = [] # properties processed
-        page = @mrp
+        properties = [] # properties processed
+        @srp = @mrp.default_search! # go to srp
         ## run until we've processed n properties or exhausted locations
-        while names.length < n && locations.length > 0 do 
+        while properties.length < num_props && locations.length > 0 do 
           begin
-            @srp = page.default_search!        # go to srp
             self.logger.debug "searching next location: '#{locations.last}'"
-            @srp = @srp.search!(locations.pop) # do a search
+            @location = locations.pop
+            @srp = @srp.search!(@location) # do a search
           rescue
             self.logger.debug "problem during search; trying again"
             next
@@ -177,29 +184,23 @@ module Autobots
 
           urls = nonfeatured.map { |l| l.url }
           urls = urls.uniq
+          names = nonfeatured.map { |l| l.property_name}
+          names = names.uniq
+          prop_list = names.zip(urls).to_h
           # process as many properties as you can from these search results
-          urls.each do |url|
-            @driver.execute_script("window.stop()")
-            #url.slice!('qateam:wap88@')
-            self.logger.debug("going to '#{url}");
-            @driver.navigate.to(url)
-            # Using sleep as placeholder until we find something reliable to wait for on the page
-            sleep 5
-            @driver.execute_script("window.stop()")
-            page = Autobots::PageObjects::Base.cast(@driver,:property_details)
+          prop_list.each do |name, url|
+            new_prop = Rent_Property.new(name, url, @location)
             # We only want to log unique property page views
-            if !names.include?(page.property_name)
-              names.push page.property_name
-            end
-            break if names.length == n         # stop if we've done N things
+            properties.push(new_prop)
+            break if properties.length == num_props    # stop if we have the desired number of properties
           end
         end
-        @mrp = page.my_rent!                   # go back to My Rent
-        return locations, names                # unused places, used names
+        @mrp = @srp.my_rent!                   # go back to My Rent
+        return properties               # unused places, used names
       end
 
       def go_to_pdp!(property)
-        @mrp.go_to_subpage!(property[:listingseopath], :property_details)
+        @mrp.go_to_subpage!(property.url, :property_details)
       end
 
       def save_property(property)
@@ -209,15 +210,28 @@ module Autobots
         prop_name
       end
 
-      def save_properties(num_props, properties = YAKUTAT_PROPS)
-        counter = 0
+      def save_properties(properties)
         prop_names = []
-          while (counter < num_props) do
-            prop_names[counter] = save_property(properties[counter])
-            counter += 1
-          end
+        properties.each do |property|
+          save_property(property)
+          prop_names.push(property.name)
+        end
         @pdp.my_rent!
         prop_names
+      end
+
+      class Rent_Property
+
+        attr_reader :name
+        attr_reader :url
+        attr_reader :location
+
+        def initialize(name, url, location)
+          @name = name
+          @url = url
+          @location = location
+        end
+
       end
     end #MyRentHelper
   end #Utils
