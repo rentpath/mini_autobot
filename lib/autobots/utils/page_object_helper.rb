@@ -63,19 +63,27 @@ module Autobots
         end
         Autobots::Connector.finalize! if Autobots::Settings[:auto_finalize]
         super()
-        print_sauce_link_if_fail
+        if test_failed? && !@driver.nil?
+          take_screenshot
+          print_sauce_link
+        end
+      end
+
+      def test_failed?
+        !passed? && !skipped?
+      end
+
+      def take_screenshot
+        @driver.save_screenshot("logs/#{name}.png")
       end
 
       # Print out a link of a saucelabs's job when a test is not passed
       # Rescue to skip this step for tests like cube tracking
-      def print_sauce_link_if_fail
-        if !passed? && !skipped?
-          puts '========================================================================================'
-          begin
-            puts "Find test on saucelabs: https://saucelabs.com/tests/#{@driver.session_id}"
-          rescue
-            puts 'can not retrieve driver session id, no link to saucelabs'
-          end
+      def print_sauce_link
+        begin
+          puts "Find test on saucelabs: https://saucelabs.com/tests/#{@driver.session_id}"
+        rescue
+          puts 'can not retrieve driver session id, no link to saucelabs'
         end
       end
 
