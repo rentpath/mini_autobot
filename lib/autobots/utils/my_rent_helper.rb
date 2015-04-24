@@ -57,6 +57,7 @@ module Autobots
         #loggedout_pdp = @srp.go_to_listing!(LISTING_NUM)
 
         # Register as a new Renter on LO PDP
+        sleep 2
         registration_overlay = @hp.click_reg_link!
         loggedin_hp = registration_overlay.reg(@username, 'home')
         password_overlay = loggedin_hp.create_password
