@@ -48,29 +48,22 @@ module Autobots
                         JEAN_RIVARD, KENDALLWOOD, TEST_YAKU_1]
 
       def new_account_setup()
-        #@srp = @hp.search(SUBMARKET_NM)
-
         # Create username
         @username = generate_random_email
 
-        # View first property listing with reward card on the SRP
-        #loggedout_pdp = @srp.go_to_listing!(LISTING_NUM)
-
-        # Register as a new Renter on LO PDP
-        sleep 2
+        # Register as a new Renter
         registration_overlay = @hp.click_reg_link!
         loggedin_hp = registration_overlay.reg(@username, 'home')
         password_overlay = loggedin_hp.create_password
         password_overlay.hp_new_pwd
         assert_match loggedin_hp.loggedin_username, @username
 
-        #search = loggedin_pdp.default_search!
-       # click on MyRent, goto My Rent page
+        # click on MyRent, goto My Rent page
         @mrp = loggedin_hp.my_rent!
       end
 
       def new_test_account()
-
+        # placeholder
       end
 
       def contact_property(property)
@@ -92,6 +85,7 @@ module Autobots
       end
 
       def view_properties(properties)
+        self.logger.debug "view_properties"
         properties.each do |property|
           @pdp = go_to_pdp!(property)
         end
@@ -99,10 +93,10 @@ module Autobots
       end
 
       def generate_list_of_properties(num_props, locations)
-        self.logger.debug "view_properties"
+        self.logger.debug "generate_list_of_properties"
         properties = [] # properties processed
         @srp = @mrp.default_search! # go to srp
-        ## run until we've processed n properties or exhausted locations
+        ## run until we've processed the desired number of properties or exhausted locations
         while properties.length < num_props && locations.length > 0 do 
           begin
             self.logger.debug "searching next location: '#{locations.last}'"
