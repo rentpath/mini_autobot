@@ -55,6 +55,10 @@ module Autobots
       #
       # @return [void]
       def teardown
+        if !passed? && !skipped? && !@driver.nil?
+          take_screenshot
+          print_sauce_link if connector_is_saucelabs?
+        end
         begin
           set_sauce_session_name if connector_is_saucelabs? && !@driver.nil?
           self.logger.debug "Finished setting saucelabs session name for #{name()}"
@@ -63,14 +67,6 @@ module Autobots
         end
         Autobots::Connector.finalize! if Autobots::Settings[:auto_finalize]
         super()
-        if test_failed? && !@driver.nil?
-          take_screenshot
-          print_sauce_link
-        end
-      end
-
-      def test_failed?
-        !passed? && !skipped?
       end
 
       def take_screenshot
