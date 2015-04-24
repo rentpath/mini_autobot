@@ -73,82 +73,22 @@ module Autobots
 
       end
 
-      def do_property_actions(n, locations, callback)
-        self.logger.debug "do_property_actions_new"
-        names = [] # properties processed
-        page = @mrp
-        ## run until we've processed n properties or exhausted locations
-        while names.length < n && locations.length > 0 do 
-          begin
-            @srp = page.default_search!        # go to srp
-            self.logger.debug "searching next location: '#{locations.last}'"
-            @srp = @srp.search!(locations.pop) # do a search
-          rescue
-            self.logger.debug "problem during search; trying again"
-            next
-          end
-
-          # Find and visit the first non-featured listing on the page. We
-          # ignore featured listings because they rotate randomly [~jacord]
-          nonfeatured = @srp.listings
-
-          ## if there are no non-featured results, skip this location.
-          if nonfeatured.nil? || nonfeatured.empty? 
-            self.logger.debug "no listings" 
-            next 
-          end
-
-          urls = nonfeatured.map { |l| l.url }
-          # process as many properties as you can from these search results
-          urls.each do |url|
-            self.logger.debug("going to '#{url}");
-            @driver.navigate.to(url)
-            page = Autobots::PageObjects::Base.cast(@driver,:property_details)
-            begin
-              if callback.call(page)           # do action
-                sleep 2
-                names.push page.property_name  # save name
-              else
-                self.logger.debug "PDP action failed: property name will not be recorded"
-              end
-            rescue => error
-              self.logger.debug "PDP action raised: #{error.inspect}\n\nsearching elsewhere"
-              break
-            end
-            break if names.length == n         # stop if we've done N things
-          end
-        end
-        @mrp = page.my_rent!                   # go back to My Rent
-        return locations, names                # unused places, used names
+      def contact_property(property)
+        @pdp = go_to_pdp!(property)
+        prop_name = @pdp.property_name
+        hotlead_confirm = @pdp.li_hl_send!('test')
+        @pdp = hotlead_confirm.close_confirmation_box!
+        prop_name
       end
 
-      ## mixin some stuff so we don't have to put in the setup block
-
-      ## Callbacks for activity across pages. Relocated to DRY up the code.
-      ## Relocated again for further cleanup
-      def hotlead_callback
-        @hotlead_callback ||= lambda do |pdp|
-          begin
-            hotlead_confirm = pdp.li_hl_send!('test')
-            pdp = hotlead_confirm.close_confirmation_box!
-          rescue => error 
-            self.logger.warn ":li_hl_send raised:\n#{error.inspect}"
-          end
-          return true;
+      def contact_properties(properties)
+        prop_names = []
+        properties.each do |property|
+          contact_property(property)
+          prop_names.push(property.name)
         end
-      end
-
-      def view_callback
-        @view_callback ||= lambda do |pdp| 
-          return pdp.ensure_register 
-        end
-      end
-
-      def save_property_callback
-        @save_property_callback ||= lambda do |pdp|
-          pdp.add_favorite 
-          return true
-        end
+        @mrp = @pdp.my_rent!
+        prop_names
       end
 
       def view_properties(properties)
