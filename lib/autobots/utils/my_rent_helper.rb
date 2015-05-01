@@ -8,7 +8,7 @@ module Autobots
       LISTING_NUM = 1
       LOAD_MORE_THRESHOLD = 20
       MAX_SEARCHES = 10
-      ## As we add page objects beyond SRP/PDP/PSP, we can test filter
+      ## As we add page objects beyond SRP/PDP, we can test filter
       ## persistence more thoroughly. Currently only works for views. [~jacord]
       FILTER_PERSISTENCE_ACTIONS = [:report_your_lease!,:moving_center!]
       ## there are ten of these, which is important for testing the behavior
@@ -69,7 +69,7 @@ module Autobots
         @pdp = go_to_pdp!(property)
         prop_name = @pdp.property_name
         hotlead_confirm = @pdp.li_hl_send!('test')
-        @pdp = hotlead_confirm.close_confirmation_box!
+        @pdp = hotlead_confirm.close_confirmation_box!(:property_details)
         prop_name
       end
 
