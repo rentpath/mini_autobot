@@ -69,7 +69,7 @@ module Autobots
         @pdp = go_to_pdp!(property)
         prop_name = @pdp.property_name
         hotlead_confirm = @pdp.li_hl_send!('test')
-        @pdp = hotlead_confirm.close_confirmation_box!
+        @pdp = hotlead_confirm.close_confirmation_box!(:property_details)
         prop_name
       end
 
