@@ -1,4 +1,3 @@
-
 module Autobots
 
   # A connector provides a thin layer that combines configuration files and
@@ -15,15 +14,13 @@ module Autobots
     class Config
       attr_accessor :connector, :env
 
-      # Override equality checks.
       def ==(other)
         self.class == other.class && self.connector == other.connector && self.env == other.env
       end
 
       alias_method :eql?, :==
 
-      # Override hashing mechanism to take into account the connector and
-      # environment values
+      # Hashing mechanism should only look at the connector and environment values
       def hash
         @connector.hash ^ @env.hash
       end
@@ -33,7 +30,8 @@ module Autobots
       #
       # @api private
       def initialize(connector, env)
-        @connector, @env = connector, env
+        @connector = connector
+        @env = env
       end
 
     end
@@ -277,4 +275,3 @@ module Autobots
 
   end
 end
-
