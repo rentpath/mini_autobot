@@ -46,9 +46,9 @@ module Autobots
       # set number of tests to be running in parallel
       if simultaneous_jobs.nil?
         if run_on_mac?
-          simultaneous_jobs = 10 # saucelabs account limit for parallel is 10 for mac
+          @simultaneous_jobs = 10 # saucelabs account limit for parallel is 10 for mac
         else
-          simultaneous_jobs = 15 # saucelabs account limit for parallel is 15 for non-mac
+          @simultaneous_jobs = 15 # saucelabs account limit for parallel is 15 for non-mac
         end
       end
 
