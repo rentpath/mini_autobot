@@ -1,4 +1,4 @@
-require 'oci8'
+# require 'oci8'
 
 module Autobots
   module Utils
