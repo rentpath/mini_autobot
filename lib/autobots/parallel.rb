@@ -1,14 +1,19 @@
 module Autobots
   class Parallel
 
-    def initialize(n, all_tests)
+    attr_reader :all_tests, :simultaneous_jobs
+
+    def initialize(simultaneous_jobs, all_tests)
       @start_time = Time.now
       clean_result!
-      @n = n
+
+      @simultaneous_jobs = simultaneous_jobs
       @all_tests = all_tests
+
       connector = Autobots::Settings[:connector]
       @on_sauce = true if connector.include? 'saucelabs'
       @platform = connector.split(':')[2] || ''
+
       @pids = Array.new
       @static_run_command = "bin/autobot -c "+Autobots::Settings[:connector]+" -e "+Autobots::Settings[:env]
       @pipe_tap = "--tapy | tapout --no-color -r ./lib/tapout/custom_reporters/fancy_tap_reporter.rb fancytap"
@@ -39,26 +44,27 @@ module Autobots
     # n = number of tests will be running in parallel
     def run_in_parallel!
       # set number of tests to be running in parallel
-      if @n.nil?
+      if simultaneous_jobs.nil?
         if run_on_mac?
-          @n = 10 # saucelabs account limit for parallel is 10 for mac
+          simultaneous_jobs = 10 # saucelabs account limit for parallel is 10 for mac
         else
-          @n = 15 # saucelabs account limit for parallel is 15 for non-mac
+          simultaneous_jobs = 15 # saucelabs account limit for parallel is 15 for non-mac
         end
       end
-      @size = @all_tests.size
-      if @size <= @n
-        run_test_set(@all_tests)
-        puts "CAUTION! All #{@size} tests are starting at the same time!"
-        puts "will not really run it since computer will die" if @size > 30
+
+      size = all_tests.size
+      if size <= simultaneous_jobs
+        run_test_set(all_tests)
+        puts "CAUTION! All #{size} tests are starting at the same time!"
+        puts "will not really run it since computer will die" if size > 30
         sleep 20
       else
-        first_test_set = @all_tests[0, @n]
-        all_to_run = @all_tests[@n+1...@all_tests.size-1]
+        first_test_set = all_tests[0, simultaneous_jobs]
+        all_to_run = all_tests[(simultaneous_jobs + 1)...(all_tests.size - 1)]
         run_test_set(first_test_set)
-        # keep @n running always
         keep_running_full(all_to_run)
       end
+
       wait_all_done_saucelabs if @on_sauce
       wait_for_pids(@pids) unless ENV['JENKINS_HOME']
       puts "\nAll Complete! Started at #{@start_time} and finished at #{Time.now}\n"
@@ -99,7 +105,7 @@ module Autobots
     end
 
     def keep_running_full(all_to_run)
-      full_count = @n + 2
+      full_count = simultaneous_jobs + 2
       running_count = count_autobot_process
       while running_count >= full_count
         sleep 5
@@ -116,7 +122,7 @@ module Autobots
     end
 
     def wait_all_done_saucelabs
-      size = @all_tests.size
+      size = all_tests.size
       job_statuses = saucelabs_last_n_statuses(size)
       while job_statuses.include?('in progress')
         puts "There are tests still running, waiting..."
@@ -169,7 +175,7 @@ module Autobots
           formatted_str = str.gsub('null', 'nil')
           hash = eval(formatted_str)
           statuses << hash['status']
-        rescue SyntaxError => e
+        rescue SyntaxError
           puts "SyntaxError, response from saucelabs has syntax error"
         end
       end

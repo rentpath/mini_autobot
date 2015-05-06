@@ -165,6 +165,7 @@ module Autobots
         else
           flunk "No implementation was provided for test '#{method_name}' in #{self}"
         end
+
         # add all tests to @@all_tests, excluding the ones with tags in TAGS_EXCLUDE
         unless exclude_by_tags?(opts[:tags])
           @@all_tests << method_name # add all tests to @@all_tests
