@@ -1,4 +1,3 @@
-
 require 'net/imap'
 
 module Autobots

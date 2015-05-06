@@ -1,4 +1,3 @@
-
 module Autobots
 
   # Container for utility modules.
@@ -16,4 +15,3 @@ module Autobots
 
   end
 end
-

@@ -1,4 +1,3 @@
-
 module Autobots
 
   # An Autobots-specific test case container, which extends the default ones,
@@ -223,4 +222,3 @@ module Autobots
   end
 
 end
-

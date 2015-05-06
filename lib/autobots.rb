@@ -1,9 +1,8 @@
-
 require 'bundler'
 
 envs = [:default]
 envs << ENV['AUTOBOT_BUNDLE'].to_sym if ENV.has_key?('AUTOBOT_BUNDLE')
-Bundler.require(*envs) # loads all the gems
+Bundler.require(*envs) # loads all the autoloadable gems
 
 # new files to override gems
 require 'minitap/minitest5_rent'
@@ -94,4 +93,3 @@ module Autobots
   end
 
 end
-

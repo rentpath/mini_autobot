@@ -1,5 +1,5 @@
-
 module Autobots
+
   # A global, singleton object that preserves runtime settings. Normally, we
   # would avoid using a root object pattern, but settings are simple and
   # ubiquitous in its use in the test framework.
@@ -38,4 +38,3 @@ module Autobots
 
   end
 end
-

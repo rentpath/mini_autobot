@@ -1,4 +1,3 @@
-
 module Autobots
 
   class Console < TestCase
