@@ -3,6 +3,12 @@ module Autobots
 
     module BrowserHelper
 
+      # return true only if test is running on ghost driver
+      # @return [boolean]
+      def browser_is_ghost?
+        Autobots::Settings[:connector].include? 'ghost'
+      end
+
       # return true only if test is running on IE
       # @return [boolean]
       def browser_is_ie?
