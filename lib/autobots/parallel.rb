@@ -10,12 +10,12 @@ module Autobots
       @simultaneous_jobs = simultaneous_jobs
       @all_tests = all_tests
 
-      connector = Autobots::Settings[:connector]
+      connector = Autobots.settings.connector
       @on_sauce = true if connector.include? 'saucelabs'
       @platform = connector.split(':')[2] || ''
 
       @pids = Array.new
-      @static_run_command = "bin/autobot -c "+Autobots::Settings[:connector]+" -e "+Autobots::Settings[:env]
+      @static_run_command = "bin/autobot -c #{Autobots.settings.connector} -e #{Autobots.settings.env}"
       @pipe_tap = "--tapy | tapout --no-color -r ./lib/tapout/custom_reporters/fancy_tap_reporter.rb fancytap"
     end
 
@@ -134,7 +134,7 @@ module Autobots
     # call saucelabs REST API to get last #{limit} jobs' statuses
     # possible job status: complete, error, in progress
     def saucelabs_last_n_statuses(limit)
-      connector = Autobots::Settings[:connector] # eg. saucelabs:phu:win7_ie11
+      connector = Autobots.settings.connector # eg. saucelabs:phu:win7_ie11
       overrides = connector.to_s.split(/:/)
       file_name = overrides.shift
       path = Autobots.root.join('config', 'connectors')

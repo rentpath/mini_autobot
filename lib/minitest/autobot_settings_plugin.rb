@@ -1,19 +1,17 @@
-
 module Minitest
 
   # Minitest plugin: autobot_settings
   #
-  # This is where the options are propagated to +Autobots::Settings+.
+  # This is where the options are propagated to +Autobots.settings+.
   def self.plugin_autobot_settings_init(options)
-    Autobots::Settings.merge!(options)
-    Autobots::Settings.symbolize_keys!
+    Autobots.settings = options
 
     Autobots.logger = Autobots::Logger.new('autobots.log', 'daily').tap do |logger|
       logger.formatter = proc do |sev, ts, prog, msg|
         msg = msg.inspect unless String === msg
         "#{ts.strftime('%Y-%m-%dT%H:%M:%S.%6N')} #{sev}: #{String === msg ? msg : msg.inspect}\n"
       end
-      logger.level = case Autobots::Settings[:verbosity_level]
+      logger.level = case Autobots.settings.verbosity_level
                      when 0
                        Logger::WARN
                      when 1
@@ -25,10 +23,7 @@ module Minitest
       at_exit { logger.info("Shutting down") }
     end
 
-    if options[:console]
-      Autobots::Settings[:tags] = [[:__dummy__]]
-      Autobots::Console.bootstrap!
-    end
+    Autobots::Console.bootstrap! if options[:console]
 
     self
   end
@@ -63,10 +58,8 @@ module Minitest
       options[:tags] << value.to_s.split(',').map { |t| t.to_sym }
     end
 
-    options[:verbose] = false
     options[:verbosity_level] = 0
     parser.on('-v', '--verbose', 'Output verbose logs to the log file') do |value|
-      options[:verbose] = true
       options[:verbosity_level] += 1
     end
 

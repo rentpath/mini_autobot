@@ -69,11 +69,10 @@ module Autobots
       # @return [Enumerable<Symbol>] the methods marked runnable
       def runnable_methods
         methods  = super
-        selected = Autobots::Settings[:tags]
+        selected = Autobots.settings.tags
 
         # run tests in parallel when option "-p" is provided in command line
-        is_parallel = true if Autobots::Settings[:parallel]
-        if is_parallel
+        if Autobots.settings.parallel?
           # check this because I don't know why this runnable_methods gets called three times consecutively when one starts running tests
           if @@already_executed
             exit
