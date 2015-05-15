@@ -82,14 +82,9 @@ module Autobots
         last_name
       end
 
-      # Generate an email address in the domain `rent.com`.
-      def generate_mailinator(name = nil)
-        [ Faker::Internet.user_name(name), 'rent.com' ].join('@')
-      end
-
-      # Generate a unique random email ends with @rent.com
-      def generate_random_email
-        generate_mailinator([ generate_last_name(), generate_unique_id() ].join('.'))
+      # Generate a unique random email ends with @test.com
+      def generate_test_email
+        [ "#{generate_last_name}.#{generate_unique_id}", 'test.com' ].join('@')
       end
 
       # Generate a random number between 0 and `max - 1` if `max` is >= 1,
