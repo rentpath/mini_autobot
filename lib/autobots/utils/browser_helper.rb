@@ -12,19 +12,11 @@ module Autobots
       # return true only if test is running on IE
       # @return [boolean]
       def browser_is_ie?
-        userAgent = @driver.execute_script("return navigator.userAgent","").downcase
-        if( !userAgent.include?('firefox') && !userAgent.include?('safari') && !userAgent.include?('chrome') )
-          return true
-        end
-        false
+        Autobots::Settings[:connector].include? 'ie'
       end
 
       def browser_is_ie_8?
-        userAgent = @driver.execute_script("return navigator.userAgent","").downcase
-        if( userAgent.include?('msie 8.0') )
-          return true
-        end
-        false
+        Autobots::Settings[:connector].include? 'ie8'
       end
 
       # return true only if test is running on firefox
@@ -44,21 +36,13 @@ module Autobots
       # return true only if test is running on chrome
       # @return [boolean]
       def browser_is_chrome?
-        userAgent = @driver.execute_script("return navigator.userAgent","").downcase
-        if( userAgent.include?('chrome') )
-          return true
-        end
-        false
+        Autobots::Settings[:connector].include? 'chrome'
       end
 
       # return true only if test is running on safari
       # @return [boolean]
       def browser_is_safari?
-        userAgent = @driver.execute_script("return navigator.userAgent","").downcase
-        if( userAgent.include?('safari') )
-          return true
-        end
-        false
+        Autobots::Settings[:connector].include? 'safari'
       end
 
 
