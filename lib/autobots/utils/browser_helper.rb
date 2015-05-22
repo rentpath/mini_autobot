@@ -6,17 +6,17 @@ module Autobots
       # return true only if test is running on ghost driver
       # @return [boolean]
       def browser_is_ghost?
-        Autobots::Settings[:connector].include? 'ghost'
+        Autobots.settings.connector.include? 'ghost'
       end
 
       # return true only if test is running on IE
       # @return [boolean]
       def browser_is_ie?
-        Autobots::Settings[:connector].include? 'ie'
+        Autobots.settings.connector.include? 'ie'
       end
 
       def browser_is_ie_8?
-        Autobots::Settings[:connector].include? 'ie8'
+        Autobots.settings.connector.include? 'ie8'
       end
 
       # return true only if test is running on firefox
@@ -36,13 +36,13 @@ module Autobots
       # return true only if test is running on chrome
       # @return [boolean]
       def browser_is_chrome?
-        Autobots::Settings[:connector].include? 'chrome'
+        Autobots.settings.connector.include? 'chrome'
       end
 
       # return true only if test is running on safari
       # @return [boolean]
       def browser_is_safari?
-        Autobots::Settings[:connector].include? 'safari'
+        Autobots.settings.connector.include? 'safari'
       end
 
 
