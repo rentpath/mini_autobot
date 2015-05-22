@@ -97,8 +97,8 @@ module Autobots
     # @raise ArgumentError
     # @return [Connector] an initialized connector object
     def self.get_default
-      connector = Autobots::Settings[:connector] || :ghost
-      env = Autobots::Settings[:env] || :qa
+      connector = Autobots.settings.connector
+      env = Autobots.settings.env
       Autobots.logger.debug("Retrieving connector with settings (#{connector}, #{env})")
 
       # Get a connector instance and use it in the new page object
@@ -221,9 +221,7 @@ module Autobots
     # we may also have another method called browser_is_safari? in browser_helper which is accessible for tests/pages
     # @return [boolean]
     def run_on_safari?
-      connector = Autobots::Settings[:connector]
-      return true if connector.include?('safari')
-      return false
+      Autobots.settings.connector.include?('safari')
     end
 
     # Forward any other method call to the configuration container; if that

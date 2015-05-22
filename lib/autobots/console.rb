@@ -3,7 +3,7 @@ module Autobots
   class Console < TestCase
 
     def self.bootstrap!
-      true
+      Autobots.settings.tags << [:__dummy__]
     end
 
     test :dummy, tags: [:__dummy__], serial: 'DUMMY' do

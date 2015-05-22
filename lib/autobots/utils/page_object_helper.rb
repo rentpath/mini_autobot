@@ -65,8 +65,9 @@ module Autobots
         rescue
           self.logger.debug "Failed setting saucelabs session name for #{name()}"
         end
-        Autobots::Connector.finalize! if Autobots::Settings[:auto_finalize]
-        super()
+
+        Autobots::Connector.finalize! if Autobots.settings.auto_finalize?
+        super
       end
 
       def take_screenshot
@@ -87,7 +88,7 @@ module Autobots
       def set_sauce_session_name
         # identify the user who runs the tests and grab user's access_key
         # where are we parsing info from run command to in the code?
-        connector = Autobots::Settings[:connector] # eg. saucelabs:phu:win7_ie11
+        connector = Autobots.settings.connector # eg. saucelabs:phu:win7_ie11
         overrides = connector.to_s.split(/:/)
         new_tags = overrides[2]+"_by_"+overrides[1]
         file_name = overrides.shift
@@ -111,7 +112,7 @@ module Autobots
       end
       
       def connector_is_saucelabs?
-        return true if Autobots::Settings[:connector].include?('saucelabs')
+        return true if Autobots.settings.connector.include?('saucelabs')
         return false
       end
 

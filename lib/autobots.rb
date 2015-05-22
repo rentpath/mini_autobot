@@ -68,11 +68,19 @@ module Autobots
   autoload :TestCases, 'autobots/test_cases'
 
   def self.logger
-    @@__logger__ ||= Autobots::Logger.new($stdout)
+    @@logger ||= Autobots::Logger.new($stdout)
   end
 
   def self.logger=(value)
-    @@__logger__ = value
+    @@logger = value
+  end
+
+  def self.settings
+    @@settings ||= Settings.new
+  end
+
+  def self.settings=(options)
+    self.settings.merge!(options)
   end
 
   # Magical method that automatically figures out the root directory of the
