@@ -36,7 +36,6 @@ module Autobots
     autoload :FbSignin,           'autobots/page_objects/fb_signin'
     autoload :GplusSignin,        'autobots/page_objects/gplus_signin'
     autoload :CityGuide,          'autobots/page_objects/city_guide'
-    autoload :Brochure,           'autobots/page_objects/brochure'
     autoload :MovingCenter2,       'autobots/page_objects/moving_center2'
 
     # Autoloads for page objects mobile
