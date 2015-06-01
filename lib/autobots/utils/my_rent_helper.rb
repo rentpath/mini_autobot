@@ -53,8 +53,7 @@ module Autobots
 
         # Register as a new Renter
         registration_overlay = @hp.click_signin_link!.click_create_account_link!
-        password_overlay = registration_overlay.hp_reg(@username)
-        loggedin_hp = password_overlay.hp_new_pwd
+        loggedin_hp = registration_overlay.reg!(USER, :property_details)
         assert_match loggedin_hp.loggedin_username, @username
 
         # click on MyRent, goto My Rent page
