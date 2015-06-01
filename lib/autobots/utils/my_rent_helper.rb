@@ -52,7 +52,7 @@ module Autobots
         @username = generate_test_email
 
         # Register as a new Renter
-        registration_overlay = @hp.click_reg_link!
+        registration_overlay = @hp.click_signin_link!.click_create_account_link!
         password_overlay = registration_overlay.hp_reg(@username)
         loggedin_hp = password_overlay.hp_new_pwd
         assert_match loggedin_hp.loggedin_username, @username

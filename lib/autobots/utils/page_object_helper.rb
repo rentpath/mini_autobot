@@ -156,7 +156,7 @@ module Autobots
 
       private
 
-      # @param  eg. (:css, 'button.cancel') or (*BUTTON_GETSTARTED)
+      # @param  eg. (:css, 'button.cancel') or (*BUTTON_SUBMIT_SEARCH)
       # @param  also has an optional parameter-driver, which can be @element when calling this method in a widget object
       # @return [boolean]
       def element_appeared?(how, what, driver = nil, check_display = false)
