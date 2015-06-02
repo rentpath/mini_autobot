@@ -1,7 +1,7 @@
 module Autobots
 
   # This is the overarching module that contains page objects, modules, and
-  # widgets. 
+  # widgets.
   #
   # When new modules or classes are added, an `autoload` clause must be added
   # into this module so that requires are taken care of automatically.
@@ -41,7 +41,7 @@ module Autobots
     # Autoloads for page objects mobile
     autoload :HomeMobile,         'autobots/page_objects/home_mobile'
     autoload :SearchMobile,       'autobots/page_objects/search_mobile'
-    
+
   end
 
 end

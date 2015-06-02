@@ -80,7 +80,7 @@ module Autobots
       # Grab an existing instance, if once already exists, but make sure to
       # reset the driver first
       cfg = Config.new(connector_cfg, env_cfg)
-      
+
       if c = self.pool[cfg]
         c.reset!
         Autobots.logger.debug("Connector(##{c.object_id}): reusing, with reset")
@@ -260,7 +260,7 @@ module Autobots
       super || @config.respond_to?(name) || @driver.respond_to?(name)
     end
 
-    # Compose a URL from the provided +path+ and the environment profile. The 
+    # Compose a URL from the provided +path+ and the environment profile. The
     # latter contains things like the hostname, port, SSL settings.
     #
     # @param path [#to_s] the path to append after the root URL.
