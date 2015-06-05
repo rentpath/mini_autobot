@@ -49,12 +49,14 @@ module Autobots
 
       def new_account_setup()
         # Create username
-        @username = generate_test_email
+        random_email = generate_test_email
+
+        new_user = {:first_name => "Myrent", :last_name => "Testuser", :email => random_email, :password => "qatest11"}
 
         # Register as a new Renter
         registration_overlay = @hp.click_signin_link!.click_create_account_link!
-        loggedin_hp = registration_overlay.reg!(USER, :property_details)
-        assert_match loggedin_hp.loggedin_username, @username
+        loggedin_hp = registration_overlay.reg!(new_user, :property_details)
+        assert_match loggedin_hp.loggedin_username, new_user[:first_name]
 
         # click on MyRent, goto My Rent page
         @mrp = loggedin_hp.my_rent!
