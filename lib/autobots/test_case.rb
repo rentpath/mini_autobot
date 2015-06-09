@@ -6,6 +6,7 @@ module Autobots
     @@regression_suite = Array.new
     @@already_executed = false
     @@serials = Array.new
+    TEST_SUITE_DATA = YAML.load_file(Autobots.root.join("config/test_suite.yml"))
 
     # parallelize_me!
 
@@ -167,16 +168,19 @@ module Autobots
           flunk "No implementation was provided for test '#{method_name}' in #{self}"
         end
 
-        # add all tests to @@regression_suite, excluding the ones with tags in tags_to_exclude defined in config
+        # add all tests to @@regression_suite
+        # excluding the ones with tags in tags_to_exclude defined in config
         unless exclude_by_tag?('regression', opts[:tags])
-          @@regression_suite << method_name # add all tests to @@regression_suite
+          @@regression_suite << method_name
           @@serials << opts[:serial]
         end
       end
 
+      # @param suite [String] type of test suite
+      # @param tags [Array] an array of tags a test has
+      # @return [Boolean]
       def exclude_by_tag?(suite, tags)
-        test_suite_data = YAML.load_file(Autobots.root.join("config/test_suite.yml"))
-        tag_to_exclude = test_suite_data[suite]['tag_to_exclude']
+        tag_to_exclude = TEST_SUITE_DATA[suite]['tag_to_exclude']
         if tags.include? tag_to_exclude
           true
         else
