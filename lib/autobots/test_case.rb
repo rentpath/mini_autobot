@@ -3,7 +3,7 @@ module Autobots
   # An Autobots-specific test case container, which extends the default ones,
   # adds convenience helper methods, and manages page objects automatically.
   class TestCase < Minitest::Test
-    @@all_tests = Array.new
+    @@regression_suite = Array.new
     @@already_executed = false
     @@serials = Array.new
 
@@ -77,7 +77,7 @@ module Autobots
           if @@already_executed
             exit
           end
-          parallel = Parallel.new(nil, @@all_tests)
+          parallel = Parallel.new(nil, @@regression_suite)
           # todo get the number value from "-p=" and replace nil with it
           # first parameter comes from number after "-p=", may be null(then will use default 15)
           parallel.run_in_parallel!
@@ -167,19 +167,22 @@ module Autobots
           flunk "No implementation was provided for test '#{method_name}' in #{self}"
         end
 
-        # add all tests to @@all_tests, excluding the ones with tags in TAGS_EXCLUDE
-        unless exclude_by_tags?(opts[:tags])
-          @@all_tests << method_name # add all tests to @@all_tests
+        # add all tests to @@regression_suite, excluding the ones with tags in tags_to_exclude defined in config
+        unless exclude_by_tag?('regression', opts[:tags])
+          @@regression_suite << method_name # add all tests to @@regression_suite
           @@serials << opts[:serial]
+        else
+          puts method_name
         end
       end
 
-      TAGS_EXCLUDE = [[:seo, :slow], [:sitemap, :slow], [:cube_tracking], [:mobile]]
-      # (:seo AND :slow) or (:sitemap AND :slow) or :cube_tracking or :mobile
-
-      def exclude_by_tags?(tags)
-        TAGS_EXCLUDE.any? do |one_tags| # one_tags is array, eg. [:seo, :slow]
-          (one_tags - tags).empty? # true if array tags contains all elements of array one_tags
+      def exclude_by_tag?(suite, tags)
+        test_suite_data = YAML.load_file(Autobots.root.join("config/test_suite.yml"))
+        tag_to_exclude = test_suite_data[suite]['tag_to_exclude']
+        if tags.include? tag_to_exclude
+          true
+        else
+          false
         end
       end
 
