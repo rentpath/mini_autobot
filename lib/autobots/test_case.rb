@@ -171,8 +171,6 @@ module Autobots
         unless exclude_by_tag?('regression', opts[:tags])
           @@regression_suite << method_name # add all tests to @@regression_suite
           @@serials << opts[:serial]
-        else
-          puts method_name
         end
       end
 
