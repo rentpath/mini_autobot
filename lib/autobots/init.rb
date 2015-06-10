@@ -39,7 +39,7 @@ module Autobots
   # @return [Pathname] A reference to the root directory, ready to be used
   #         in directory and file path calculations.
   def self.root
-    @@__root__ ||= Pathname.new(File.realpath(File.join(File.dirname(__FILE__), '..')))
+    @@__root__ ||= Pathname.new(File.realpath(File.join(File.dirname(__FILE__), '..', '..')))
   end
 
 end

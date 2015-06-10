@@ -6,6 +6,7 @@ module Autobots
     @@regression_suite = Array.new
     @@already_executed = false
     @@serials = Array.new
+
     TEST_SUITE_DATA = YAML.load_file(Autobots.root.join("config/test_suite.yml"))
 
     # parallelize_me!
