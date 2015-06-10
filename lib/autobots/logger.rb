@@ -1,5 +1,4 @@
 module Autobots
-
   class Logger < ActiveSupport::Logger
 
     LOG_FILE_MODE = File::WRONLY | File::APPEND | File::CREAT
@@ -10,5 +9,4 @@ module Autobots
     end
 
   end
-
 end

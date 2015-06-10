@@ -1,17 +1,13 @@
 module Autobots
-
-  # Container for utility modules.
-  module Utils
-
-    autoload :AssertionHelper,     'autobots/utils/assertion_helper'
-    autoload :Castable,            'autobots/utils/castable'
-    autoload :DataGeneratorHelper, 'autobots/utils/data_generator_helper'
-    autoload :DataObjectHelper,    'autobots/utils/data_object_helper'
-    autoload :Loggable,            'autobots/utils/loggable'
-    autoload :PageObjectHelper,    'autobots/utils/page_object_helper'
-    autoload :BrowserHelper,       'autobots/utils/browser_helper'
-    autoload :OverlayAndWidgetHelper,'autobots/utils/overlay_and_widget_helper'
-    autoload :MyRentHelper,        'autobots/utils/my_rent_helper'
-
-  end
+  module Utils; end
 end
+
+require_relative 'utils/assertion_helper'
+require_relative 'utils/castable'
+require_relative 'utils/data_generator_helper'
+require_relative 'utils/data_object_helper'
+require_relative 'utils/loggable'
+require_relative 'utils/page_object_helper'
+require_relative 'utils/browser_helper'
+require_relative 'utils/overlay_and_widget_helper'
+require_relative 'utils/my_rent_helper'
