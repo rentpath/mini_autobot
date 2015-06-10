@@ -1,4 +1,4 @@
-require 'bundler'
+require 'bundler/setup'
 
 envs = [:default]
 envs << ENV['AUTOBOT_BUNDLE'].to_sym if ENV.key?('AUTOBOT_BUNDLE')
