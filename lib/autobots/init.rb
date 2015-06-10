@@ -9,19 +9,6 @@
 # * `Utils` provides an overarching module for miscellaneous helper modules.
 module Autobots
 
-  autoload :Connector, 'autobots/connector'
-  autoload :Console, 'autobots/console'
-  autoload :DAO, 'autobots/dao'
-  autoload :Logger, 'autobots/logger'
-  autoload :PageObjects, 'autobots/page_objects'
-  autoload :Parallel, 'autobots/parallel'
-  autoload :Settings, 'autobots/settings'
-  autoload :Utils, 'autobots/utils'
-
-  autoload :Emails, 'autobots/emails'
-  autoload :TestCase, 'autobots/test_case'
-  autoload :TestCases, 'autobots/test_cases'
-
   def self.logger
     @@logger ||= Autobots::Logger.new($stdout)
   end
@@ -56,3 +43,16 @@ module Autobots
   end
 
 end
+
+require_relative 'connector'
+require_relative 'console'
+require_relative 'dao'
+require_relative 'logger'
+require_relative 'page_objects'
+require_relative 'parallel'
+require_relative 'settings'
+require_relative 'utils'
+
+require_relative 'emails'
+require_relative 'test_case'
+require_relative 'test_cases'
