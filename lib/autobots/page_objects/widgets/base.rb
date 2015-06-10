@@ -11,6 +11,8 @@ module Autobots
         include Utils::BrowserHelper
         include Utils::OverlayAndWidgetHelper
 
+        attr_reader :driver, :element, :page
+
         def initialize(page, element)
           @driver = page.driver
           @page = page
@@ -26,7 +28,7 @@ module Autobots
         attr_reader :element
 
         # Explicitly wait for a certain condition to be true:
-        #   wait.until { @driver.find_element(:css, 'body.tmpl-srp') }
+        #   wait.until { driver.find_element(:css, 'body.tmpl-srp') }
         # when timeout is not specified, default timeout 5 sec will be used
         # when timeout is larger than 15, max timeout 15 sec will be used
         def wait(opts = {})
