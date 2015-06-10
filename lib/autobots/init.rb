@@ -44,15 +44,18 @@ module Autobots
 
 end
 
-require_relative 'connector'
-require_relative 'console'
-require_relative 'dao'
 require_relative 'logger'
+require_relative 'utils'
+
+require_relative 'connector'
+require_relative 'dao'
 require_relative 'page_objects'
 require_relative 'parallel'
 require_relative 'settings'
-require_relative 'utils'
 
 require_relative 'emails'
+
 require_relative 'test_case'
+require_relative 'console'
+
 require_relative 'test_cases'
