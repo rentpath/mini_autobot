@@ -23,8 +23,6 @@ require_relative 'page_objects/widgets'
 
 # Page modules and components
 require_relative 'page_objects/common'
-require_relative 'page_objects/main_footer'
-require_relative 'page_objects/main_navigation'
 require_relative 'page_objects/common_mobile'
 
 # Page objects
