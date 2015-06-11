@@ -9,8 +9,6 @@ module Autobots
 
     TEST_SUITE_DATA = YAML.load_file(Autobots.root.join("config/test_suite.yml"))
 
-    # parallelize_me!
-
     # Standard exception class that signals that the test with that name has
     # already been defined.
     class TestAlreadyDefined < ::StandardError; end
@@ -79,10 +77,12 @@ module Autobots
           if @@already_executed
             exit
           end
+
           parallel = Parallel.new(nil, @@regression_suite)
           # todo get the number value from "-p=" and replace nil with it
           # first parameter comes from number after "-p=", may be null(then will use default 15)
           parallel.run_in_parallel!
+
           @@already_executed = true
         end
 

@@ -14,7 +14,7 @@ module Autobots
       @on_sauce = true if connector.include? 'saucelabs'
       @platform = connector.split(':')[2] || ''
 
-      @pids = Array.new
+      @pids = []
       @static_run_command = "bin/autobot -c #{Autobots.settings.connector} -e #{Autobots.settings.env}"
       @pipe_tap = "--tapy | tapout --no-color -r ./lib/tapout/custom_reporters/fancy_tap_reporter.rb fancytap"
     end
