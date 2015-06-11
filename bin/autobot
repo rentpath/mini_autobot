@@ -1,5 +1,8 @@
 #!/usr/bin/env ruby
 
+# TODO(rpasay, phu): This line will need to be replaced by an entry in the
+# gemspec (for the bin path and the executable names), when autobot finally
+# becomes its own gem.
 $LOAD_PATH.unshift File.realpath(File.join(File.dirname(__FILE__), '..', 'lib'))
 
 require 'autobots'
