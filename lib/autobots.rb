@@ -10,7 +10,6 @@ require 'yaml'
 
 require 'cgi'
 require 'pathname'
-require 'singleton'
 
 require 'active_support/core_ext/date_time/conversions'
 require 'active_support/core_ext/hash'
