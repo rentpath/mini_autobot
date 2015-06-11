@@ -8,9 +8,6 @@ Bundler.setup(*envs)
 require 'minitest'
 require 'yaml'
 
-# new files to override gems
-require 'minitap/minitest5_rent'
-
 require 'cgi'
 require 'pathname'
 require 'singleton'
@@ -31,6 +28,8 @@ require 'active_support/core_ext/string/starts_ends_with'
 require 'active_support/core_ext/string/strip'
 require 'active_support/inflector'
 require 'active_support/logger'
+
+require_relative 'minitap/minitest5_rent'
 
 ActiveSupport::Inflector.inflections(:en) do |inflector|
   inflector.acronym 'DAO'
