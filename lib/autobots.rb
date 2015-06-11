@@ -7,6 +7,8 @@ envs << ENV['APPLICATION_ENV'].to_sym if ENV.key?('APPLICATION_ENV')
 Bundler.setup(*envs)
 require 'minitest'
 require 'yaml'
+require 'faker'
+require 'selenium/webdriver'
 
 require 'cgi'
 require 'pathname'
