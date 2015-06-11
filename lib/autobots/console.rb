@@ -1,5 +1,4 @@
 module Autobots
-
   class Console < TestCase
 
     def self.bootstrap!
@@ -12,5 +11,4 @@ module Autobots
     end
 
   end
-
 end

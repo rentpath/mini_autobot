@@ -1,10 +1,5 @@
-require 'net/imap'
-
 module Autobots
-  module Emails
-
-    autoload :Mailbox, 'autobots/emails/mailbox'
-
-  end
+  module Emails; end
 end
 
+require_relative 'emails/mailbox'

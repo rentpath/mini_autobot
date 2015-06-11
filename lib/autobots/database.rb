@@ -1,7 +1,5 @@
 module Autobots
-    module PageObjects
-
-      autoload :Base,       'autobots/database/base'
-
-    end
+  module PageObjects; end
 end
+
+require_relative 'database/base'

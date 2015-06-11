@@ -1,3 +1,4 @@
+require 'net/imap'
 
 module Autobots
   module Emails

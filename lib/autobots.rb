@@ -1,15 +1,17 @@
-require 'bundler'
+require 'bundler/setup'
 
 envs = [:default]
-envs << ENV['AUTOBOT_BUNDLE'].to_sym if ENV.has_key?('AUTOBOT_BUNDLE')
-Bundler.require(*envs) # loads all the autoloadable gems
+envs << ENV['AUTOBOT_BUNDLE'].to_sym if ENV.key?('AUTOBOT_BUNDLE')
+envs << ENV['APPLICATION_ENV'].to_sym if ENV.key?('APPLICATION_ENV')
 
-# new files to override gems
-require 'minitap/minitest5_rent'
+Bundler.setup(*envs)
+require 'minitest'
+require 'yaml'
+require 'faker'
+require 'selenium/webdriver'
 
 require 'cgi'
 require 'pathname'
-require 'singleton'
 
 require 'active_support/core_ext/date_time/conversions'
 require 'active_support/core_ext/hash'
@@ -28,6 +30,8 @@ require 'active_support/core_ext/string/strip'
 require 'active_support/inflector'
 require 'active_support/logger'
 
+require_relative 'minitap/minitest5_rent'
+
 ActiveSupport::Inflector.inflections(:en) do |inflector|
   inflector.acronym 'DAO'
   inflector.acronym 'LR'
@@ -40,64 +44,4 @@ end
 
 Time::DATE_FORMATS[:month_day_year] = "%m/%d/%Y"
 
-# The base module for everything Autobots and is the container for other
-# modules and classes in the hierarchy:
-#
-# * `Connector` provides support for drivers and connector profiles;
-# * `Emails` introduces email-specific drivers for Autobots;
-# * `PageObjects` provides a hierarchy of page objects, page modules, widgets,
-#   and overlays;
-# * `Settings` provides support for internal Autobots settings; and
-# * `Utils` provides an overarching module for miscellaneous helper modules.
-#
-# When new, modules or classes are added, an `autoload` clause must be added
-# into this top-level module so that requires are taken care of automatically.
-module Autobots
-
-  autoload :Connector, 'autobots/connector'
-  autoload :Console, 'autobots/console'
-  autoload :DAO, 'autobots/dao'
-  autoload :Logger, 'autobots/logger'
-  autoload :PageObjects, 'autobots/page_objects'
-  autoload :Parallel, 'autobots/parallel'
-  autoload :Settings, 'autobots/settings'
-  autoload :Utils, 'autobots/utils'
-
-  autoload :Emails, 'autobots/emails'
-  autoload :TestCase, 'autobots/test_case'
-  autoload :TestCases, 'autobots/test_cases'
-
-  def self.logger
-    @@logger ||= Autobots::Logger.new($stdout)
-  end
-
-  def self.logger=(value)
-    @@logger = value
-  end
-
-  def self.settings
-    @@settings ||= Settings.new
-  end
-
-  def self.settings=(options)
-    self.settings.merge!(options)
-  end
-
-  # Magical method that automatically figures out the root directory of the
-  # automation repository, which is the directory that contains `lib` and
-  # `config` subdirectories.
-  #
-  # The return value of this method can be safely used to refer to other
-  # directories, for example:
-  #
-  #   File.read(Autobots.root.join('config', 'data.yml'))
-  #
-  # will return the contents of `config/data.yml`.
-  #
-  # @return [Pathname] A reference to the root directory, ready to be used
-  #         in directory and file path calculations.
-  def self.root
-    @@__root__ ||= Pathname.new(File.realpath(File.join(File.dirname(__FILE__), '..')))
-  end
-
-end
+require_relative 'autobots/init'
