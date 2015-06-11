@@ -60,6 +60,7 @@ module Autobots
 
         # click on MyRent, goto My Rent page
         @mrp = loggedin_hp.my_rent!
+        new_user
       end
 
       def new_test_account()
