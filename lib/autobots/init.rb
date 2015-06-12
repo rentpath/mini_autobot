@@ -48,7 +48,6 @@ require_relative 'logger'
 require_relative 'utils'
 
 require_relative 'connector'
-require_relative 'dao'
 require_relative 'page_objects'
 require_relative 'parallel'
 require_relative 'settings'
