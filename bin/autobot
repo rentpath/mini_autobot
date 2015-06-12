@@ -12,4 +12,5 @@ Dir.glob('lib/autobots/test_cases/*.rb') do |f|
   require f
 end
 
+Autobots::Runner.after_run { Autobots::Connector.finalize!(:force) }
 Autobots::Runner.run!(ARGV)
