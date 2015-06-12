@@ -38,22 +38,32 @@ module Autobots
 
     class <<self # :nodoc:
       protected
-      attr_accessor :pool
+      attr_accessor :finalization_queue
     end
+
+    self.finalization_queue = Queue.new
 
     # Finalize connectors in the pool that are no longer used, and then clear
     # the pool if it should be empty.
-    def self.finalize!
-      return unless self.pool
-      Autobots.logger.debug("Finalizing #{self.pool.values.size} connectors")
-      self.pool.values.each do |connector|
-        begin
-          connector.finalize!
-        rescue => e
-          Autobots.logger.error("Could not finalize Connector(##{connector.object_id}): #{e.message}")
+    def self.finalize!(force = false)
+      return if Autobots.settings.reuse_driver? && !force
+
+      if Thread.current[:active_connector]
+        self.finalization_queue << Thread.current[:active_connector]
+        Thread.current[:active_connector] = nil
+      end
+
+      return unless Autobots.settings.auto_finalize?
+
+      Thread.new do
+        while connector = self.finalization_queue.pop
+          begin
+            connector.finalize!
+          rescue => e
+            Autobots.logger.error("Could not finalize Connector(##{connector.object_id}): #{e.message}")
+          end
         end
       end
-      self.pool.clear
     end
 
     # Given a connector profile and an environment profile, this method will
@@ -64,32 +74,35 @@ module Autobots
     # @param connector [#to_s] the name of the connector profile to use.
     # @param env [#to_s] the name of the environment profile to use.
     # @return [Connector] an initialized connector object
-    def self.get(connector, env)
-      self.pool ||= {}
-
+    def self.get(connector_id, env_id)
       # Ensure arguments are at least provided
-      raise ArgumentError, "A connector must be provided" if connector.blank?
-      raise ArgumentError, "An environment must be provided" if env.blank?
+      raise ArgumentError, "A connector must be provided" if connector_id.blank?
+      raise ArgumentError, "An environment must be provided" if env_id.blank?
 
-      # Find the connector profile and load it
-      connector_cfg = self.load(Autobots.root.join('config', 'connectors'), connector)
-
-      # Find the environment profile and load it
-      env_cfg = self.load(Autobots.root.join('config', 'environments'), env)
-
-      # Grab an existing instance, if once already exists, but make sure to
-      # reset the driver first
+      # Find the connector and environment profiles
+      connector_cfg = self.load(Autobots.root.join('config', 'connectors'), connector_id)
+      env_cfg = self.load(Autobots.root.join('config', 'environments'), env_id)
       cfg = Config.new(connector_cfg, env_cfg)
 
-      if c = self.pool[cfg]
-        c.reset!
-        Autobots.logger.debug("Connector(##{c.object_id}): reusing, with reset")
-        return c
+      if Thread.current[:active_connector] && !Autobots.settings.reuse_driver?
+        self.finalization_queue << active_connector
+        Thread.current[:active_connector] = nil
       end
 
-      # Instantiate a connector, which will take care of instantiating the
-      # WebDriver and configure its options
-      self.pool[cfg] = Connector.new(cfg)
+      # If the current thread already has an active connector, and the connector
+      # is of the same type requested, reuse it after calling `reset!`
+      active_connector = Thread.current[:active_connector]
+      if active_connector.present?
+        if active_connector.config == cfg
+          active_connector.reset!
+        else
+          self.finalization_queue << active_connector
+          active_connector = nil
+        end
+      end
+
+      # Reuse or instantiate
+      Thread.current[:active_connector] = active_connector || Connector.new(cfg)
     end
 
     # Retrieve the default connector for the current environment.
@@ -143,6 +156,8 @@ module Autobots
 
       cfg
     end
+
+    attr_reader :config
 
     # Perform cleanup on the connector and driver.
     def finalize!

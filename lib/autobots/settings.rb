@@ -48,6 +48,10 @@ module Autobots
       hsh.fetch(:args, nil).to_s
     end
 
+    def reuse_driver?
+      hsh.fetch(:reuse_driver, false)
+    end
+
     def seed
       hsh.fetch(:seed, nil).to_i
     end
