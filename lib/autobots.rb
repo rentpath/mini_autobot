@@ -33,12 +33,7 @@ require 'active_support/logger'
 require_relative 'minitap/minitest5_rent'
 
 ActiveSupport::Inflector.inflections(:en) do |inflector|
-  inflector.acronym 'DAO'
-  inflector.acronym 'LR'
-  inflector.acronym 'LRR'
   inflector.acronym 'PDP'
-  inflector.acronym 'PSP'
-  inflector.acronym 'RC'
   inflector.acronym 'SRP'
 end
 
