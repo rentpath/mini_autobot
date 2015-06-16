@@ -44,6 +44,7 @@ module Autobots
 
 end
 
+require_relative 'runner'
 require_relative 'logger'
 require_relative 'utils'
 

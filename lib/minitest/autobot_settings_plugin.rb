@@ -53,6 +53,11 @@ module Minitest
       options[:console] = true
     end
 
+    options[:reuse_driver] = false
+    parser.on('-r', '--reuse-driver', "Reuse driver between tests") do |value|
+      options[:reuse_driver] = value
+    end
+
     parser.on('-t', '--tag TAGLIST', 'Run only tests matching a specific tag, tags, or tagsets') do |value|
       options[:tags] ||= [ ]
       options[:tags] << value.to_s.split(',').map { |t| t.to_sym }

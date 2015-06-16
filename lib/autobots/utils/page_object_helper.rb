@@ -8,6 +8,7 @@ module Autobots
       # Helper method to instantiate a new page object. This method should only
       # be used when first loading; subsequent page objects are automatically
       # instantiated by calling #cast on the page object.
+      #
       # Pass optional parameter Driver, which can be initialized in test and will override the global driver here.
       #
       # @param name [String, Driver]
@@ -46,6 +47,7 @@ module Autobots
         rescue Minitest::Assertion => exc
           raise Autobots::PageObjects::InvalidePageState, "#{klass}: #{exc.message}"
         end
+
         # Return the instance as-is
         instance
       end
@@ -66,7 +68,7 @@ module Autobots
           self.logger.debug "Failed setting saucelabs session name for #{name()}"
         end
 
-        Autobots::Connector.finalize! if Autobots.settings.auto_finalize?
+        Autobots::Connector.finalize!
         super
       end
 
