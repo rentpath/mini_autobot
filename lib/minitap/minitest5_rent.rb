@@ -1,3 +1,5 @@
+require 'minitap'
+
 module Minitest
 
   ##

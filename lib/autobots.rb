@@ -30,8 +30,6 @@ require 'active_support/core_ext/string/strip'
 require 'active_support/inflector'
 require 'active_support/logger'
 
-# Load minitap gem first, then monkey patch version
-require 'minitap'
 require_relative 'minitap/minitest5_rent'
 
 ActiveSupport::Inflector.inflections(:en) do |inflector|
