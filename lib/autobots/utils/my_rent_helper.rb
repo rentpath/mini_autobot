@@ -70,7 +70,7 @@ module Autobots
       def contact_property(property)
         @pdp = go_to_pdp!(property)
         prop_name = @pdp.property_name
-        hotlead_confirm = @pdp.li_hl_send!('test')
+        hotlead_confirm = @pdp.li_hl_send!
         @pdp = hotlead_confirm.close_confirmation_box!(:property_details)
         prop_name
       end
@@ -96,7 +96,8 @@ module Autobots
       def generate_list_of_properties(num_props, locations)
         self.logger.debug "generate_list_of_properties"
         properties = [] # properties processed
-        @srp = @mrp.default_search! # go to srp
+        hp = @mrp.home! # go to home page
+        @srp = hp.search(*SUBMARKET_NM)
         ## run until we've processed the desired number of properties or exhausted locations
         while properties.length < num_props && locations.length > 0 do 
           begin
@@ -136,7 +137,7 @@ module Autobots
       end
 
       def go_to_pdp!(property)
-        @mrp.go_to_subpage!(property.url, :property_details)
+        @mrp.go_to_page!(property.url, :property_details)
       end
 
       def save_property(property)
