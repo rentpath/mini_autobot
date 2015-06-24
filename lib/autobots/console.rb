@@ -5,7 +5,7 @@ module Autobots
       Autobots.settings.tags << [:__dummy__]
     end
 
-    test :dummy, tags: [:__dummy__], serial: 'DUMMY' do
+    test :dummy, tags: [:focus, :__dummy__], serial: 'DUMMY' do
       assert_respond_to binding, :pry
       binding.pry
     end
