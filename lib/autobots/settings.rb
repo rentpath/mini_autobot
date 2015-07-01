@@ -24,7 +24,7 @@ module Autobots
     end
 
     def connector
-      hsh.fetch(:connector, :ghost).to_s
+      hsh.fetch(:connector, :firefox).to_s
     end
 
     def env
