@@ -3,48 +3,16 @@ module Autobots
 
     module BrowserHelper
 
-      # return true only if test is running on ghost driver
-      # @return [boolean]
-      def browser_is_ghost?
-        Autobots.settings.connector.include? 'ghost'
+      # For saucelabs, it returns the OS and browser combination
+      # For everything else, it returns the browser
+      # @return [String]
+      def current_browser
+        Autobots.settings.connector.split(/:/)[-1]
       end
 
-      # return true only if test is running on IE
-      # @return [boolean]
-      def browser_is_ie?
-        Autobots.settings.connector.include? 'ie'
+      def current_browser_is?(expected_browser)
+        current_browser.include? expected_browser
       end
-
-      def browser_is_ie_8?
-        Autobots.settings.connector.include? 'ie8'
-      end
-
-      # return true only if test is running on firefox
-      # @return [boolean]
-      def browser_is_firefox?(version_regexp: nil)
-        userAgent = @driver.execute_script("return navigator.userAgent","").downcase
-        if( userAgent.include?('firefox') )
-          if !version_regexp.nil?
-            return true if userAgent.match(version_regexp)
-            return false
-          end
-          return true
-        end
-        false
-      end
-
-      # return true only if test is running on chrome
-      # @return [boolean]
-      def browser_is_chrome?
-        Autobots.settings.connector.include? 'chrome'
-      end
-
-      # return true only if test is running on safari
-      # @return [boolean]
-      def browser_is_safari?
-        Autobots.settings.connector.include? 'safari'
-      end
-
 
       # cube_tracking helper method
       # @param [Har, String] eg. cubetrack_value(@proxy.har, 'trackname')
@@ -62,7 +30,7 @@ module Autobots
         end
         return values
       end
-            
+
     end
     
   end
