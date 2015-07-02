@@ -8,7 +8,6 @@ module Autobots
       class Base
         include Utils::Castable
         include Utils::PageObjectHelper
-        include Utils::BrowserHelper
         include Utils::OverlayAndWidgetHelper
 
         attr_reader :driver, :element, :page
