@@ -8,7 +8,6 @@ module Autobots
       # page objects or page modules.
       class Base
         include Utils::Castable
-        include Utils::BrowserHelper
         include Utils::PageObjectHelper
         include Utils::OverlayAndWidgetHelper
 
