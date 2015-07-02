@@ -118,6 +118,11 @@ module Autobots
       self.get(connector, env)
     end
 
+    # Equivalent to @driver.browser
+    def self.browser_name
+      Thread.current[:active_connector].browser
+    end
+
     # Load profile from a specific path using the selector(s) specified.
     #
     # @raise ArgumentError
