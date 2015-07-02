@@ -227,7 +227,7 @@ module Autobots
         end
 
         # setTimeout is undefined for safari driver so skip these steps for it
-        if !run_on_safari?
+        unless @driver.browser == :safari
           if timeouts = concon[:timeouts]
             @driver.manage.timeouts.implicit_wait  = timeouts[:implicit_wait]  if timeouts[:implicit_wait]
             @driver.manage.timeouts.page_load      = timeouts[:page_load]      if timeouts[:page_load]
@@ -235,13 +235,6 @@ module Autobots
           end
         end
       end
-    end
-
-    # return true only if specified to run on safari in connector
-    # we may also have another method called browser_is_safari? in browser_helper which is accessible for tests/pages
-    # @return [boolean]
-    def run_on_safari?
-      Autobots.settings.connector.include?('safari')
     end
 
     # Forward any other method call to the configuration container; if that

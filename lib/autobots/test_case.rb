@@ -18,7 +18,6 @@ module Autobots
     include Autobots::Utils::DataGeneratorHelper
     include Autobots::Utils::Loggable
     include Autobots::Utils::PageObjectHelper
-    include Autobots::Utils::BrowserHelper
 
     class <<self
 
