@@ -3,7 +3,7 @@ RSpec.describe Autobots::Settings do
   describe '#connector' do
     context 'by default' do
       subject { described_class.new.connector }
-      it { is_expected.to eql('ghost') }
+      it { is_expected.to eql('firefox') }
     end
 
     let(:settings) { described_class.new }
