@@ -9,6 +9,7 @@ require 'minitest'
 require 'yaml'
 require 'faker'
 require 'selenium/webdriver'
+require 'rest-client'
 
 require 'cgi'
 require 'pathname'
