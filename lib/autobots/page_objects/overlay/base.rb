@@ -16,6 +16,10 @@ module Autobots
         def initialize(page)
           @driver = page.driver
           @page = page
+
+          # works here but not in initialize of base of page objects
+          # because a page instance is already present when opening an overlay
+          wait_for_ajax
         end
 
         ## for overlay that include Utils::OverlayAndWidgetHelper
@@ -27,6 +31,13 @@ module Autobots
         # should be overridden in subclasses.
         def validate!
           true
+        end
+
+        # Wait on all AJAX requests to finish
+        def wait_for_ajax(timeout = 15)
+          wait(timeout: timeout, msg: "Timeout after waiting #{timeout} for all ajax requests to finish").until do
+            driver.execute_script('return jQuery.active == 0', driver)
+          end
         end
 
         # Explicitly wait for a certain condition to be true:
