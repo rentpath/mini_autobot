@@ -20,6 +20,7 @@ module Autobots
           # works here but not in initialize of base of page objects
           # because a page instance is already present when opening an overlay
           wait_for_ajax
+          wait_for_dom
         end
 
         ## for overlay that include Utils::OverlayAndWidgetHelper
@@ -31,6 +32,23 @@ module Autobots
         # should be overridden in subclasses.
         def validate!
           true
+        end
+
+        # Wait for all dom events to load
+        def wait_for_dom(timeout = 15)
+          uuid = SecureRandom.uuid
+          # make sure body is loaded before appending anything to it
+          wait(timeout: timeout, msg: "Timeout after waiting #{timeout} for body to load").until do
+            is_element_present?(:css, 'body')
+          end
+          driver.execute_script <<-EOS
+            _.defer(function() {
+            $('body').append("<div id='#{uuid}'></div>");
+            });
+          EOS
+          wait(timeout: timeout, msg: "Timeout after waiting #{timeout} for all dom events to finish").until do
+            is_element_present?(:css, "div[id='#{uuid}']")
+          end
         end
 
         # Wait on all AJAX requests to finish
