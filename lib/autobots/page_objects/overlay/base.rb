@@ -54,7 +54,7 @@ module Autobots
         # Wait on all AJAX requests to finish
         def wait_for_ajax(timeout = 15)
           wait(timeout: timeout, msg: "Timeout after waiting #{timeout} for all ajax requests to finish").until do
-            driver.execute_script('return jQuery.active == 0', driver)
+            driver.execute_script 'return window.jQuery != undefined && jQuery.active == 0'
           end
         end
 
