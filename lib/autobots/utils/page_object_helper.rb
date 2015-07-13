@@ -181,6 +181,10 @@ module Autobots
         return result
       end
 
+      def current_page(calling_page)
+        calling_page.class.to_s.split('::').last.downcase
+      end
+
     end
 
   end
