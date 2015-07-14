@@ -19,8 +19,8 @@ module Autobots
 
           # works here but not in initialize of base of page objects
           # because a page instance is already present when opening an overlay
-          wait_for_ajax
-          wait_for_dom
+          #wait_for_ajax
+          #wait_for_dom
         end
 
         ## for overlay that include Utils::OverlayAndWidgetHelper
