@@ -197,10 +197,9 @@ module Autobots
       def wait_for_attribute_status_change(how, what, desired_attribute, desired_status, friendly_name = "attribute")
         wait(timeout: 15, message: "Timeout waiting for #{friendly_name} status to update")
           .until {
-            if is_element_present_and_displayed?(how, what)
+            begin
               driver.find_element(how, what).attribute(desired_attribute).include?(desired_status)
-            else
-              false
+            rescue
             end
           }
       end
