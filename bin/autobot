@@ -4,12 +4,22 @@
 # gemspec (for the bin path and the executable names), when autobot finally
 # becomes its own gem.
 $LOAD_PATH.unshift File.realpath(File.join(File.dirname(__FILE__), '..', 'lib'))
+$LOAD_PATH << File.expand_path('web_tests')
 
 require 'autobots'
 
-Dir.glob('lib/autobots/test_cases/*.rb') do |f|
-  f.sub!(/^lib\//, '')
+host_env = Autobots.settings.env
+host = host_env.split(/_/)[0]
+
+Dir.glob("web_tests/#{host}/*.rb") do |f|
+  f.sub!(/^web_tests\//, '')
   require f
 end
 
+Dir.glob("web_tests/#{host}/test_cases/*.rb") do |f|
+  f.sub!(/^web_tests\//, '')
+  require f
+end
+
+Autobots::Runner.after_run { Autobots::Connector.finalize!(:force) }
 Autobots::Runner.run!(ARGV)
