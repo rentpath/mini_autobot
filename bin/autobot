@@ -8,18 +8,5 @@ $LOAD_PATH << File.expand_path('web_tests')
 
 require 'autobots'
 
-host_env = Autobots.settings.env
-host = host_env.split(/_/)[0]
-
-Dir.glob("web_tests/#{host}/*.rb") do |f|
-  f.sub!(/^web_tests\//, '')
-  require f
-end
-
-Dir.glob("web_tests/#{host}/test_cases/*.rb") do |f|
-  f.sub!(/^web_tests\//, '')
-  require f
-end
-
 Autobots::Runner.after_run { Autobots::Connector.finalize!(:force) }
 Autobots::Runner.run!(ARGV)
