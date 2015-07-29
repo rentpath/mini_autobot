@@ -43,8 +43,8 @@ module Minitest
       options[:connector] = value
     end
 
-    options[:connector] = ENV['AUTOBOT_ENV'] if ENV.has_key?('AUTOBOT_ENV')
-    parser.on('-e', '--env ENV', 'Run against a specific environment') do |value|
+    options[:env] = ENV['AUTOBOT_ENV'] if ENV.has_key?('AUTOBOT_ENV')
+    parser.on('-e', '--env ENV', 'Run against a specific environment, host_env') do |value|
       options[:env] = value
     end
 
