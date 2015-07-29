@@ -40,6 +40,28 @@ module Autobots
     # before hook where you have parsed @options when loading tests
     def self.before_run
       host_env = @options[:env]
+      if host_env.nil?
+        # TODO(phu): default host needs to be set in a new env file
+        host = 'rent'
+        puts "No argument given for option -e \nLoading tests using default host: #{host}"
+      else
+        host = host_env.split(/_/)[0]
+      end
+      self.load_tests(host)
+    end
+
+    # only load tests you need by specifying env option in command line
+    def self.load_tests(host)
+      Dir.glob("web_tests/#{host}/*.rb") do |f|
+        f.sub!(/^web_tests\//, '')
+        require f
+      end
+
+      # files under subdirectories shouldn't be loaded, eg. archive/
+      Dir.glob("web_tests/#{host}/test_cases/*.rb") do |f|
+        f.sub!(/^web_tests\//, '')
+        require f
+      end
     end
 
   end
