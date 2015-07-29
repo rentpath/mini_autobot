@@ -28,7 +28,9 @@ module Autobots
     end
 
     def env
-      hsh.fetch(:env, :qa).to_s
+      # add a gitignored env file which stores a default env
+      # pass the default env in as default
+      hsh.fetch(:env, :rent_qa).to_s
     end
 
     def io

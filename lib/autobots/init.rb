@@ -57,5 +57,3 @@ require_relative 'emails'
 
 require_relative 'test_case'
 require_relative 'console'
-
-require_relative 'test_cases'
