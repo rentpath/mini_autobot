@@ -1,0 +1,34 @@
+# vi swap files (the extra letters are used when there are duplicates)
+*.sw[ponml]
+.DS_Store
+
+README.html
+
+# emacs backup files (also used by other programs)
+*~
+\#*
+.\#*
+.nfs*
+.bundle
+
+# DO NOT REMOVE !
+# Ignore project files. Project files should never be committed.
+.idea
+.project
+.projects
+.settings
+*.sublime-*
+
+# YARDoc files
+.yardoc
+doc
+
+# Log files and temporary files
+logs
+tmp
+
+# Result files
+logs/tap_results
+
+# Vendored gems
+/vendor
