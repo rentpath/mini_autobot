@@ -1,7 +1,6 @@
 source 'https://rubygems.org'
 
 gem 'activesupport', '~>4.2.0', require: false
-gem 'browsermob-proxy'
 gem 'drawbridge', '~>0.6.0', source: 'http://gems.idg.primedia.com/'
 gem 'faker'
 gem 'google-api-client'
@@ -21,5 +20,5 @@ group :development do
 end
 
 group :test do
-  gem 'rspec', '~> 3.2.0', require: false
+  gem 'rspec', '~> 3.3.0', require: false
 end
