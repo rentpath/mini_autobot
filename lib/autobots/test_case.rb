@@ -6,8 +6,13 @@ module Autobots
     @@regression_suite = Array.new
     @@already_executed = false
     @@serials = Array.new
-
-    TEST_SUITE_DATA = YAML.load_file(Autobots.root.join("config/test_suite.yml"))
+    @@test_suite_data = if File.exist?(Autobots.root.join("config/test_suite.yml"))
+                          YAML.load_file(Autobots.root.join("config/test_suite.yml"))
+                        else
+                          default = {"regression"=>{"tag_to_exclude"=>:non_regression}}
+                          puts "config/test_suite.yml doesn't exist, using default:\n#{default}"
+                          default
+                        end
 
     # Standard exception class that signals that the test with that name has
     # already been defined.
@@ -179,7 +184,7 @@ module Autobots
       # @param tags [Array] an array of tags a test has
       # @return [Boolean]
       def exclude_by_tag?(suite, tags)
-        tag_to_exclude = TEST_SUITE_DATA[suite]['tag_to_exclude']
+        tag_to_exclude = @@test_suite_data[suite]['tag_to_exclude']
         if tags.include? tag_to_exclude
           true
         else
