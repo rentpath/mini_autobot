@@ -25,21 +25,25 @@ module Autobots
     self.settings.merge!(options)
   end
 
-  # Magical method that automatically figures out the root directory of the
-  # automation repository, which is the directory that contains `lib` and
-  # `config` subdirectories.
-  #
-  # The return value of this method can be safely used to refer to other
-  # directories, for example:
+  # Root directory of the automation repository.
+  # Automation repo can use it to refer to files within itself,
+  # and this gem also uses it to refer to config files of automation,
+  # for example:
   #
   #   File.read(Autobots.root.join('config', 'data.yml'))
   #
-  # will return the contents of `config/data.yml`.
+  # will return the contents of `automation_root/config/data.yml`.
   #
   # @return [Pathname] A reference to the root directory, ready to be used
   #         in directory and file path calculations.
   def self.root
     @@__root__ ||= Pathname.new(File.expand_path('.'))
+  end
+
+  # Absolute path of root directory of this gem
+  # can be used both within this gem and in automation repo
+  def self.gem_root
+    @@__gem_root__ ||= Pathname.new(File.realpath(File.join(File.dirname(__FILE__), '..', '..')))
   end
 
 end
