@@ -52,22 +52,23 @@ module Autobots
 
     # only load tests you need by specifying env option in command line
     def self.load_tests(host)
-      begin
-        $LOAD_PATH << Autobots.root.join('web_tests').to_s
-      rescue
-        puts "Please make sure tests exist under #{Autobots.root.join('web_tests').to_s}"
-        puts "No test will run"
-        break
+      tests_dir_name = 'web_tests'
+      tests_dir_full_path = Autobots.root.join(tests_dir_name).to_s
+      if Dir.exists? tests_dir_full_path
+        $LOAD_PATH << tests_dir_full_path
+      else
+        puts "Tests directory #{tests_dir_full_path} doesn't exist"
+        puts "No test will run."
       end
 
-      Dir.glob("web_tests/#{host}/*.rb") do |f|
-        f.sub!(/^web_tests\//, '')
+      Dir.glob("#{tests_dir_name}/#{host}/*.rb") do |f|
+        f.sub!(/^#{tests_dir_name}\//, '')
         require f
       end
 
       # files under subdirectories shouldn't be loaded, eg. archive/
-      Dir.glob("web_tests/#{host}/test_cases/*.rb") do |f|
-        f.sub!(/^web_tests\//, '')
+      Dir.glob("#{tests_dir_name}/#{host}/test_cases/*.rb") do |f|
+        f.sub!(/^#{tests_dir_name}\//, '')
         require f
       end
     end
