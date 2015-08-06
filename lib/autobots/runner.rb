@@ -52,6 +52,7 @@ module Autobots
 
     # only load tests you need by specifying env option in command line
     def self.load_tests(host)
+      $LOAD_PATH << File.expand_path('web_tests')
       Dir.glob("web_tests/#{host}/*.rb") do |f|
         f.sub!(/^web_tests\//, '')
         require f
