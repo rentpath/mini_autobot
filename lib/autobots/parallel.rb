@@ -15,8 +15,9 @@ module Autobots
       @platform = connector.split(':')[2] || ''
 
       @pids = []
-      @static_run_command = "bin/autobot -c #{Autobots.settings.connector} -e #{Autobots.settings.env}"
-      @pipe_tap = "--tapy | tapout --no-color -r ./lib/tapout/custom_reporters/fancy_tap_reporter.rb fancytap"
+      @static_run_command = "autobot -c #{Autobots.settings.connector} -e #{Autobots.settings.env}"
+      tap_reporter_path = Autobots.gem_root.join('lib/tapout/custom_reporters/fancy_tap_reporter.rb')
+      @pipe_tap = "--tapy | tapout --no-color -r #{tap_reporter_path.to_s} fancytap"
     end
 
     # return true only if specified to run on mac in connector
@@ -33,7 +34,7 @@ module Autobots
     end
 
     def count_autobot_process
-      counting_process = IO.popen "ps -ef | grep 'ruby bin/autobot' -c"
+      counting_process = IO.popen "ps -ef | grep '#{@static_run_command}' -c"
       count_of_processes = counting_process.readlines[0].to_i
       count_of_processes
     end
