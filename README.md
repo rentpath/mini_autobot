@@ -305,12 +305,12 @@ to add new profiles.
 To run test headlessly on default environment(stg), set connector to GhostDriver,
 which is Phantomjs's implementation of webdriver protocal, run:
 
-    $ mini_autobot --connector=phantomjs
+    $ bundle exec mini_autobot --connector=phantomjs
 
 To override the connector to your local browser, and to override environment,
 use these options:
 
-    $ mini_autobot --connector=firefox --env=qa
+    $ bundle exec mini_autobot --connector=firefox --env=qa
 
 which will use `config/mini_autobot/connectors/firefox.yml` and `config/mini_autobot/environments/qa.yml`
 as the profiles.
@@ -319,14 +319,14 @@ Some profiles may contain a section named `overrides`, for example, to support
 multiple browsers in a remote execution environment like SauceLabs. Such
 profiles can be used like this:
 
-    $ mini_autobot --connector=saucelabs:linux_ff20 --env=qa
+    $ bundle exec mini_autobot --connector=saucelabs:linux_ff20 --env=qa
 
 which will use the `linux_ff20` override in the `saucelabs` connector profile,
 and run tests against the `qa` environment. Multiple overrides may be specified
 one after the other, after the profile name, and always separated by colons,
 for example:
 
-    $ mini_autobot -c saucelabs:linux_ff20:qateam:notimeouts -e qa
+    $ bundle exec mini_autobot -c saucelabs:linux_ff20:qateam:notimeouts -e qa
 
 To make a specific connector or environment profile always be the default on
 your machine or shell session, set the `AUTOBOT_CONNECTOR` or `AUTOBOT_ENV`
@@ -351,22 +351,22 @@ Assuming you have a test in `MiniAutobot::TestCases::Search` that is defined as:
 then you have a couple of different options to run it. The most straight-
 forward case is to run all test cases:
 
-    $ mini_autobot
+    $ bundle exec mini_autobot
 
 As a second option, you can run only that specific test case. For that, you'll
 need to know the name of the test case, and add `test_` in front of it. In the
 example above, the name is `search_zip`, so it can be run like so:
 
-    $ mini_autobot -n test_search_zip
+    $ bundle exec mini_autobot -n test_search_zip
 
 As a third option, you can run any test case whose name contains the word
 "search" in it:
 
-    $ mini_autobot -n /search/
+    $ bundle exec mini_autobot -n /search/
 
 It should be noted that this form supports regular expressions so that:
 
-    $ mini_autobot -n '/search_\d{5}/'
+    $ bundle exec mini_autobot -n '/search_\d{5}/'
 
 will run all test cases with the word `search_` followed by five digits. Keep
 in mind that _special characters_ such as backslashes and curly braces must
@@ -375,35 +375,35 @@ either be escaped, or quoted.
 The fourth option is to run test cases that match one or more tags. To run all
 test cases with the tag `:srp`, we can:
 
-    $ mini_autobot -t srp
+    $ bundle exec mini_autobot -t srp
 
 The `-t` option is powerful, because it supports multiple tags. To run all test
 cases tagged with `:homepage` *and* `:srp`, use:
 
-    $ mini_autobot -t homepage,srp
+    $ bundle exec mini_autobot -t homepage,srp
 
 To run all test cases tagged with `:homepage` or tagged with `:srp` (or both):
 
-    $ mini_autobot -t homepage -t srp
+    $ bundle exec mini_autobot -t homepage -t srp
 
 And of course, the combination also works:
 
-    $ mini_autobot -t srp,submarket -t srp,zip
+    $ bundle exec mini_autobot -t srp,submarket -t srp,zip
 
 But what about tests you want NOT to run, that are slow or test functionality
 you know is broken? If your preferences correspond to a certain tag (say,
 :slow), you can negate that tag by prefixing it with '!', which may need to be
 quoted or escaped in some shells/contexts.
 
-    $ mini_autobot -t 'myrent,!slow' # skip slow myrent tests
-    $ mini_autobot -t myrent,\!slow  # likewise
-    $ mini_autobot -t \!search       # run all non-search tests
+    $ bundle exec mini_autobot -t 'myrent,!slow' # skip slow myrent tests
+    $ bundle exec mini_autobot -t myrent,\!slow  # likewise
+    $ bundle exec mini_autobot -t \!search       # run all non-search tests
 
 Note, every test has a tag added automatically during run time, the tag is formatted
 by removing all underscores from name of a class, and prefixing it with "class_".
 For example, to run all tests in sign_in.rb,
 
-    $ mini_autobot -t class_signin
+    $ bundle exec mini_autobot -t class_signin
 
 
 Read Rakefile for how to run test with default settings through rake tasks
@@ -422,7 +422,7 @@ The logger prints messages to logs/mini_autobot.log. You won't see debug message
 there by default; for that you need to go beyond --verbose and add an extra 'v'
 to your flags:
 
-    $ mini_autobot -t fancy -vv
+    $ bundle exec mini_autobot -t fancy -vv
 
 #### TAP
 
@@ -440,11 +440,16 @@ The TapY is YAML, and the TapJ is JSON output.
 
 TAPOUT gets test result from TapY or TapJ, then output result using a reporter by your choice.
 To see a list of options and reporters from gem TAPOUT,
+
     $ tapout --help
+
 To use our custom reporter, FancyTapReporter,
-    $ mini_autobot --tapy | tapout -r ./lib/tapout/custom_reporters/fancy_tap_reporter.rb fancytap
+
+    $ bundle exec mini_autobot --tapy | tapout -r ./lib/tapout/custom_reporters/fancy_tap_reporter.rb fancytap
+
 To make it presentable to jenkins or other webpage, supress color/highlight codes,
-    $ mini_autobot --tapy | tapout --no-color -r ./lib/tapout/custom_reporters/fancy_tap_reporter.rb fancytap
+
+    $ bundle exec mini_autobot --tapy | tapout --no-color -r ./lib/tapout/custom_reporters/fancy_tap_reporter.rb fancytap
 
 
 ## Test Cases
@@ -616,4 +621,4 @@ the page.
 ## TODO
 
 - [ ] Don't let minitest pride override -p of parallel from mini_autobot
-- [ ] Tests take a while to start, inspect and fix
+- [x] Tests take a while to start, inspect and fix
