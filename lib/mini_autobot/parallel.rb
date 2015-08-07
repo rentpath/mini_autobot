@@ -171,7 +171,6 @@ module MiniAutobot
         begin
           # convert response back to hash
           str = response.gsub(':', '=>')
-          # {"browser_short_version"=> "11", "video_url"=> "https=>//assets.saucelabs.com/jobs/5058b567674a4b9e906f31a0d1b0bab9/video.flv", "creation_time"=> 1406310493, "custom-data"=> null, "browser_version"=> "11.0.9600.16428.", "owner"=> "phu_rentpath", "id"=> "5058b567674a4b9e906f31a0d1b0bab9", "log_url"=> "https=>//assets.saucelabs.com/jobs/5058b567674a4b9e906f31a0d1b0bab9/selenium-server.log", "build"=> null, "passed"=> null, "public"=> null, "status"=> "in progress", "tags"=> [], "start_time"=> 1406310493, "proxied"=> false, "commands_not_successful"=> 0, "video_secret"=> "46fc6fd66f1140a0978a6476efb836b2", "name"=> null, "manual"=> false, "end_time"=> null, "error"=> null, "os"=> "Windows 2008", "breakpointed"=> null, "browser"=> "iexplore"}
           # this is a good example why using eval is dangerous, the string has to contain only proper Ruby syntax, here it has 'null' instead of 'nil'
           formatted_str = str.gsub('null', 'nil')
           hash = eval(formatted_str)
