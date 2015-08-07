@@ -81,7 +81,7 @@ A typical config file structure looks like this:
         ├── test_suite.yml
         └── tests.yml
 
-### Tests Directory Structure
+#### Tests Directory Structure
 
 A Tests Directory Structure file is a regular YAML file, which tells mini_autobot
 where to find tests and which tests to load.
@@ -100,7 +100,7 @@ test_cases and page_objects are located, eg. web_tests, xxx/yyyy/tests;
 2. multi-host flag: false means test_cases dir is directly under tests_dir,
 true means there's one more layer in middle: tests_dir/[hosts]/.
     
-### Connector Profile
+#### Connector Profile
 
 A connector profile is a regular YAML file in a specific directory, which
 describes how tests are run.
@@ -261,7 +261,7 @@ specified, because otherwise, the page could timeout after the driver does,
 causing a false negative in the test (and often a cryptic error message).
 
 
-### Environment Profile
+#### Environment Profile
 
 An environment profile is a regular YAML file in a specific directory, which
 describes against what environment tests are run.
@@ -272,7 +272,7 @@ environment:
     ---
     root: 'http://www.env.host_address.com'
 
-### Test Suite
+#### Test Suite
 
 - Regression
 
@@ -334,7 +334,7 @@ Refer to the _Configuration_ section below for advanced use cases, and refer
 to `mini_autobot -h` for a complete list of command line options.
 
 
-### Running a Subset of Tests
+#### Running a Subset of Tests
 
 Assuming you have a test in `MiniAutobot::TestCases::Search` that is defined as:
 
@@ -402,7 +402,7 @@ For example, to run all tests in sign_in.rb,
 
 Read Rakefile for how to run test with default settings through rake tasks
 
-### Debug output
+#### Debug output
 
 It's not good style to clutter your code with puts messages. Instead, use the
 handy built-in logger facility defined in MiniAutobot::Utils::Loggable, accessible
@@ -418,7 +418,7 @@ to your flags:
 
     $ mini_autobot -t fancy -vv
 
-### TAP
+#### TAP
 
 For more info on TAP (Test Anything Protocol), see also:
 http://www.testanything.org/
@@ -430,7 +430,7 @@ The option in autobot is:
 
 The TapY is YAML, and the TapJ is JSON output.
 
-### TAPOUT
+#### TAPOUT
 
 TAPOUT gets test result from TapY or TapJ, then output result using a reporter by your choice.
 To see a list of options and reporters from gem TAPOUT,
@@ -507,7 +507,8 @@ that is returns a different page object, thus invalidating the current page
 object. Page object invalidation is handled automatically through the use of
 ruby object freezing.
 
-### Overlay
+#### Overlay
+
 An Overlay represents a portion (an element) of a page that can be repeated
 Multiple times across many pages.  But only appear once per page at a time.
 Some examples of overlays include:
@@ -605,3 +606,8 @@ on the page. This usually happens when you find an element on a page, go a
 different page (either by `get()`ing a new URL or by interacting with an
 element), and then try to perform actions against the aforementioned element on
 the page.
+
+## TODO
+
+- [ ] Don't let minitest pride override -p of parallel from mini_autobot
+- [ ] Tests take a while to start, inspect and fix
