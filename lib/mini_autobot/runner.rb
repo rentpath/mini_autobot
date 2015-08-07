@@ -62,13 +62,7 @@ module MiniAutobot
         puts "mini_autobot doesn't know where your tests are located and how they are structured"
       end
 
-      tests_dir_full_path = MiniAutobot.root.join(tests_dir_relative_path).to_s
-      if Dir.exist? tests_dir_full_path
-        $LOAD_PATH << tests_dir_full_path
-      else
-        puts "Tests directory #{tests_dir_full_path} doesn't exist"
-        puts "No test will run."
-      end
+      configure_load_path(tests_dir_relative_path)
 
       # load page_objects.rb first
       Dir.glob("#{tests_dir_relative_path}/#{multi_host_flag ? host+'/' : ''}*.rb") do |f|
@@ -80,6 +74,17 @@ module MiniAutobot
       Dir.glob("#{tests_dir_relative_path}/#{multi_host_flag ? host+'/' : ''}test_cases/*.rb") do |f|
         f.sub!(/^#{tests_dir_relative_path}\//, '')
         require f
+      end
+    end
+
+    private
+    def configure_load_path(tests_dir_relative_path)
+      tests_dir_full_path = MiniAutobot.root.join(tests_dir_relative_path).to_s
+      if Dir.exist? tests_dir_full_path
+        $LOAD_PATH << tests_dir_full_path
+      else
+        puts "Tests directory #{tests_dir_full_path} doesn't exist"
+        puts "No test will run."
       end
     end
 
