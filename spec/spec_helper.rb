@@ -4,4 +4,4 @@ Bundler.setup
 
 require 'minitest/spec'
 
-require 'autobots'
+require 'mini_autobot'

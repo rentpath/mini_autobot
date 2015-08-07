@@ -1,4 +1,4 @@
-RSpec.describe Autobots::Settings do
+RSpec.describe MiniAutobot::Settings do
 
   describe '#connector' do
     context 'by default' do

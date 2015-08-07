@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+require 'mini_autobot'
+
+MiniAutobot::Runner.after_run { MiniAutobot::Connector.finalize!(:force) }
+MiniAutobot::Runner.run!(ARGV)

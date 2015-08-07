@@ -2,16 +2,16 @@ module Minitest
 
   # Minitest plugin: autobot_settings
   #
-  # This is where the options are propagated to +Autobots.settings+.
+  # This is where the options are propagated to +MiniAutobot.settings+.
   def self.plugin_autobot_settings_init(options)
-    Autobots.settings = options
+    MiniAutobot.settings = options
 
-    Autobots.logger = Autobots::Logger.new('autobots.log', 'daily').tap do |logger|
+    MiniAutobot.logger = MiniAutobot::Logger.new('mini_autobot.log', 'daily').tap do |logger|
       logger.formatter = proc do |sev, ts, prog, msg|
         msg = msg.inspect unless String === msg
         "#{ts.strftime('%Y-%m-%dT%H:%M:%S.%6N')} #{sev}: #{String === msg ? msg : msg.inspect}\n"
       end
-      logger.level = case Autobots.settings.verbosity_level
+      logger.level = case MiniAutobot.settings.verbosity_level
                      when 0
                        Logger::WARN
                      when 1
@@ -23,15 +23,15 @@ module Minitest
       at_exit { logger.info("Shutting down") }
     end
 
-    Autobots::Console.bootstrap! if options[:console]
+    MiniAutobot::Console.bootstrap! if options[:console]
 
     self
   end
 
   # Minitest plugin: autobot_settings
   #
-  # This plugin for minitest injects autobot-specific command-line arguments, and
-  # passes it along to autobot.
+  # This plugin for minitest injects mini_autobot-specific command-line arguments, and
+  # passes it along to mini_autobot.
   def self.plugin_autobot_settings_options(parser, options)
     options[:auto_finalize] = true
     parser.on('-Q', '--no-auto-quit-driver', "Don't automatically quit the driver after a test case") do |value|

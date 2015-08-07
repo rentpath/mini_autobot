@@ -1,5 +1,0 @@
-#!/usr/bin/env ruby
-require 'autobots'
-
-Autobots::Runner.after_run { Autobots::Connector.finalize!(:force) }
-Autobots::Runner.run!(ARGV)
