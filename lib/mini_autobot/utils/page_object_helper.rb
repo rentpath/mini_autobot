@@ -94,7 +94,7 @@ module MiniAutobot
         overrides = connector.to_s.split(/:/)
         new_tags = overrides[2]+"_by_"+overrides[1]
         file_name = overrides.shift
-        path = MiniAutobot.root.join('config', 'connectors')
+        path = MiniAutobot.root.join('config/mini_autobot', 'connectors')
         filepath  = path.join("#{file_name}.yml")
         raise ArgumentError, "Cannot load profile #{file_name.inspect} because #{filepath.inspect} does not exist" unless filepath.exist?
 
@@ -162,7 +162,7 @@ module MiniAutobot
       # @param  also has an optional parameter-driver, which can be @element when calling this method in a widget object
       # @return [boolean]
       def element_appeared?(how, what, driver = nil, check_display = false)
-        original_timeout = read_yml("config/connectors/saucelabs.yml", "timeouts:implicit_wait")
+        original_timeout = read_yml("config/mini_autobot/connectors/saucelabs.yml", "timeouts:implicit_wait")
         @driver.manage.timeouts.implicit_wait = 0
         result = false
         parent_element = @driver if driver == nil

@@ -80,8 +80,8 @@ module MiniAutobot
       raise ArgumentError, "An environment must be provided" if env_id.blank?
 
       # Find the connector and environment profiles
-      connector_cfg = self.load(MiniAutobot.root.join('config', 'connectors'), connector_id)
-      env_cfg = self.load(MiniAutobot.root.join('config', 'environments'), env_id)
+      connector_cfg = self.load(MiniAutobot.root.join('config/mini_autobot', 'connectors'), connector_id)
+      env_cfg = self.load(MiniAutobot.root.join('config/mini_autobot', 'environments'), env_id)
       cfg = Config.new(connector_cfg, env_cfg)
 
       if Thread.current[:active_connector] && !MiniAutobot.settings.reuse_driver?

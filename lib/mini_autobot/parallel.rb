@@ -138,7 +138,7 @@ module MiniAutobot
       connector = MiniAutobot.settings.connector # eg. saucelabs:phu:win7_ie11
       overrides = connector.to_s.split(/:/)
       file_name = overrides.shift
-      path = MiniAutobot.root.join('config', 'connectors')
+      path = MiniAutobot.root.join('config/mini_autobot', 'connectors')
       filepath  = path.join("#{file_name}.yml")
       raise ArgumentError, "Cannot load profile #{file_name.inspect} because #{filepath.inspect} does not exist" unless filepath.exist?
       cfg = YAML.load(File.read(filepath))

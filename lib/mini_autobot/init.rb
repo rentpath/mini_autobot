@@ -30,9 +30,9 @@ module MiniAutobot
   # and this gem also uses it to refer to config files of automation,
   # for example:
   #
-  #   File.read(MiniAutobot.root.join('config', 'data.yml'))
+  #   File.read(MiniAutobot.root.join('config/mini_autobot', 'data.yml'))
   #
-  # will return the contents of `automation_root/config/data.yml`.
+  # will return the contents of `automation_root/config/mini_autobot/data.yml`.
   #
   # @return [Pathname] A reference to the root directory, ready to be used
   #         in directory and file path calculations.

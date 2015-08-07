@@ -52,7 +52,7 @@ module MiniAutobot
 
     # only load tests you need by specifying env option in command line
     def self.load_tests(host)
-      tests_yml_full_path = MiniAutobot.root.join('config', 'tests.yml').to_s
+      tests_yml_full_path = MiniAutobot.root.join('config/mini_autobot', 'tests.yml').to_s
       if File.exist? tests_yml_full_path
         tests_yml = YAML.load_file tests_yml_full_path
         tests_dir_relative_path = tests_yml['tests_dir']['relative_path']

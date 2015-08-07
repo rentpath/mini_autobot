@@ -6,11 +6,11 @@ module MiniAutobot
     @@regression_suite = Array.new
     @@already_executed = false
     @@serials = Array.new
-    @@test_suite_data = if File.exist?(MiniAutobot.root.join("config/test_suite.yml"))
-                          YAML.load_file(MiniAutobot.root.join("config/test_suite.yml"))
+    @@test_suite_data = if File.exist?(MiniAutobot.root.join("config/mini_autobot/test_suite.yml"))
+                          YAML.load_file(MiniAutobot.root.join("config/mini_autobot/test_suite.yml"))
                         else
                           default = {"regression"=>{"tag_to_exclude"=>:non_regression}}
-                          puts "config/test_suite.yml doesn't exist, using default:\n#{default}"
+                          puts "config/mini_autobot/test_suite.yml doesn't exist, using default:\n#{default}"
                           default
                         end
 
