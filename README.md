@@ -274,6 +274,12 @@ environment:
 
 #### Test Suite
 
+A typical test suite configuration file `config/test_suite.yml` looks like this:
+
+    ----
+    regression:
+        tag_to_exclude: :non_regression
+
 - Regression
 
     - Integration
