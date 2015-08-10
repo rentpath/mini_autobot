@@ -39,9 +39,9 @@ port number parameters as necessary.
 
 ## Installation
 
-The simplest way to install Guard is to use Bundler.
+The simplest way to install it is to use Bundler.
 
-Add Guard (and any other dependencies) to a Gemfile in your project’s root:
+Add MiniAutobot (and any other dependencies) to a Gemfile in your project’s root:
 
     gem 'mini_autobot'
 
