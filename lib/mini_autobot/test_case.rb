@@ -74,16 +74,14 @@ module MiniAutobot
         methods  = super
         selected = MiniAutobot.settings.tags
 
-        # run tests in parallel when option "-p" is provided in command line
         if MiniAutobot.settings.parallel?
           # check this because I don't know why this runnable_methods gets called three times consecutively when one starts running tests
           if @@already_executed
             exit
           end
 
+          # todo get the number value from "--parallel=" and replace nil with it
           parallel = Parallel.new(nil, @@regression_suite)
-          # todo get the number value from "-p=" and replace nil with it
-          # first parameter comes from number after "-p=", may be null(then will use default 15)
           parallel.run_in_parallel!
 
           @@already_executed = true

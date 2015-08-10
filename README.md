@@ -619,6 +619,3 @@ element), and then try to perform actions against the aforementioned element on
 the page.
 
 ## TODO
-
-- [ ] Don't let minitest pride override -p of parallel from mini_autobot
-- [x] Tests take a while to start, inspect and fix

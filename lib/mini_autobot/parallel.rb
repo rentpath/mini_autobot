@@ -40,7 +40,6 @@ module MiniAutobot
     end
 
     # run multiple commands with logging to start multiple tests in parallel
-    # call this method in test_case when user specify '-p' option when starting tests
     # @param [Integer, Array]
     # n = number of tests will be running in parallel
     def run_in_parallel!
