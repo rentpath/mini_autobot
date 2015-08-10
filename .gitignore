@@ -11,8 +11,7 @@ README.html
 .nfs*
 .bundle
 
-# DO NOT REMOVE !
-# Ignore project files. Project files should never be committed.
+# Ignore (IDE) project files
 .idea
 .project
 .projects
@@ -23,12 +22,5 @@ README.html
 .yardoc
 doc
 
-# Log files and temporary files
-logs
+# temporary files
 tmp
-
-# Result files
-logs/tap_results
-
-# Vendored gems
-/vendor
