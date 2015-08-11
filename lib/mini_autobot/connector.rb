@@ -135,7 +135,7 @@ module MiniAutobot
       filepath  = path.join("#{name}.yml")
       raise ArgumentError, "Cannot load profile #{name.inspect} because #{filepath.inspect} does not exist" unless filepath.exist?
 
-      cfg = YAML.load(File.read(filepath))
+      cfg = YAML.load(ERB.new(File.read(filepath)).result)
       cfg = self.resolve(cfg, overrides)
       cfg.freeze
     end
