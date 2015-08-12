@@ -10,7 +10,11 @@ module MiniAutobot
                           YAML.load_file(MiniAutobot.root.join("config/mini_autobot/test_suite.yml"))
                         else
                           default = {"regression"=>{"tag_to_exclude"=>:non_regression}}
-                          puts "config/mini_autobot/test_suite.yml doesn't exist, using default:\n#{default}"
+                          if MiniAutobot.root != MiniAutobot.gem_root
+                            # Only necessary to notify gem user, not gem developer
+                            puts "config/mini_autobot/test_suite.yml doesn't exist, using default:\n#{default}"
+                            puts "It's recommended to have this config file as it'll avoid problem when using tapout"
+                          end
                           default
                         end
 
