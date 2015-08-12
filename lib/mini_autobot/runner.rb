@@ -53,7 +53,8 @@ module MiniAutobot
       tests_yml = YAML.load_file tests_yml_full_path
       tests_dir_relative_path = tests_yml['tests_dir']['relative_path']
       multi_host_flag = tests_yml['tests_dir']['multi-host']
-      host = @options[:env].split(/_/)[0] || 'rent'
+      default_host = tests_yml['tests_dir']['default_host']
+      host = @options[:env].split(/_/)[0] || default_host
 
       self.configure_load_path(tests_dir_relative_path)
 
