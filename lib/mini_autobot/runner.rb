@@ -51,10 +51,13 @@ module MiniAutobot
     # only load tests you need by specifying env option in command line
     def self.load_tests(tests_yml_full_path)
       tests_yml = YAML.load_file tests_yml_full_path
+
+      self.check_config(tests_yml)
+
       tests_dir_relative_path = tests_yml['tests_dir']['relative_path']
       multi_host_flag = tests_yml['tests_dir']['multi-host']
       default_host = tests_yml['tests_dir']['default_host']
-      host = @options[:env].split(/_/)[0] || default_host
+      host = @options[:env].split(/_/)[0] rescue default_host
 
       self.configure_load_path(tests_dir_relative_path)
 
@@ -69,6 +72,12 @@ module MiniAutobot
         f.sub!(/^#{tests_dir_relative_path}\//, '')
         require f
       end
+    end
+
+    def self.check_config(tests_yml)
+      raise "relative_path must be provided in #{tests_yml}" unless tests_yml['tests_dir']['relative_path'].is_a? String
+      raise "multi-host must be provided in #{tests_yml}" unless [true, false].include?(tests_yml['tests_dir']['multi-host'])
+      raise "default_host must be provided in #{tests_yml}" unless tests_yml['tests_dir']['default_host'].is_a? String
     end
 
     def self.configure_load_path(tests_dir_relative_path)
