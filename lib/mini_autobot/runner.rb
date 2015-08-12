@@ -39,28 +39,21 @@ module MiniAutobot
 
     # before hook where you have parsed @options when loading tests
     def self.before_run
-      host_env = @options[:env]
-      if host_env.nil?
-        # TODO(phu): default host needs to be set in a user's local env file
-        host = 'rent'
-        puts "No argument given for option -e \nLoading tests using default host: #{host}"
-      else
-        host = host_env.split(/_/)[0]
-      end
-      self.load_tests(host)
-    end
-
-    # only load tests you need by specifying env option in command line
-    def self.load_tests(host)
       tests_yml_full_path = MiniAutobot.root.join('config/mini_autobot', 'tests.yml').to_s
       if File.exist? tests_yml_full_path
-        tests_yml = YAML.load_file tests_yml_full_path
-        tests_dir_relative_path = tests_yml['tests_dir']['relative_path']
-        multi_host_flag = tests_yml['tests_dir']['multi-host']
+        self.load_tests(tests_yml_full_path)
       else
         puts "Config file #{tests_yml_full_path} doesn't exist"
         puts "mini_autobot doesn't know where your tests are located and how they are structured"
       end
+    end
+
+    # only load tests you need by specifying env option in command line
+    def self.load_tests(tests_yml_full_path)
+      tests_yml = YAML.load_file tests_yml_full_path
+      tests_dir_relative_path = tests_yml['tests_dir']['relative_path']
+      multi_host_flag = tests_yml['tests_dir']['multi-host']
+      host = @options[:env].split(/_/)[0] || 'rent'
 
       self.configure_load_path(tests_dir_relative_path)
 
