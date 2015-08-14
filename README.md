@@ -60,7 +60,9 @@ There are configuration files that are required for it to work properly:
 * Connector profiles, in `config/mini_autobot/connectors/*.yml`, which define WebDriver
   properties, e.g., Firefox, SauceLabs;
 * Environment profiles, in `config/mini_autobot/environments/*.yml`, which define which
-  environment tests are going to run against, e.g., QA, production; and
+  environment tests are going to run against, e.g., QA, production;
+* Test Suite definition, in `config/mini_autobot/test_suite.yml`, which defines tags being used
+  to mark tests for different suites, eg. :non_regression
 
 A typical config file structure looks like this:
 
@@ -86,7 +88,7 @@ A typical config file structure looks like this:
 A Tests Directory Structure file is a regular YAML file, which tells mini_autobot
 where to find tests and which tests to load.
 
-It must be named and placed like this `config/tests.yml` with contents like:
+A typical config file for this looks like:
 
     ---
     tests_dir:
@@ -272,9 +274,14 @@ environment:
     ---
     root: 'http://www.env.host_address.com'
 
+Environment variable as value of `root` is also supported, eg.
+
+    ---
+    root: <%= ENV['DYNAMIC_APP_URL'] %>
+
 #### Test Suite
 
-A typical test suite configuration file `config/test_suite.yml` looks like this:
+A typical test suite configuration file looks like this:
 
     ----
     regression:
@@ -298,9 +305,7 @@ or find the appropriate tag_to_exclude in config/mini_autobot/test_suite.yml
 
 ## Executing Tests
 
-Before you are able to run one or more tests, you'll need to select a connector
-and an environment profile; see the _Configuration_ section below if you want
-to add new profiles.
+See the _Configuration_ section above to have the minimum setup before running tests.
 
 To run test headlessly on default environment(stg), set connector to GhostDriver,
 which is Phantomjs's implementation of webdriver protocal, run:
@@ -319,14 +324,14 @@ Some profiles may contain a section named `overrides`, for example, to support
 multiple browsers in a remote execution environment like SauceLabs. Such
 profiles can be used like this:
 
-    $ bundle exec mini_autobot --connector=saucelabs:linux_ff20 --env=qa
+    $ bundle exec mini_autobot --connector=saucelabs:linux_ff20 --env=rent_qa
 
 which will use the `linux_ff20` override in the `saucelabs` connector profile,
-and run tests against the `qa` environment. Multiple overrides may be specified
+and run tests against the `rent_qa` environment. Multiple overrides may be specified
 one after the other, after the profile name, and always separated by colons,
 for example:
 
-    $ bundle exec mini_autobot -c saucelabs:linux_ff20:qateam:notimeouts -e qa
+    $ bundle exec mini_autobot -c saucelabs:linux_ff20:qateam:notimeouts -e rent_qa
 
 To make a specific connector or environment profile always be the default on
 your machine or shell session, set the `AUTOBOT_CONNECTOR` or `AUTOBOT_ENV`
@@ -334,9 +339,9 @@ environment variables respectively. For example, you can add the following to
 your shell profile (`.bash_profile` for bash or `.zlogin` for zsh):
 
     export AUTOBOT_CONNECTOR=firefox
-    export AUTOBOT_ENV=qa
+    export AUTOBOT_ENV=rent_qa
 
-Refer to the _Configuration_ section below for advanced use cases, and refer
+Refer to the _Configuration_ section above for advanced use cases, and refer
 to `mini_autobot -h` for a complete list of command line options.
 
 
@@ -405,9 +410,6 @@ For example, to run all tests in sign_in.rb,
 
     $ bundle exec mini_autobot -t class_signin
 
-
-Read Rakefile for how to run test with default settings through rake tasks
-
 #### Debug output
 
 It's not good style to clutter your code with puts messages. Instead, use the
@@ -445,11 +447,11 @@ To see a list of options and reporters from gem TAPOUT,
 
 To use our custom reporter, FancyTapReporter,
 
-    $ bundle exec mini_autobot --tapy | tapout -r ./lib/tapout/custom_reporters/fancy_tap_reporter.rb fancytap
+    $ bundle exec mini_autobot --tapy | tapout -r $(bundle show mini_autobot)/lib/tapout/custom_reporters/fancy_tap_reporter.rb fancytap
 
 To make it presentable to jenkins or other webpage, supress color/highlight codes,
 
-    $ bundle exec mini_autobot --tapy | tapout --no-color -r ./lib/tapout/custom_reporters/fancy_tap_reporter.rb fancytap
+    $ bundle exec mini_autobot --tapy | tapout --no-color -r $(bundle show mini_autobot)/lib/tapout/custom_reporters/fancy_tap_reporter.rb fancytap
 
 
 ## Test Cases
@@ -494,7 +496,6 @@ Similarly, test cases should be provided as an attribute on the class:
 See {Running a Subset of Tests} for information on the `tags` option.
 
 
-
 ## Page Objects
 
 Parts of a page should be added under `MiniAutobot::PageObjects::Components`, and
@@ -535,6 +536,13 @@ its best to return the current page as an object, ie:
         cast(:search)
       end
 Overlays are technically not new pages, and should be differentiated from actual pages.
+
+#### Widgets
+
+A widget represents a portion (an element) of a page that is repeated
+or reproduced multiple times, either on the same page, or across multiple
+page objects or page modules.
+
 
 ## Best Practice
 
