@@ -55,14 +55,12 @@ module MiniAutobot
 
       return unless MiniAutobot.settings.auto_finalize?
 
-      Thread.new do
-        while self.finalization_queue.size > 0
-          connector = self.finalization_queue.pop
-          begin
-            connector.finalize!
-          rescue => e
-            MiniAutobot.logger.error("Could not finalize Connector(##{connector.object_id}): #{e.message}")
-          end
+      while self.finalization_queue.size > 0
+        connector = self.finalization_queue.pop
+        begin
+          connector.finalize!
+        rescue => e
+          MiniAutobot.logger.error("Could not finalize Connector(##{connector.object_id}): #{e.message}")
         end
       end
     end
