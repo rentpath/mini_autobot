@@ -56,7 +56,8 @@ module MiniAutobot
       return unless MiniAutobot.settings.auto_finalize?
 
       Thread.new do
-        while connector = self.finalization_queue.pop
+        while self.finalization_queue.size > 0
+          connector = self.finalization_queue.pop
           begin
             connector.finalize!
           rescue => e
