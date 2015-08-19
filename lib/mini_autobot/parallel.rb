@@ -23,8 +23,7 @@ module MiniAutobot
     # return true only if specified to run on mac in connector
     # @return [boolean]
     def run_on_mac?
-      return true if @platform.include?('osx')
-      return false
+      @platform.include?('osx')
     end
 
     # remove all results files under logs/tap_results/
@@ -34,9 +33,8 @@ module MiniAutobot
     end
 
     def count_autobot_process
-      counting_process = IO.popen "ps -ef | grep 'bin/#{@static_run_command}' -c"
-      count_of_processes = counting_process.readlines[0].to_i - 1 # minus grep process
-      count_of_processes
+      counting_process_output = IO.popen "ps -ef | grep 'bin/#{@static_run_command}' -c"
+      counting_process_output.readlines[0].to_i - 1 # minus grep process
     end
 
     # run multiple commands with logging to start multiple tests in parallel
@@ -85,7 +83,7 @@ module MiniAutobot
       running_subprocess_count = count_autobot_process - 1 # minus parent process
       puts "WARNING: running_subprocess_count = #{running_subprocess_count}
             is more than what it is supposed to run(#{simultaneous_jobs}),
-            notify mini_autobot maintainers" if running_subprocess_count > simultaneous_jobs
+            notify mini_autobot maintainers" if running_subprocess_count > simultaneous_jobs + 1
       while running_subprocess_count >= simultaneous_jobs
         sleep 5
         running_subprocess_count = count_autobot_process - 1
