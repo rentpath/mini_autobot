@@ -70,29 +70,6 @@ module MiniAutobot
       exit
     end
 
-    def wait_for_pids(pids)
-      running_pids = pids # assume all pids are running at this moment
-      while running_pids.size > 1
-        sleep 5
-        puts "running_pids = #{running_pids}"
-        running_pids.each do |pid|
-          unless process_running?(pid)
-            puts "#{pid} is not running, removing it from pool"
-            running_pids.delete(pid)
-          end
-        end
-      end
-    end
-
-    def process_running?(pid)
-      begin
-        Process.getpgid(pid)
-        true
-      rescue Errno::ESRCH
-        false
-      end
-    end
-
     # runs each test from a test set in a separate child process
     def run_test_set(test_set)
       test_set.each do |test|
@@ -119,6 +96,22 @@ module MiniAutobot
       end
     end
 
+    # @deprecated Use more native wait/check of Process
+    def wait_for_pids(pids)
+      running_pids = pids # assume all pids are running at this moment
+      while running_pids.size > 1
+        sleep 5
+        puts "running_pids = #{running_pids}"
+        running_pids.each do |pid|
+          unless process_running?(pid)
+            puts "#{pid} is not running, removing it from pool"
+            running_pids.delete(pid)
+          end
+        end
+      end
+    end
+
+    # @deprecated Too time consuming and fragile, should use more native wait/check of Process
     def wait_all_done_saucelabs
       size = all_tests.size
       job_statuses = saucelabs_last_n_statuses(size)
@@ -128,6 +121,8 @@ module MiniAutobot
         job_statuses = saucelabs_last_n_statuses(size)
       end
     end
+
+    private
 
     # call saucelabs REST API to get last #{limit} jobs' statuses
     # possible job status: complete, error, in progress
@@ -188,6 +183,15 @@ module MiniAutobot
         retries -= 1
         retry if retries > 0
         response = RestClient.get(url) # retry the last time, fail if it still throws exception
+      end
+    end
+
+    def process_running?(pid)
+      begin
+        Process.getpgid(pid)
+        true
+      rescue Errno::ESRCH
+        false
       end
     end
 
