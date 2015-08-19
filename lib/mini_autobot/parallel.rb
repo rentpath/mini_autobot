@@ -65,8 +65,7 @@ module MiniAutobot
         keep_running_full(all_to_run)
       end
 
-      wait_all_done_saucelabs if @on_sauce
-      wait_for_pids(@pids) unless ENV['JENKINS_HOME']
+      Process.waitall
       puts "\nAll Complete! Started at #{@start_time} and finished at #{Time.now}\n"
       exit
     end
@@ -100,7 +99,6 @@ module MiniAutobot
         run_command = "#{@static_run_command} -n #{test} #{@pipe_tap} > logs/tap_results/#{test}.t"
         pipe = IO.popen(run_command)
         puts "Running #{test}  #{pipe.pid}"
-        @pids << pipe.pid
       end
     end
 
