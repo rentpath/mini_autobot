@@ -34,8 +34,8 @@ module MiniAutobot
     end
 
     def count_autobot_process
-      counting_process = IO.popen "ps -ef | grep '#{@static_run_command}' -c"
-      count_of_processes = counting_process.readlines[0].to_i
+      counting_process = IO.popen "ps -ef | grep 'bin/#{@static_run_command}' -c"
+      count_of_processes = counting_process.readlines[0].to_i - 1 # minus grep process
       count_of_processes
     end
 
@@ -80,13 +80,15 @@ module MiniAutobot
     end
 
     def keep_running_full(all_to_run)
-      full_count = simultaneous_jobs + 2
-      running_count = count_autobot_process
-      while running_count >= full_count
+      puts "simultaneous_jobs = #{simultaneous_jobs}"
+      running_subprocess_count = count_autobot_process - 1 # minus parent process
+      while running_subprocess_count >= simultaneous_jobs
+        puts "running_subprocess_count = #{running_subprocess_count} >= simultaneous_jobs = #{simultaneous_jobs}, wait 5 sec"
         sleep 5
-        running_count = count_autobot_process
+        running_subprocess_count = count_autobot_process - 1
       end
-      to_run_count = full_count - running_count
+      to_run_count = simultaneous_jobs - running_subprocess_count
+      puts "got some space, run #{to_run_count} more"
       tests_to_run = all_to_run.slice!(0, to_run_count)
       run_test_set(tests_to_run)
       if all_to_run.size > 0
