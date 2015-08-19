@@ -79,23 +79,23 @@ module MiniAutobot
       end
     end
 
+    # recursively keep running #{simultaneous_jobs} number of tests in parallel
+    # exit when no test left to run
     def keep_running_full(all_to_run)
-      puts "simultaneous_jobs = #{simultaneous_jobs}"
       running_subprocess_count = count_autobot_process - 1 # minus parent process
+      puts "WARNING: running_subprocess_count = #{running_subprocess_count}
+            is more than what it is supposed to run(#{simultaneous_jobs}),
+            notify mini_autobot maintainers" if running_subprocess_count > simultaneous_jobs
       while running_subprocess_count >= simultaneous_jobs
-        puts "running_subprocess_count = #{running_subprocess_count} >= simultaneous_jobs = #{simultaneous_jobs}, wait 5 sec"
         sleep 5
         running_subprocess_count = count_autobot_process - 1
       end
       to_run_count = simultaneous_jobs - running_subprocess_count
-      puts "got some space, run #{to_run_count} more"
       tests_to_run = all_to_run.slice!(0, to_run_count)
+
       run_test_set(tests_to_run)
-      if all_to_run.size > 0
-        keep_running_full(all_to_run)
-      else
-        return
-      end
+
+      keep_running_full(all_to_run) if all_to_run.size > 0
     end
 
     # @deprecated Use more native wait/check of Process
