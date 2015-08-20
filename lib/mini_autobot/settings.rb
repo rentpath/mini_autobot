@@ -42,8 +42,12 @@ module MiniAutobot
       self
     end
 
-    def parallel?
-      hsh.fetch(:parallel, false)
+    def parallel
+      if hsh[:parallel].nil?
+        return nil
+      else
+        hsh.fetch(:parallel, 20).to_i
+      end
     end
 
     def raw_arguments
