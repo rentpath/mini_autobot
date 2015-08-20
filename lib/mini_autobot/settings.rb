@@ -46,7 +46,7 @@ module MiniAutobot
       if hsh[:parallel] == 0
         return nil
       else
-        hsh.fetch(:parallel, 20).to_i
+        hsh.fetch(:parallel).to_i
       end
     end
 
