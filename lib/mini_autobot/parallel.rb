@@ -23,8 +23,7 @@ module MiniAutobot
     # return true only if specified to run on mac in connector
     # @return [boolean]
     def run_on_mac?
-      return true if @platform.include?('osx')
-      return false
+      @platform.include?('osx')
     end
 
     # remove all results files under logs/tap_results/
@@ -34,9 +33,8 @@ module MiniAutobot
     end
 
     def count_autobot_process
-      counting_process = IO.popen "ps -ef | grep '#{@static_run_command}' -c"
-      count_of_processes = counting_process.readlines[0].to_i
-      count_of_processes
+      counting_process_output = IO.popen "ps -ef | grep 'bin/#{@static_run_command}' -c"
+      counting_process_output.readlines[0].to_i - 1 # minus grep process
     end
 
     # run multiple commands with logging to start multiple tests in parallel
@@ -48,7 +46,7 @@ module MiniAutobot
         if run_on_mac?
           @simultaneous_jobs = 10 # saucelabs account limit for parallel is 10 for mac
         else
-          @simultaneous_jobs = 15 # saucelabs account limit for parallel is 15 for non-mac
+          @simultaneous_jobs = 20 # saucelabs account limit for parallel is 15 for non-mac
         end
       end
 
@@ -65,12 +63,40 @@ module MiniAutobot
         keep_running_full(all_to_run)
       end
 
-      wait_all_done_saucelabs if @on_sauce
-      wait_for_pids(@pids) unless ENV['JENKINS_HOME']
+      Process.waitall
       puts "\nAll Complete! Started at #{@start_time} and finished at #{Time.now}\n"
       exit
     end
 
+    # runs each test from a test set in a separate child process
+    def run_test_set(test_set)
+      test_set.each do |test|
+        run_command = "#{@static_run_command} -n #{test} #{@pipe_tap} > logs/tap_results/#{test}.t"
+        pipe = IO.popen(run_command)
+        puts "Running #{test}  #{pipe.pid}"
+      end
+    end
+
+    # recursively keep running #{simultaneous_jobs} number of tests in parallel
+    # exit when no test left to run
+    def keep_running_full(all_to_run)
+      running_subprocess_count = count_autobot_process - 1 # minus parent process
+      puts "WARNING: running_subprocess_count = #{running_subprocess_count}
+            is more than what it is supposed to run(#{simultaneous_jobs}),
+            notify mini_autobot maintainers" if running_subprocess_count > simultaneous_jobs + 1
+      while running_subprocess_count >= simultaneous_jobs
+        sleep 5
+        running_subprocess_count = count_autobot_process - 1
+      end
+      to_run_count = simultaneous_jobs - running_subprocess_count
+      tests_to_run = all_to_run.slice!(0, to_run_count)
+
+      run_test_set(tests_to_run)
+
+      keep_running_full(all_to_run) if all_to_run.size > 0
+    end
+
+    # @deprecated Use more native wait/check of Process
     def wait_for_pids(pids)
       running_pids = pids # assume all pids are running at this moment
       while running_pids.size > 1
@@ -85,42 +111,7 @@ module MiniAutobot
       end
     end
 
-    def process_running?(pid)
-      begin
-        Process.getpgid(pid)
-        true
-      rescue Errno::ESRCH
-        false
-      end
-    end
-
-    # runs each test from a test set in a separate child process
-    def run_test_set(test_set)
-      test_set.each do |test|
-        run_command = "#{@static_run_command} -n #{test} #{@pipe_tap} > logs/tap_results/#{test}.t"
-        pipe = IO.popen(run_command)
-        puts "Running #{test}  #{pipe.pid}"
-        @pids << pipe.pid
-      end
-    end
-
-    def keep_running_full(all_to_run)
-      full_count = simultaneous_jobs + 2
-      running_count = count_autobot_process
-      while running_count >= full_count
-        sleep 5
-        running_count = count_autobot_process
-      end
-      to_run_count = full_count - running_count
-      tests_to_run = all_to_run.slice!(0, to_run_count)
-      run_test_set(tests_to_run)
-      if all_to_run.size > 0
-        keep_running_full(all_to_run)
-      else
-        return
-      end
-    end
-
+    # @deprecated Too time consuming and fragile, should use more native wait/check of Process
     def wait_all_done_saucelabs
       size = all_tests.size
       job_statuses = saucelabs_last_n_statuses(size)
@@ -130,6 +121,8 @@ module MiniAutobot
         job_statuses = saucelabs_last_n_statuses(size)
       end
     end
+
+    private
 
     # call saucelabs REST API to get last #{limit} jobs' statuses
     # possible job status: complete, error, in progress
@@ -190,6 +183,15 @@ module MiniAutobot
         retries -= 1
         retry if retries > 0
         response = RestClient.get(url) # retry the last time, fail if it still throws exception
+      end
+    end
+
+    def process_running?(pid)
+      begin
+        Process.getpgid(pid)
+        true
+      rescue Errno::ESRCH
+        false
       end
     end
 
