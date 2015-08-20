@@ -8,6 +8,7 @@ module MiniAutobot
       clean_result!
 
       @simultaneous_jobs = simultaneous_jobs
+      @simultaneous_jobs = 10 if run_on_mac? # saucelabs account limit for parallel is 10 for mac
       @all_tests = all_tests
 
       connector = MiniAutobot.settings.connector
@@ -41,15 +42,6 @@ module MiniAutobot
     # @param [Integer, Array]
     # n = number of tests will be running in parallel
     def run_in_parallel!
-      # set number of tests to be running in parallel
-      if simultaneous_jobs.nil?
-        if run_on_mac?
-          @simultaneous_jobs = 10 # saucelabs account limit for parallel is 10 for mac
-        else
-          @simultaneous_jobs = 20 # saucelabs account limit for parallel is 15 for non-mac
-        end
-      end
-
       size = all_tests.size
       if size <= simultaneous_jobs
         run_test_set(all_tests)
