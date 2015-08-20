@@ -42,6 +42,8 @@ module MiniAutobot
       self
     end
 
+    # can be used as a flag no matter parallel option is used in command line or not
+    # can also be used to fetch the value if a valid value is specified
     def parallel
       if hsh[:parallel] == 0
         return nil

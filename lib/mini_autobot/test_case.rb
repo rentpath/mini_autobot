@@ -84,7 +84,6 @@ module MiniAutobot
             exit
           end
 
-          # todo get the number value from "--parallel=" and replace nil with it
           parallel = Parallel.new(MiniAutobot.settings.parallel, @@regression_suite)
           parallel.run_in_parallel!
 

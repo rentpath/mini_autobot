@@ -69,7 +69,7 @@ module Minitest
     end
 
     options[:parallel] = 0
-    parser.on('-P', '--parallel PARALLEL', 'Run in parallel') do |value|
+    parser.on('-P', '--parallel PARALLEL', 'Run any number of tests in parallel') do |value|
       options[:parallel] = value
     end
   end
