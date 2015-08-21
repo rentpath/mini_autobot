@@ -1,5 +1,6 @@
 *.gem
 pkg
+Gemfile.lock
 
 # vi swap files (the extra letters are used when there are duplicates)
 *.sw[ponml]
