@@ -1,3 +1,6 @@
+*.gem
+pkg
+
 # vi swap files (the extra letters are used when there are duplicates)
 *.sw[ponml]
 .DS_Store
