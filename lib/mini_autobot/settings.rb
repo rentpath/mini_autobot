@@ -42,8 +42,14 @@ module MiniAutobot
       self
     end
 
-    def parallel?
-      hsh.fetch(:parallel, false)
+    # can be used as a flag no matter parallel option is used in command line or not
+    # can also be used to fetch the value if a valid value is specified
+    def parallel
+      if hsh[:parallel] == 0
+        return nil
+      else
+        hsh.fetch(:parallel).to_i
+      end
     end
 
     def raw_arguments

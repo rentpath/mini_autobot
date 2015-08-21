@@ -78,14 +78,13 @@ module MiniAutobot
         methods  = super
         selected = MiniAutobot.settings.tags
 
-        if MiniAutobot.settings.parallel?
+        if MiniAutobot.settings.parallel
           # check this because I don't know why this runnable_methods gets called three times consecutively when one starts running tests
           if @@already_executed
             exit
           end
 
-          # todo get the number value from "--parallel=" and replace nil with it
-          parallel = Parallel.new(nil, @@regression_suite)
+          parallel = Parallel.new(MiniAutobot.settings.parallel, @@regression_suite)
           parallel.run_in_parallel!
 
           @@already_executed = true
