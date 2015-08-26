@@ -146,6 +146,20 @@ module MiniAutobot
         return value
       end
 
+      # Retry a block of code for a number of times
+      def retry_with_count(count, &block)
+        try = 0
+        count.times do
+          try += 1
+          begin
+            block.call
+          rescue Exception => e
+            puts "Exception: #{e}"
+            puts "Retrying" if try < count
+          end
+        end
+      end
+
       # Check if a web element exists on page or not, without wait
       def is_element_present?(how, what, driver = nil)
         element_appeared?(how, what, driver)
