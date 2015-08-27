@@ -153,6 +153,7 @@ module MiniAutobot
           try += 1
           begin
             block.call
+            return true
           rescue Exception => e
             puts "Exception: #{e}"
             puts "Retrying" if try < count
