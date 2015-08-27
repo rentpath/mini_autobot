@@ -155,9 +155,8 @@ module MiniAutobot
             block.call
             return true
           rescue Exception => e
-            MiniAutobot.logger.debug "Exception: #{e}"
-            MiniAutobot.logger.debug block.source_location.join(':')
-            MiniAutobot.logger.debug "Retrying" if try < count
+            MiniAutobot.logger.warn "Exception: #{e}\nfrom\nblock.source_location.join(':')"
+            MiniAutobot.logger.warn "Retrying" if try < count
           end
         end
       end
