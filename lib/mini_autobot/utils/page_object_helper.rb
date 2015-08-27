@@ -156,6 +156,7 @@ module MiniAutobot
             return true
           rescue Exception => e
             puts "Exception: #{e}"
+            puts block.source_location.join(':')
             puts "Retrying" if try < count
           end
         end
