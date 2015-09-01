@@ -27,9 +27,9 @@ module MiniAutobot
       @platform.include?('osx')
     end
 
-    # remove all results files under logs/tap_results/
+    # remove all results files under logs/tap_results/ if there's any
     def clean_result!
-      IO.popen 'rm logs/tap_results/*'
+      FileUtils.rm_rf(Dir.glob('logs/tap_results/*')) unless Dir.glob('logs/tap_results/*').empty?
       puts "Cleaning result files.\n"
     end
 
