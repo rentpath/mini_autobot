@@ -62,7 +62,7 @@ module MiniAutobot
           print_sauce_link if connector_is_saucelabs?
         end
         begin
-          set_sauce_session_name if connector_is_saucelabs? && !@driver.nil?
+          update_sauce_session if connector_is_saucelabs? && !@driver.nil?
           self.logger.debug "Finished setting saucelabs session name for #{name()}"
         rescue
           self.logger.debug "Failed setting saucelabs session name for #{name()}"
@@ -86,10 +86,9 @@ module MiniAutobot
         end
       end
 
-      # update session name on saucelabs
-      def set_sauce_session_name
-        # identify the user who runs the tests and grab user's access_key
-        # where are we parsing info from run command to in the code?
+      # Update SauceLabs session(job) name
+      # Update session(job) status if test is not skipped
+      def update_sauce_session
         connector = MiniAutobot.settings.connector # eg. saucelabs:phu:win7_ie11
         overrides = connector.to_s.split(/:/)
         new_tags = overrides[2]+"_by_"+overrides[1]
@@ -107,10 +106,9 @@ module MiniAutobot
         require 'json'
         session_id = @driver.session_id
         http_auth = "https://#{username}:#{access_key}@saucelabs.com/rest/v1/#{username}/jobs/#{session_id}"
-        # to_json need to: require "active_support/core_ext", but will mess up the whole framework, require 'json' in this method solved it
-        body = {"name" => name(), "tags" => [new_tags]}.to_json
-        # gem 'rest-client'
-        RestClient.put(http_auth, body, {:content_type => "application/json"})
+        body = { "name" => name(), "tags" => [new_tags] }
+        body["passed"] = passed? unless skipped?
+        RestClient.put(http_auth, body.to_json, {:content_type => "application/json"})
       end
       
       def connector_is_saucelabs?
