@@ -113,6 +113,7 @@ module MiniAutobot
           end
         end
         @@selected_methods += selected_methods unless selected_methods.empty?
+        @@selected_methods - @@selected_methods.select { |method| !@@regression_suite.include?(method) }
         return selected_methods
       end
 
