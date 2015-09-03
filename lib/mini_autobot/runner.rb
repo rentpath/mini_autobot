@@ -1,8 +1,43 @@
 module MiniAutobot
+  class Runnable < Minitest::Runnable
+
+    ##
+    # Defines the order to run tests (:random by default). Override
+    # this or use a convenience method to change it for your tests.
+
+    def self.test_order
+      :random
+    end
+
+    ##
+    # Responsible for running all runnable methods in a given class,
+    # each in its own instance. Each instance is passed to the
+    # reporter to record.
+
+    def self.start_run reporter, options = {}
+      filter = options[:filter] || '/./'
+      filter = Regexp.new $1 if filter =~ /\/(.*)\//
+
+      filtered_methods = Minitest::Test.runnable_methods.find_all { |m|
+        filter === m || filter === "#{self}##{m}"
+      }
+
+      Minitest::Test.with_info_handler reporter do
+        filtered_methods.each do |method_name|
+          if MiniAutobot.settings.parallel?
+            @@parallelized_methods << method_name
+          else
+            run_one_method self, method_name, reporter
+          end
+        end
+      end
+    end
+  end
   class Runner
 
     attr_accessor :options
     @after_hooks = []
+    @@parallelized_methods = []
 
     def self.after_run(&blk)
       @after_hooks << blk
@@ -30,11 +65,34 @@ module MiniAutobot
       Minitest.reporter = nil # runnables shouldn't depend on the reporter, ever
 
       reporter.start
-      Minitest.__run reporter, @options
+      # parallel execution starts here, instead of this __run below?
+      self.__run reporter, @options
+      require 'pry'
+      binding.pry
       Minitest.parallel_executor.shutdown
       reporter.report
 
       reporter.passed?
+    end
+
+    ##
+    # Internal run method. Responsible for telling all Runnable
+    # sub-classes to run.
+    #
+    # NOTE: this method is redefined in parallel_each.rb, which is
+    # loaded if a Runnable calls parallelize_me!.
+
+    def self.__run reporter, options
+      suites = MiniAutobot::Runnable.runnables.shuffle
+      parallel, serial = suites.partition { |s| s.test_order == :parallel }
+
+      # If we run the parallel tests before the serial tests, the parallel tests
+      # could run in parallel with the serial tests. This would be bad because
+      # the serial tests won't lock around Reporter#record. Run the serial tests
+      # first, so that after they complete, the parallel tests will lock when
+      # recording results.
+      serial.map { |suite| suite.start_run reporter, options } +
+          parallel.map { |suite| suite.start_run reporter, options }
     end
 
     # before hook where you have parsed @options when loading tests

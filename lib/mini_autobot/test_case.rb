@@ -3,6 +3,7 @@ module MiniAutobot
   # An MiniAutobot-specific test case container, which extends the default ones,
   # adds convenience helper methods, and manages page objects automatically.
   class TestCase < Minitest::Test
+    @@selected_methods = []
     @@regression_suite = Array.new
     @@already_executed = false
     @@serials = Array.new
@@ -93,7 +94,7 @@ module MiniAutobot
         # If no tags are selected, run all tests
         return methods if selected.nil? || selected.empty?
 
-        return methods.select do |method|
+        selected_methods = methods.select do |method|
           # If the method's tags match any of the tag sets, allow it to run
           selected.any? do |tag_set|
             # Retrieve the tags for that method
@@ -111,6 +112,8 @@ module MiniAutobot
             end
           end
         end
+        @@selected_methods += selected_methods unless selected_methods.empty?
+        return selected_methods
       end
 
       # Install a setup method that runs before every test.
@@ -179,6 +182,9 @@ module MiniAutobot
           @@regression_suite << method_name
           @@serials << opts[:serial]
         end
+
+        # get a list of non_regression tests
+        # store it in a class variable
       end
 
       # @param suite [String] type of test suite
