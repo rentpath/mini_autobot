@@ -6,7 +6,6 @@ module MiniAutobot
     @@selected_methods = []
     @@runnables_count = 0
     @@regression_suite = Array.new
-    @@already_executed = false
     @@serials = Array.new
     @@test_suite_data = if File.exist?(MiniAutobot.root.join("config/mini_autobot/test_suite.yml"))
                           YAML.load_file(MiniAutobot.root.join("config/mini_autobot/test_suite.yml"))
