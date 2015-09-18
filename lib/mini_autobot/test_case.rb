@@ -83,8 +83,23 @@ module MiniAutobot
         filtered_methods = filter_methods(methods, selected)
 
         if MiniAutobot.settings.parallel
-          parallel = Parallel.new(MiniAutobot.settings.parallel, @@selected_methods)
-          parallel.run_in_parallel!
+          unless filtered_methods.empty?
+            if selected.nil? || selected.empty?
+              @@selected_methods = @@regression_suite
+            else
+              methods_to_add = filtered_methods.map { |method| method.to_sym if @@regression_suite.include?(method.to_sym) }
+              @@selected_methods += methods_to_add
+            end
+          end
+
+          @@runnables_count += 1
+          if @@runnables_count == @@runnables.size - 2
+            parallel = Parallel.new(MiniAutobot.settings.parallel, @@selected_methods)
+            parallel.run_in_parallel!
+            exit
+          end
+
+          return [] # no test will run
         else
           filtered_methods
         end
