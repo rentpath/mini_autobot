@@ -4,6 +4,7 @@ module MiniAutobot
   # adds convenience helper methods, and manages page objects automatically.
   class TestCase < Minitest::Test
     @@selected_methods = []
+    @@runnables_count = 0
     @@regression_suite = Array.new
     @@already_executed = false
     @@serials = Array.new
@@ -79,20 +80,21 @@ module MiniAutobot
         methods  = super
         selected = MiniAutobot.settings.tags
 
+        filtered_methods = filter_methods(methods, selected)
+
         if MiniAutobot.settings.parallel
-          # check this because I don't know why this runnable_methods gets called three times consecutively when one starts running tests
-          if @@already_executed
-            exit
-          end
-
-          parallel = Parallel.new(MiniAutobot.settings.parallel, @@regression_suite)
+          parallel = Parallel.new(MiniAutobot.settings.parallel, @@selected_methods)
           parallel.run_in_parallel!
-
-          @@already_executed = true
+        else
+          filtered_methods
         end
+      end
 
+      def filter_methods(methods, selected)
         # If no tags are selected, run all tests
-        return methods if selected.nil? || selected.empty?
+        if selected.nil? || selected.empty?
+          return methods
+        end
 
         selected_methods = methods.select do |method|
           # If the method's tags match any of the tag sets, allow it to run
@@ -112,9 +114,8 @@ module MiniAutobot
             end
           end
         end
-        @@selected_methods += selected_methods unless selected_methods.empty?
-        @@selected_methods - @@selected_methods.select { |method| !@@regression_suite.include?(method) }
-        return selected_methods
+
+        selected_methods
       end
 
       # Install a setup method that runs before every test.
@@ -183,9 +184,6 @@ module MiniAutobot
           @@regression_suite << method_name
           @@serials << opts[:serial]
         end
-
-        # get a list of non_regression tests
-        # store it in a class variable
       end
 
       # @param suite [String] type of test suite
