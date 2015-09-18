@@ -3,8 +3,9 @@ module MiniAutobot
   # An MiniAutobot-specific test case container, which extends the default ones,
   # adds convenience helper methods, and manages page objects automatically.
   class TestCase < Minitest::Test
+    @@selected_methods = []
+    @@runnables_count = 0
     @@regression_suite = Array.new
-    @@already_executed = false
     @@serials = Array.new
     @@test_suite_data = if File.exist?(MiniAutobot.root.join("config/mini_autobot/test_suite.yml"))
                           YAML.load_file(MiniAutobot.root.join("config/mini_autobot/test_suite.yml"))
@@ -73,27 +74,50 @@ module MiniAutobot
 
       # Filter out anything not matching our tag selection, if any.
       #
+      # If it's parallel run,
+      # only add filtered methods from each runnable to a list of to run methods,
+      # instead of running them one by one right away,
+      # and finally when all runnable methods are traversed, call parallel to run that list of methods.
+      #
       # @return [Enumerable<Symbol>] the methods marked runnable
       def runnable_methods
         methods  = super
         selected = MiniAutobot.settings.tags
 
+        filtered_methods = filter_methods(methods, selected)
+
         if MiniAutobot.settings.parallel
-          # check this because I don't know why this runnable_methods gets called three times consecutively when one starts running tests
-          if @@already_executed
-            exit
+          unless filtered_methods.empty?
+            if selected.nil? || selected.empty?
+              @@selected_methods = @@regression_suite
+            else
+              methods_to_add = filtered_methods.map { |method| method.to_sym if @@regression_suite.include?(method.to_sym) }
+              @@selected_methods += methods_to_add
+            end
           end
 
-          parallel = Parallel.new(MiniAutobot.settings.parallel, @@regression_suite)
-          parallel.run_in_parallel!
+          @@runnables_count += 1
+          mini_autobot_runnables = Minitest::Runnable.runnables - [Minitest::Test, Minitest::Unit::TestCase]
 
-          @@already_executed = true
+          if @@runnables_count == mini_autobot_runnables.size
+            parallel = Parallel.new(MiniAutobot.settings.parallel, @@selected_methods)
+            parallel.run_in_parallel!
+          end
+
+          return [] # no test will run
+        else
+          filtered_methods
+        end
+      end
+
+      # Filter methods in a runnable based on our tag selection
+      def filter_methods(methods, selected)
+        # If no tags are selected, run all tests
+        if selected.nil? || selected.empty?
+          return methods
         end
 
-        # If no tags are selected, run all tests
-        return methods if selected.nil? || selected.empty?
-
-        return methods.select do |method|
+        selected_methods = methods.select do |method|
           # If the method's tags match any of the tag sets, allow it to run
           selected.any? do |tag_set|
             # Retrieve the tags for that method
@@ -111,6 +135,8 @@ module MiniAutobot
             end
           end
         end
+
+        selected_methods
       end
 
       # Install a setup method that runs before every test.
