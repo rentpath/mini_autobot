@@ -75,6 +75,11 @@ module MiniAutobot
 
       # Filter out anything not matching our tag selection, if any.
       #
+      # If it's parallel run,
+      # only add filtered methods from each runnable to a list of to run methods,
+      # instead of running them one by one right away,
+      # and finally when all runnable methods are traversed, call parallel to run that list of methods.
+      #
       # @return [Enumerable<Symbol>] the methods marked runnable
       def runnable_methods
         methods  = super
@@ -93,10 +98,11 @@ module MiniAutobot
           end
 
           @@runnables_count += 1
-          if @@runnables_count == @@runnables.size - 2
+          mini_autobot_runnables = Minitest::Runnable.runnables - [Minitest::Test, Minitest::Unit::TestCase]
+
+          if @@runnables_count == mini_autobot_runnables.size
             parallel = Parallel.new(MiniAutobot.settings.parallel, @@selected_methods)
             parallel.run_in_parallel!
-            exit
           end
 
           return [] # no test will run
@@ -105,6 +111,7 @@ module MiniAutobot
         end
       end
 
+      # Filter methods in a runnable based on our tag selection
       def filter_methods(methods, selected)
         # If no tags are selected, run all tests
         if selected.nil? || selected.empty?
