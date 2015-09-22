@@ -84,7 +84,7 @@ module MiniAutobot
       cfg = Config.new(connector_cfg, env_cfg)
 
       if Thread.current[:active_connector] && !MiniAutobot.settings.reuse_driver?
-        self.finalization_queue << active_connector
+        self.finalization_queue << Thread.current[:active_connector]
         Thread.current[:active_connector] = nil
       end
 

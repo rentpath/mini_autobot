@@ -248,14 +248,7 @@ module MiniAutobot
       end
 
       def go_to_subpage!(url_path, page_type = :base)
-        # build url string
-        base_url = driver.current_url
-
-        # This is to safeguard ie, but we should handle this more intelligently in the future
-        base_url.slice!('qateam:wap88@')
-
-        url = base_url + url_path
-        driver.navigate.to(url)
+        driver.navigate.to(driver.url_for(url_path))
         cast(page_type)
       end
 
