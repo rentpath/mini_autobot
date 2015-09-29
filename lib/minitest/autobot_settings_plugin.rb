@@ -72,6 +72,11 @@ module Minitest
     parser.on('-P', '--parallel PARALLEL', 'Run any number of tests in parallel') do |value|
       options[:parallel] = value
     end
+
+    options[:rerun_failure] = false
+    parser.on('-R', '--rerun-failure', "Rerun failing test") do |value|
+      options[:rerun_failure] = value
+    end
   end
 
 end

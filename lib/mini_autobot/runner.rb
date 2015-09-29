@@ -24,10 +24,12 @@ module MiniAutobot
 
       reporter = self.single_run
 
-      @@run_count += 1
-      rerun = 1
-      unless reporter.passed? && @@run_count > rerun
-        reporter = self.single_run
+      if @options[:rerun_failure]
+        @@run_count += 1
+        rerun = 1
+        unless reporter.passed? && @@run_count > rerun
+          reporter = self.single_run
+        end
       end
       
       reporter.report
