@@ -60,6 +60,14 @@ module MiniAutobot
       hsh.fetch(:reuse_driver, false)
     end
 
+    def rerun_failure
+      if hsh.fetch(:rerun_failure)
+        hsh.fetch(:rerun_failure)
+      else
+        return 0
+      end
+    end
+
     def seed
       hsh.fetch(:seed, nil).to_i
     end
