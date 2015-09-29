@@ -3,7 +3,7 @@ module MiniAutobot
 
     attr_accessor :options
     @after_hooks = []
-    @@run_count = 1
+    @@rerun_count = 0
 
     def self.after_run(&blk)
       @after_hooks << blk
@@ -24,11 +24,11 @@ module MiniAutobot
 
       reporter = self.single_run
 
-      if @options[:rerun_failure]
-        @@run_count += 1
-        rerun = 1
-        unless reporter.passed? && @@run_count > rerun
+      rerun_failure = @options[:rerun_failure]
+      if rerun_failure && !reporter.passed?
+        while @@rerun_count < rerun_failure
           reporter = self.single_run
+          @@rerun_count += 1
         end
       end
       
