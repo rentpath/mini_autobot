@@ -17,6 +17,9 @@ module MiniAutobot
 
       @pids = []
       @static_run_command = "mini_autobot -c #{MiniAutobot.settings.connector} -e #{MiniAutobot.settings.env}"
+      if MiniAutobot.settings.rerun_failure
+        @static_run_command += " -R #{MiniAutobot.settings.rerun_failure}"
+      end
       tap_reporter_path = MiniAutobot.gem_root.join('lib/tapout/custom_reporters/fancy_tap_reporter.rb')
       @pipe_tap = "--tapy | tapout --no-color -r #{tap_reporter_path.to_s} fancytap"
     end

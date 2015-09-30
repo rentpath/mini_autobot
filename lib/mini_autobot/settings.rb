@@ -61,11 +61,7 @@ module MiniAutobot
     end
 
     def rerun_failure
-      if hsh.fetch(:rerun_failure)
-        hsh.fetch(:rerun_failure)
-      else
-        return 0
-      end
+      hsh.fetch(:rerun_failure)
     end
 
     def seed
