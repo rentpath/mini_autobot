@@ -26,7 +26,7 @@ module MiniAutobot
 
       rerun_failure = @options[:rerun_failure]
       if rerun_failure && !reporter.passed?
-        while @@rerun_count < rerun_failure
+        while @@rerun_count < rerun_failure && !reporter.passed?
           reporter = self.single_run
           @@rerun_count += 1
         end
