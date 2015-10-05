@@ -21,25 +21,16 @@ module MiniAutobot
       @options = Minitest.process_args args
 
       self.before_run
-      require 'pry'
-      binding.pry
-      # reporter = self.single_run
-      #
-      # rerun_failure = @options[:rerun_failure]
-      # if rerun_failure && !reporter.passed?
-      #   while @@rerun_count < rerun_failure && !reporter.passed?
-      #     reporter = self.single_run
-      #     @@rerun_count += 1
-      #   end
-      # end
-      t = Thread.new { self.single_run }
-      require 'pry'
-      binding.pry
-      t.join
-      reporter = t.value
-      puts "all_results = #{t['all_results']}"
 
-      reporter.report # tapy - type: final
+      reporter = self.single_run
+
+      rerun_failure = @options[:rerun_failure]
+      if rerun_failure && !reporter.passed?
+        while @@rerun_count < rerun_failure && !reporter.passed?
+          reporter = self.single_run
+          @@rerun_count += 1
+        end
+      end
 
       reporter.passed?
     end
@@ -58,6 +49,7 @@ module MiniAutobot
       reporter.start
       Minitest.__run reporter, @options
       Minitest.parallel_executor.shutdown
+      reporter.report
 
       reporter
     end
