@@ -7,11 +7,7 @@ module Minitest
   #
   class Minitap
 
-    attr_accessor :all_results
-
     def tapout_before_case(test_case)
-      all_results << 'results123'
-      Thread.current['all_results'] = all_results
       doc = {
           'type'    => 'case',
           'subtype' => '',
