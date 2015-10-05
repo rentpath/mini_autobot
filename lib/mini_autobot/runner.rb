@@ -31,8 +31,6 @@ module MiniAutobot
           @@rerun_count += 1
         end
       end
-      
-      reporter.report
 
       reporter.passed?
     end
@@ -51,6 +49,7 @@ module MiniAutobot
       reporter.start
       Minitest.__run reporter, @options
       Minitest.parallel_executor.shutdown
+      reporter.report
 
       reporter
     end
