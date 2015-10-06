@@ -3,6 +3,7 @@ module MiniAutobot
 
     attr_accessor :options
     @after_hooks = []
+    @@rerun_count = 0
 
     def self.after_run(&blk)
       @after_hooks << blk
@@ -21,6 +22,22 @@ module MiniAutobot
 
       self.before_run
 
+      reporter = self.single_run
+
+      rerun_failure = @options[:rerun_failure]
+      if rerun_failure && !reporter.passed?
+        while @@rerun_count < rerun_failure && !reporter.passed?
+          reporter = self.single_run
+          @@rerun_count += 1
+        end
+      end
+
+      reporter.passed?
+    end
+
+    # Inialize a new reporter, run test
+    # Return reporter, which carrys test result
+    def self.single_run
       reporter = Minitest::CompositeReporter.new
       reporter << Minitest::SummaryReporter.new(@options[:io], @options)
       reporter << Minitest::ProgressReporter.new(@options[:io], @options)
@@ -34,7 +51,7 @@ module MiniAutobot
       Minitest.parallel_executor.shutdown
       reporter.report
 
-      reporter.passed?
+      reporter
     end
 
     # before hook where you have parsed @options when loading tests

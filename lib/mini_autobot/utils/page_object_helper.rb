@@ -58,6 +58,7 @@ module MiniAutobot
       # @return [void]
       def teardown
         if !passed? && !skipped? && !@driver.nil?
+          save_to_ever_failed if MiniAutobot.settings.rerun_failure
           take_screenshot
           print_sauce_link if connector_is_saucelabs?
         end
@@ -74,6 +75,17 @@ module MiniAutobot
 
       def take_screenshot
         @driver.save_screenshot("logs/#{name}.png")
+      end
+
+      # Save test name to ever_failed_tests file only for the first time it failed
+      def save_to_ever_failed
+        ever_failed_tests = 'logs/tap_results/ever_failed_tests'
+        File.open(ever_failed_tests, 'a') do |f|
+          existing_failed_tests = File.readlines(ever_failed_tests).map do |line|
+            line.delete "\n"
+          end
+          f.puts name unless existing_failed_tests.include? name
+        end
       end
 
       # Print out a link of a saucelabs's job when a test is not passed
