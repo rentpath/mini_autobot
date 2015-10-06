@@ -81,7 +81,10 @@ module MiniAutobot
       def save_to_ever_failed
         ever_failed_tests = 'logs/tap_results/ever_failed_tests'
         File.open(ever_failed_tests, 'a') do |f|
-          f.puts name unless File.readlines(ever_failed_tests).grep(/#{name}/).any?
+          existing_failed_tests = File.readlines(ever_failed_tests).map do |line|
+            line.delete "\n"
+          end
+          f.puts "#{name}" unless existing_failed_tests.include? name
         end
       end
 
