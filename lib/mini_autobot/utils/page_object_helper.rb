@@ -58,8 +58,8 @@ module MiniAutobot
       # @return [void]
       def teardown
         if !passed? && !skipped? && !@driver.nil?
-          take_screenshot
           save_to_ever_failed if MiniAutobot.settings.rerun_failure
+          take_screenshot
           print_sauce_link if connector_is_saucelabs?
         end
         begin
@@ -84,7 +84,7 @@ module MiniAutobot
           existing_failed_tests = File.readlines(ever_failed_tests).map do |line|
             line.delete "\n"
           end
-          f.puts "#{name}" unless existing_failed_tests.include? name
+          f.puts name unless existing_failed_tests.include? name
         end
       end
 
