@@ -73,6 +73,7 @@ module MiniAutobot
         super
       end
 
+      # Take screenshot and save as png with test name as file name
       def take_screenshot
         @driver.save_screenshot("logs/#{name}.png")
       end
@@ -124,8 +125,7 @@ module MiniAutobot
       end
       
       def connector_is_saucelabs?
-        return true if MiniAutobot.settings.connector.include?('saucelabs')
-        return false
+        MiniAutobot.settings.connector.include? 'saucelabs'
       end
 
       # Generic page object helper method to clear and send keys to a web element found by driver
@@ -153,7 +153,7 @@ module MiniAutobot
         keys_array.each do |key|
           value = value[key]
         end
-        return value
+        value
       end
 
       # Retry a block of code for a number of times
@@ -203,7 +203,7 @@ module MiniAutobot
           result = true if elements.size() > 0
         end
         @driver.manage.timeouts.implicit_wait = original_timeout
-        return result
+        result
       end
 
       def wait_for_element_to_display(how, what, friendly_name = "element")
