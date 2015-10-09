@@ -13,19 +13,25 @@ def save_to_ever_failed(name)
   end
 end
 
+# two approaches:
+# 1. write to one file ever_failed_tests.json
+# 2. write to individual files,
+#    then merge all files data into one json file at the end of a run
+
+# Approach 1
 def json_save_to_ever_failed(name)
-  ever_failed_tests = 'ever_failed_tests.json'
-  puts 'run once'
-	File.open(ever_failed_tests, 'a+') do |file|
-		if file.size == 0
-			puts 'file empty'
-			file.puts "{"
-			file.puts "    \"#{name}\" : { \"rerun_count\" : 1 }"
-			file.puts "}"
-		else
-	  	data_hash = JSON.parse file.read
-			puts data_hash
-		end
+  ever_failed_tests = 'logs/tap_results/ever_failed_tests.json'
+  data_hash = {}
+  if File.file?(ever_failed_tests) && !File.zero?(ever_failed_tests)
+  	data_hash = JSON.parse(File.read(ever_failed_tests))
+  end
+	if data_hash[name]
+		data_hash[name]["rerun_count"] += 1
+	else
+		data_hash[name] = { "rerun_count" => 0 }
+	end
+	File.open(ever_failed_tests, 'w+') do |file|
+		file.write JSON.pretty_generate(data_hash)
 	end
 end
 

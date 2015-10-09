@@ -58,7 +58,7 @@ module MiniAutobot
       # @return [void]
       def teardown
         if !passed? && !skipped? && !@driver.nil?
-          save_to_ever_failed if MiniAutobot.settings.rerun_failure
+          json_save_to_ever_failed if MiniAutobot.settings.rerun_failure
           print_sauce_link if connector_is_saucelabs?
           take_screenshot
         end
@@ -86,6 +86,23 @@ module MiniAutobot
             line.delete "\n"
           end
           f.puts name unless existing_failed_tests.include? name
+        end
+      end
+
+      # Approach 1: create new/override same file ever_failed_tests.json with rerun count
+      def json_save_to_ever_failed
+        ever_failed_tests = 'logs/tap_results/ever_failed_tests.json'
+        data_hash = {}
+        if File.file?(ever_failed_tests) && !File.zero?(ever_failed_tests)
+          data_hash = JSON.parse(File.read(ever_failed_tests))
+        end
+        if data_hash[name]
+          data_hash[name]["rerun_count"] += 1
+        else
+          data_hash[name] = { "rerun_count" => 0 }
+        end
+        File.open(ever_failed_tests, 'w+') do |file|
+          file.write JSON.pretty_generate(data_hash)
         end
       end
 
