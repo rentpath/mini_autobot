@@ -59,8 +59,8 @@ module MiniAutobot
       def teardown
         if !passed? && !skipped? && !@driver.nil?
           save_to_ever_failed if MiniAutobot.settings.rerun_failure
-          take_screenshot
           print_sauce_link if connector_is_saucelabs?
+          take_screenshot
         end
         begin
           update_sauce_session if connector_is_saucelabs? && !@driver.nil?
