@@ -96,11 +96,18 @@ module MiniAutobot
         if File.file?(ever_failed_tests) && !File.zero?(ever_failed_tests)
           data_hash = JSON.parse(File.read(ever_failed_tests))
         end
+
         if data_hash[name]
           data_hash[name]["fail_count"] += 1
         else
           data_hash[name] = { "fail_count" => 1 }
         end
+        begin
+          data_hash[name]["last_fail_on_sauce"] = "saucelabs.com/tests/#{@driver.session_id}"
+        rescue
+          self.logger.debug "Failed setting last_fail_on_sauce, driver may not be available"
+        end
+
         File.open(ever_failed_tests, 'w+') do |file|
           file.write JSON.pretty_generate(data_hash)
         end
