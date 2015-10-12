@@ -89,7 +89,7 @@ module MiniAutobot
         end
       end
 
-      # Approach 1: create new/override same file ever_failed_tests.json with fail count
+      # Create new/override same file ever_failed_tests.json with fail count
       def json_save_to_ever_failed
         ever_failed_tests = 'logs/tap_results/ever_failed_tests.json'
         data_hash = {}
