@@ -89,7 +89,7 @@ module MiniAutobot
         end
       end
 
-      # Approach 1: create new/override same file ever_failed_tests.json with rerun count
+      # Approach 1: create new/override same file ever_failed_tests.json with fail count
       def json_save_to_ever_failed
         ever_failed_tests = 'logs/tap_results/ever_failed_tests.json'
         data_hash = {}
@@ -97,9 +97,9 @@ module MiniAutobot
           data_hash = JSON.parse(File.read(ever_failed_tests))
         end
         if data_hash[name]
-          data_hash[name]["rerun_count"] += 1
+          data_hash[name]["fail_count"] += 1
         else
-          data_hash[name] = { "rerun_count" => 0 }
+          data_hash[name] = { "fail_count" => 1 }
         end
         File.open(ever_failed_tests, 'w+') do |file|
           file.write JSON.pretty_generate(data_hash)
