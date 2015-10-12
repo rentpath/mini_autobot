@@ -58,9 +58,9 @@ module MiniAutobot
       # @return [void]
       def teardown
         if !passed? && !skipped? && !@driver.nil?
-          save_to_ever_failed if MiniAutobot.settings.rerun_failure
-          take_screenshot
+          json_save_to_ever_failed if MiniAutobot.settings.rerun_failure
           print_sauce_link if connector_is_saucelabs?
+          take_screenshot
         end
         begin
           update_sauce_session if connector_is_saucelabs? && !@driver.nil?
@@ -86,6 +86,30 @@ module MiniAutobot
             line.delete "\n"
           end
           f.puts name unless existing_failed_tests.include? name
+        end
+      end
+
+      # Create new/override same file ever_failed_tests.json with fail count
+      def json_save_to_ever_failed
+        ever_failed_tests = 'logs/tap_results/ever_failed_tests.json'
+        data_hash = {}
+        if File.file?(ever_failed_tests) && !File.zero?(ever_failed_tests)
+          data_hash = JSON.parse(File.read(ever_failed_tests))
+        end
+
+        if data_hash[name]
+          data_hash[name]["fail_count"] += 1
+        else
+          data_hash[name] = { "fail_count" => 1 }
+        end
+        begin
+          data_hash[name]["last_fail_on_sauce"] = "saucelabs.com/tests/#{@driver.session_id}"
+        rescue
+          self.logger.debug "Failed setting last_fail_on_sauce, driver may not be available"
+        end
+
+        File.open(ever_failed_tests, 'w+') do |file|
+          file.write JSON.pretty_generate(data_hash)
         end
       end
 
