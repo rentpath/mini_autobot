@@ -53,7 +53,7 @@ module MiniAutobot
         sleep 20
       else
         first_test_set = all_tests[0, simultaneous_jobs]
-        all_to_run = all_tests[(simultaneous_jobs + 1)...(all_tests.size - 1)]
+        all_to_run = all_tests[simultaneous_jobs..(all_tests.size - 1)]
         run_test_set(first_test_set)
         keep_running_full(all_to_run)
       end
