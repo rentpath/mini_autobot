@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.description   = %q{Wrapper of minitest and selenium-webdriver that supports multiple webapps
                           and multiple OS/browser ui automation testing, ready to be integrated in
                           development pipeline with jenkins and saucelabs.}
-  s.homepage      = "https://github.com/rentpath/autobots"
+  s.homepage      = "https://github.com/rentpath/mini_autobot"
   s.license       = "MIT"
 
   s.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
