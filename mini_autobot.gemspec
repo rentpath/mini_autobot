@@ -6,6 +6,7 @@ Gem::Specification.new do |s|
   s.name          = "mini_autobot"
   s.version       = MiniAutobot::VERSION
   s.authors       = ["Ripta Pasay", "Peijie Hu", "RentPath"]
+  s.email         = ["gemcutter@r8y.org", "tradev.pj@gmail.com", "devadmin@rentpath.com"]
 
   s.summary       = %q{Web automation framework on minitest, selenium webdriver, and page objects.}
   s.description   = %q{Wrapper of minitest and selenium-webdriver that supports multiple webapps
