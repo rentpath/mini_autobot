@@ -79,7 +79,6 @@ A typical config file structure looks like this:
         │   ├── ag_qa.yml
         │   ├── rent_ci.yml
         │   └── rent_qa.yml
-        ├── native_app_google_client.json
         ├── test_suite.yml
         └── tests.yml
 
@@ -101,7 +100,7 @@ It defines two things:
 test_cases and page_objects are located, eg. web_tests, xxx/yyyy/tests;
 2. multi-host flag: false means test_cases dir is directly under tests_dir,
 true means there's one more layer in middle: tests_dir/[hosts]/.
-    
+
 #### Connector Profile
 
 A connector profile is a regular YAML file in a specific directory, which
