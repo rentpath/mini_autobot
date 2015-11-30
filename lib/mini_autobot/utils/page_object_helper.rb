@@ -147,7 +147,7 @@ module MiniAutobot
         body["passed"] = passed? unless skipped?
         RestClient.put(http_auth, body.to_json, {:content_type => "application/json"})
       end
-      
+
       def connector_is_saucelabs?
         MiniAutobot.settings.connector.include? 'saucelabs'
       end
@@ -193,6 +193,13 @@ module MiniAutobot
             MiniAutobot.logger.warn "Retrying" if try < count
           end
         end
+      end
+
+      def with_url_change_wait(&block)
+        starting_url = @driver.current_url
+        block.call
+        wait(timeout: 15, message: 'Timeout waiting for URL to change')
+          .until { @driver.current_url != starting_url }
       end
 
       # Check if a web element exists on page or not, without wait
