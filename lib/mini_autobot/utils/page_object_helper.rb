@@ -212,6 +212,28 @@ module MiniAutobot
         element_appeared?(how, what, driver, check_display = true)
       end
 
+      def wait_for_element_to_display(how, what, friendly_name = "element")
+          wait(timeout: 15, message: "Timeout waiting for #{friendly_name} to display")
+            .until {is_element_present_and_displayed?(how, what)}
+      end
+
+      def wait_for_element_to_be_present(how, what, friendly_name = "element")
+        wait(timeout: 15, message: "Timeout waiting for #{friendly_name} to be present")
+          .until {is_element_present?(how, what)}
+      end
+
+      # Useful when you want to wait for the status of an element attribute to change
+      # Example: the class attribute of <body> changes to include 'logged-in' when a user signs in to rent.com
+      # Example usage: wait_for_attribute_status_change(:css, 'body', 'class', 'logged-in', 'sign in')
+      def wait_for_attribute_to_have_value(how, what, attribute, value, friendly_name = "attribute")
+        wait(timeout: 15, message: "Timeout waiting for #{friendly_name} status to update")
+          .until { driver.find_element(how, what).attribute(attribute).include?(value) rescue retry }
+      end
+
+      def current_page(calling_page)
+        calling_page.class.to_s.split('::').last.downcase
+      end
+      
       private
 
       # @param  eg. (:css, 'button.cancel') or (*BUTTON_SUBMIT_SEARCH)
@@ -235,28 +257,6 @@ module MiniAutobot
         end
         @driver.manage.timeouts.implicit_wait = original_timeout
         result
-      end
-
-      def wait_for_element_to_display(how, what, friendly_name = "element")
-          wait(timeout: 15, message: "Timeout waiting for #{friendly_name} to display")
-            .until {is_element_present_and_displayed?(how, what)}
-      end
-
-      def wait_for_element_to_be_present(how, what, friendly_name = "element")
-        wait(timeout: 15, message: "Timeout waiting for #{friendly_name} to be present")
-          .until {is_element_present?(how, what)}
-      end
-
-      # Useful when you want to wait for the status of an element attribute to change
-      # Example: the class attribute of <body> changes to include 'logged-in' when a user signs in to rent.com
-      # Example usage: wait_for_attribute_status_change(:css, 'body', 'class', 'logged-in', 'sign in')
-      def wait_for_attribute_to_have_value(how, what, attribute, value, friendly_name = "attribute")
-        wait(timeout: 15, message: "Timeout waiting for #{friendly_name} status to update")
-          .until { driver.find_element(how, what).attribute(attribute).include?(value) rescue retry }
-      end
-
-      def current_page(calling_page)
-        calling_page.class.to_s.split('::').last.downcase
       end
 
     end
