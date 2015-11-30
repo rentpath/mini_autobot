@@ -21,9 +21,6 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'activesupport', '~> 4.2'
   s.add_dependency 'faker', '~> 1.4'
-  s.add_dependency 'google-api-client', '~> 0.8'
-  s.add_dependency 'google_drive', '~> 1.0'
-  s.add_dependency 'mail', '~> 2.6'
   s.add_dependency 'minitap', '~> 0.5.3'
   s.add_dependency 'pry', '~> 0.10'
   s.add_dependency 'minitest', '~>5.4.0'
