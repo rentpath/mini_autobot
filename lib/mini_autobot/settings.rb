@@ -27,10 +27,12 @@ module MiniAutobot
       hsh.fetch(:connector, :firefox).to_s
     end
 
+    # Use a predicate to query the environment type, e.g.:
+    #
+    #   MiniAutobot.settings.env.production?
+    #   MiniAutobot.settings.env.qa?
     def env
-      # add a gitignored env file which stores a default env
-      # pass the default env in as default
-      hsh.fetch(:env, :rent_qa).to_s
+      hsh.fetch(:env, :rent_qa).to_s.inquiry
     end
 
     def io
