@@ -14,11 +14,6 @@ module MiniAutobot
       @hsh = {}
     end
 
-    def inspect
-      settings = self.class.public_instance_methods(false).sort.map(&:inspect).join(', ')
-      "#<MiniAutobot::Settings #{settings}>"
-    end
-
     def auto_finalize?
       hsh.fetch(:auto_finalize, true)
     end
