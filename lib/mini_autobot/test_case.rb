@@ -21,10 +21,17 @@ module MiniAutobot
             }
           }
 
+          # Only necessary to notify gem user, not gem developer
           if MiniAutobot.root != MiniAutobot.gem_root
-            # Only necessary to notify gem user, not gem developer
-            puts "config/mini_autobot/test_suite.yml doesn't exist, using default:\n#{default}"
-            puts "It's recommended to have this config file as it'll avoid problem when using tapout"
+            STDERR.puts <<-MSG
+              The file config/mini_autobot/test_suite.yml doesn't exist in your project;
+              using default instead:
+
+                #{default}
+
+              mini_autobot recommends that you have this config file if you run into any
+              problems when using TAPOUT output.
+            MSG
           end
 
           default
