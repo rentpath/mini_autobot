@@ -3,21 +3,33 @@ module MiniAutobot
   # An MiniAutobot-specific test case container, which extends the default ones,
   # adds convenience helper methods, and manages page objects automatically.
   class TestCase < Minitest::Test
+
     @@selected_methods = []
     @@runnables_count = 0
     @@regression_suite = Array.new
     @@serials = Array.new
-    @@test_suite_data = if File.exist?(MiniAutobot.root.join("config/mini_autobot/test_suite.yml"))
-                          YAML.load_file(MiniAutobot.root.join("config/mini_autobot/test_suite.yml"))
-                        else
-                          default = {"regression"=>{"tag_to_exclude"=>:non_regression}}
-                          if MiniAutobot.root != MiniAutobot.gem_root
-                            # Only necessary to notify gem user, not gem developer
-                            puts "config/mini_autobot/test_suite.yml doesn't exist, using default:\n#{default}"
-                            puts "It's recommended to have this config file as it'll avoid problem when using tapout"
-                          end
-                          default
-                        end
+
+    @@test_suite_data =
+      begin
+        suite_file = MiniAutobot.root.join('config', 'mini_autobot', 'test_suite.yml')
+        if File.exist?(suite_file)
+          YAML.load_file(suite_file)
+        else
+          default = {
+            "regression" => {
+              "tag_to_exclude" => :non_regression
+            }
+          }
+
+          if MiniAutobot.root != MiniAutobot.gem_root
+            # Only necessary to notify gem user, not gem developer
+            puts "config/mini_autobot/test_suite.yml doesn't exist, using default:\n#{default}"
+            puts "It's recommended to have this config file as it'll avoid problem when using tapout"
+          end
+
+          default
+        end
+      end
 
     # Standard exception class that signals that the test with that name has
     # already been defined.
