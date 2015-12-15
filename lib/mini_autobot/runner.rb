@@ -15,7 +15,7 @@ module MiniAutobot
       Kernel.exit(exit_code || false)
     end
 
-    def self.run args = []
+    def self.run(args = [])
       Minitest.load_plugins
 
       @options = Minitest.process_args args

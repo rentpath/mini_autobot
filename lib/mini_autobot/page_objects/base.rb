@@ -110,9 +110,9 @@ module MiniAutobot
           is_element_present?(:css, 'body')
         end
         driver.execute_script <<-EOS
-            _.defer(function() {
+          _.defer(function() {
             $('body').append("<div id='#{uuid}'></div>");
-            });
+          });
         EOS
         wait(timeout: timeout, msg: "Timeout after waiting #{timeout} for all dom events to finish").until do
           is_element_present?(:css, "div[id='#{uuid}']")

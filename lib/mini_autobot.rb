@@ -5,6 +5,7 @@ envs << ENV['AUTOBOT_BUNDLE'].to_sym if ENV.key?('AUTOBOT_BUNDLE')
 envs << ENV['APPLICATION_ENV'].to_sym if ENV.key?('APPLICATION_ENV')
 
 Bundler.setup(*envs)
+
 require 'minitest'
 require 'yaml'
 require 'erb'
