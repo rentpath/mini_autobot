@@ -31,6 +31,13 @@ module MiniAutobot
         @driver = override_driver if !override_driver.nil?
         instance = klass.new(@driver)
 
+        # Set SauceLabs session(job) name to test's name if running on Saucelabs
+        begin
+          update_sauce_session_name if connector_is_saucelabs? && !@driver.nil?
+        rescue
+          self.logger.debug "Failed setting saucelabs session name for #{name()}"
+        end
+
         # Before visiting the page, do any pre-processing necessary, if any,
         # but only visit the page if the pre-processing succeeds
         if block_given?
@@ -62,11 +69,9 @@ module MiniAutobot
           take_screenshot
         end
         begin
-          update_sauce_session_name if connector_is_saucelabs? && !@driver.nil?
           update_sauce_session_status if connector_is_saucelabs? && !@driver.nil? && !skipped?
-          self.logger.debug "Finished setting saucelabs session name for #{name()}"
         rescue
-          self.logger.debug "Failed setting saucelabs session name for #{name()}"
+          self.logger.debug "Failed setting saucelabs session status for #{name()}"
         end
 
         MiniAutobot::Connector.finalize!
