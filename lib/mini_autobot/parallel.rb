@@ -122,17 +122,8 @@ module MiniAutobot
     # call saucelabs REST API to get last #{limit} jobs' statuses
     # possible job status: complete, error, in progress
     def saucelabs_last_n_statuses(limit)
-      connector = MiniAutobot.settings.connector # eg. saucelabs:phu:win7_ie11
-      overrides = connector.to_s.split(/:/)
-      file_name = overrides.shift
-      path = MiniAutobot.root.join('config/mini_autobot', 'connectors')
-      filepath  = path.join("#{file_name}.yml")
-      raise ArgumentError, "Cannot load profile #{file_name.inspect} because #{filepath.inspect} does not exist" unless filepath.exist?
-      cfg = YAML.load(File.read(filepath))
-      cfg = Connector.resolve(cfg, overrides)
-      cfg.freeze
-      username = cfg["hub"]["user"]
-      access_key = cfg["hub"]["pass"]
+      username = MiniAutobot.settings.sauce_username
+      access_key = MiniAutobot.settings.sauce_access_key
 
       require 'json'
 
