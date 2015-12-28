@@ -1,4 +1,3 @@
-
 module MiniAutobot
   module Utils
 
@@ -63,7 +62,8 @@ module MiniAutobot
           take_screenshot
         end
         begin
-          update_sauce_session if connector_is_saucelabs? && !@driver.nil?
+          update_sauce_session_name if connector_is_saucelabs? && !@driver.nil?
+          update_sauce_session_status if connector_is_saucelabs? && !@driver.nil? && !skipped?
           self.logger.debug "Finished setting saucelabs session name for #{name()}"
         rescue
           self.logger.debug "Failed setting saucelabs session name for #{name()}"
@@ -124,11 +124,24 @@ module MiniAutobot
       end
 
       # Update SauceLabs session(job) name
+      def update_sauce_session_name
+        require 'json'
+        http_auth = sauce_http_auth
+        body = { "name" => name() }
+        RestClient.put(http_auth, body.to_json, {:content_type => "application/json"})
+      end
+
       # Update session(job) status if test is not skipped
-      def update_sauce_session
+      def update_sauce_session_status
+        require 'json'
+        http_auth = sauce_http_auth
+        body = { "passed" => passed? }
+        RestClient.put(http_auth, body.to_json, {:content_type => "application/json"})
+      end
+
+      def sauce_http_auth
         connector = MiniAutobot.settings.connector # eg. saucelabs:phu:win7_ie11
         overrides = connector.to_s.split(/:/)
-        new_tags = overrides[2]+"_by_"+overrides[1]
         file_name = overrides.shift
         path = MiniAutobot.root.join('config/mini_autobot', 'connectors')
         filepath  = path.join("#{file_name}.yml")
@@ -140,12 +153,8 @@ module MiniAutobot
         username = cfg["hub"]["user"]
         access_key = cfg["hub"]["pass"]
 
-        require 'json'
         session_id = @driver.session_id
         http_auth = "https://#{username}:#{access_key}@saucelabs.com/rest/v1/#{username}/jobs/#{session_id}"
-        body = { "name" => name(), "tags" => [new_tags] }
-        body["passed"] = passed? unless skipped?
-        RestClient.put(http_auth, body.to_json, {:content_type => "application/json"})
       end
 
       def connector_is_saucelabs?
