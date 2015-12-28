@@ -131,7 +131,7 @@ module MiniAutobot
       # Update SauceLabs session(job) name
       def update_sauce_session_name
         require 'json'
-        http_auth = sauce_http_auth
+        http_auth = MiniAutobot.settings.sauce_session_http_auth(@driver)
         body = { "name" => name() }
         RestClient.put(http_auth, body.to_json, {:content_type => "application/json"})
       end
@@ -139,27 +139,9 @@ module MiniAutobot
       # Update session(job) status if test is not skipped
       def update_sauce_session_status
         require 'json'
-        http_auth = sauce_http_auth
+        http_auth = MiniAutobot.settings.sauce_session_http_auth(@driver)
         body = { "passed" => passed? }
         RestClient.put(http_auth, body.to_json, {:content_type => "application/json"})
-      end
-
-      def sauce_http_auth
-        connector = MiniAutobot.settings.connector # eg. saucelabs:phu:win7_ie11
-        overrides = connector.to_s.split(/:/)
-        file_name = overrides.shift
-        path = MiniAutobot.root.join('config/mini_autobot', 'connectors')
-        filepath  = path.join("#{file_name}.yml")
-        raise ArgumentError, "Cannot load profile #{file_name.inspect} because #{filepath.inspect} does not exist" unless filepath.exist?
-
-        cfg = YAML.load(File.read(filepath))
-        cfg = Connector.resolve(cfg, overrides)
-        cfg.freeze
-        username = cfg["hub"]["user"]
-        access_key = cfg["hub"]["pass"]
-
-        session_id = @driver.session_id
-        http_auth = "https://#{username}:#{access_key}@saucelabs.com/rest/v1/#{username}/jobs/#{session_id}"
       end
 
       def connector_is_saucelabs?

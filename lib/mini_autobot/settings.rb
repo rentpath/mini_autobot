@@ -33,6 +33,19 @@ module MiniAutobot
       hsh.fetch(:env, :rent_qa).to_s
     end
 
+    def sauce_session_http_auth(driver)
+      session_id = driver.session_id
+      "https://#{sauce_username}:#{sauce_access_key}@saucelabs.com/rest/v1/#{sauce_username}/jobs/#{session_id}"
+    end
+
+    def sauce_username
+      sauce_user["user"]
+    end
+
+    def sauce_access_key
+      sauce_user["pass"]
+    end
+
     def io
       hsh[:io]
     end
@@ -82,6 +95,19 @@ module MiniAutobot
 
     private
     attr_reader :hsh
+
+    def sauce_user
+      overrides = connector.split(/:/)
+      file_name = overrides.shift
+      path = MiniAutobot.root.join('config/mini_autobot', 'connectors')
+      filepath  = path.join("#{file_name}.yml")
+      raise ArgumentError, "Cannot load profile #{file_name.inspect} because #{filepath.inspect} does not exist" unless filepath.exist?
+
+      cfg = YAML.load(File.read(filepath))
+      cfg = Connector.resolve(cfg, overrides)
+      cfg.freeze
+      cfg["hub"]
+    end
 
   end
 
