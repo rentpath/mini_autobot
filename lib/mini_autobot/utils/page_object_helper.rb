@@ -1,4 +1,3 @@
-
 module MiniAutobot
   module Utils
 
@@ -32,6 +31,13 @@ module MiniAutobot
         @driver = override_driver if !override_driver.nil?
         instance = klass.new(@driver)
 
+        # Set SauceLabs session(job) name to test's name if running on Saucelabs
+        begin
+          update_sauce_session_name if connector_is_saucelabs? && !@driver.nil?
+        rescue
+          self.logger.debug "Failed setting saucelabs session name for #{name()}"
+        end
+
         # Before visiting the page, do any pre-processing necessary, if any,
         # but only visit the page if the pre-processing succeeds
         if block_given?
@@ -63,10 +69,9 @@ module MiniAutobot
           take_screenshot
         end
         begin
-          update_sauce_session if connector_is_saucelabs? && !@driver.nil?
-          self.logger.debug "Finished setting saucelabs session name for #{name()}"
+          update_sauce_session_status if connector_is_saucelabs? && !@driver.nil? && !skipped?
         rescue
-          self.logger.debug "Failed setting saucelabs session name for #{name()}"
+          self.logger.debug "Failed setting saucelabs session status for #{name()}"
         end
 
         MiniAutobot::Connector.finalize!
@@ -124,27 +129,16 @@ module MiniAutobot
       end
 
       # Update SauceLabs session(job) name
+      def update_sauce_session_name
+        http_auth = MiniAutobot.settings.sauce_session_http_auth(@driver)
+        body = { "name" => name() }
+        RestClient.put(http_auth, body.to_json, {:content_type => "application/json"})
+      end
+
       # Update session(job) status if test is not skipped
-      def update_sauce_session
-        connector = MiniAutobot.settings.connector # eg. saucelabs:phu:win7_ie11
-        overrides = connector.to_s.split(/:/)
-        new_tags = overrides[2]+"_by_"+overrides[1]
-        file_name = overrides.shift
-        path = MiniAutobot.root.join('config/mini_autobot', 'connectors')
-        filepath  = path.join("#{file_name}.yml")
-        raise ArgumentError, "Cannot load profile #{file_name.inspect} because #{filepath.inspect} does not exist" unless filepath.exist?
-
-        cfg = YAML.load(File.read(filepath))
-        cfg = Connector.resolve(cfg, overrides)
-        cfg.freeze
-        username = cfg["hub"]["user"]
-        access_key = cfg["hub"]["pass"]
-
-        require 'json'
-        session_id = @driver.session_id
-        http_auth = "https://#{username}:#{access_key}@saucelabs.com/rest/v1/#{username}/jobs/#{session_id}"
-        body = { "name" => name(), "tags" => [new_tags] }
-        body["passed"] = passed? unless skipped?
+      def update_sauce_session_status
+        http_auth = MiniAutobot.settings.sauce_session_http_auth(@driver)
+        body = { "passed" => passed? }
         RestClient.put(http_auth, body.to_json, {:content_type => "application/json"})
       end
 

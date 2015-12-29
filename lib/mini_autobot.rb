@@ -11,7 +11,7 @@ require 'erb'
 require 'faker'
 require 'selenium/webdriver'
 require 'rest-client'
-
+require 'json'
 require 'cgi'
 require 'pathname'
 
