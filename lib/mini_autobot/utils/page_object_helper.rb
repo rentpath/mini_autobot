@@ -130,7 +130,6 @@ module MiniAutobot
 
       # Update SauceLabs session(job) name
       def update_sauce_session_name
-        require 'json'
         http_auth = MiniAutobot.settings.sauce_session_http_auth(@driver)
         body = { "name" => name() }
         RestClient.put(http_auth, body.to_json, {:content_type => "application/json"})
@@ -138,7 +137,6 @@ module MiniAutobot
 
       # Update session(job) status if test is not skipped
       def update_sauce_session_status
-        require 'json'
         http_auth = MiniAutobot.settings.sauce_session_http_auth(@driver)
         body = { "passed" => passed? }
         RestClient.put(http_auth, body.to_json, {:content_type => "application/json"})

@@ -125,8 +125,6 @@ module MiniAutobot
       username = MiniAutobot.settings.sauce_username
       access_key = MiniAutobot.settings.sauce_access_key
 
-      require 'json'
-
       # call api to get most recent #{limit} jobs' ids
       http_auth = "https://#{username}:#{access_key}@saucelabs.com/rest/v1/#{username}/jobs?limit=#{limit}"
       response = get_response_with_retry(http_auth) # response was originally an array of hashs, but RestClient converts it to a string
