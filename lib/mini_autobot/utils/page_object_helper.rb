@@ -131,7 +131,10 @@ module MiniAutobot
       # Update SauceLabs session(job) name and build number/name
       def update_sauce_session_name
         http_auth = MiniAutobot.settings.sauce_session_http_auth(@driver)
-        body = { "name" => name(), "build" => ENV['JENKINS_BUILD_NUMBER'] }
+        body = { 'name' => name() }
+        unless (build_number = ENV['JENKINS_BUILD_NUMBER']).nil?
+          body['build'] = build_number
+        end
         RestClient.put(http_auth, body.to_json, {:content_type => "application/json"})
       end
 
