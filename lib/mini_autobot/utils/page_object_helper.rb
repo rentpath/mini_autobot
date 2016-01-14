@@ -230,7 +230,7 @@ module MiniAutobot
       def current_page(calling_page)
         calling_page.class.to_s.split('::').last.downcase
       end
-      
+
       private
 
       # @param  eg. (:css, 'button.cancel') or (*BUTTON_SUBMIT_SEARCH)
@@ -254,6 +254,18 @@ module MiniAutobot
         end
         @driver.manage.timeouts.implicit_wait = original_timeout
         result
+      end
+
+      # Method that overrides click to send the enter key to the element if the current browser
+      # is internet explorer. Used when sending the enter key to the element will work
+      def browser_safe_click(element)
+        driver.browser == :internet_explorer ? element.send_keys(:enter) : element.click
+      end
+
+      # Method that overrides click to send the space key to the checkbox if the current browser
+      # is internet explorer. Used when sending the space key to the checkbox will work
+      def browser_safe_checkbox_click(element)
+        (driver.browser == :internet_explorer || driver.browser == :firefox) ? element.send_keys(:space) : element.click
       end
 
     end

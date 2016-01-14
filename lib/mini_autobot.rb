@@ -33,6 +33,7 @@ require 'active_support/inflector'
 require 'active_support/logger'
 
 require_relative 'minitap/minitest5_rent'
+require_relative 'selenium/webdriver/common/element_mini'
 
 ActiveSupport::Inflector.inflections(:en) do |inflector|
   inflector.acronym 'PDP'
