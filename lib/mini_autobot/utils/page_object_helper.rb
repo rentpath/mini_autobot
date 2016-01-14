@@ -258,13 +258,13 @@ module MiniAutobot
 
       # Method that overrides click to send the enter key to the element if the current browser
       # is internet explorer. Used when sending the enter key to the element will work
-      def ie_safe_click(element)
+      def browser_safe_click(element)
         driver.browser == :internet_explorer ? element.send_keys(:enter) : element.click
       end
 
       # Method that overrides click to send the space key to the checkbox if the current browser
       # is internet explorer. Used when sending the space key to the checkbox will work
-      def ie_safe_checkbox_click(element)
+      def browser_safe_checkbox_click(element)
         driver.browser == :internet_explorer ? element.send_keys(:space) : element.click
       end
 
