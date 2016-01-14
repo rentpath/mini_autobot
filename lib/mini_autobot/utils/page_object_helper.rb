@@ -265,7 +265,7 @@ module MiniAutobot
       # Method that overrides click to send the space key to the checkbox if the current browser
       # is internet explorer. Used when sending the space key to the checkbox will work
       def browser_safe_checkbox_click(element)
-        (bridge.browser == :internet_explorer || bridge.browser == :firefox) ? element.send_keys(:space) : element.click
+        (driver.browser == :internet_explorer || driver.browser == :firefox) ? element.send_keys(:space) : element.click
       end
 
     end
