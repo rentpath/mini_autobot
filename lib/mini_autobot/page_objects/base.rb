@@ -17,6 +17,7 @@ module MiniAutobot
       include Utils::Loggable
       include Utils::PageObjectHelper
       include Utils::OverlayAndWidgetHelper
+      extend ElementContainer
 
       attr_accessor :assertions
       attr_accessor :failures
@@ -42,6 +43,14 @@ module MiniAutobot
 
         @assertions = 0
         @failures   = []
+      end
+
+      def find_first(how, what)
+        driver.find_element(how, what)
+      end
+
+      def find_all(how, what)
+        driver.all(how, what)
       end
 
       # Returns the current path loaded in the driver.

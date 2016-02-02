@@ -9,6 +9,7 @@ module MiniAutobot
         include Utils::Castable
         include Utils::PageObjectHelper
         include Utils::OverlayAndWidgetHelper
+        extend ElementContainer
 
         attr_reader :driver
 
@@ -23,6 +24,14 @@ module MiniAutobot
         ## for overlay that include Utils::OverlayAndWidgetHelper
         def page_object
           @page
+        end
+
+        def find_first(how, what)
+          driver.find_element(how, what)
+        end
+
+        def find_all(how, what)
+          driver.all(how, what)
         end
 
         # By default, any driver state is accepted for any page. This method

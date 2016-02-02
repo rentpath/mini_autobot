@@ -17,6 +17,7 @@ module MiniAutobot
 end
 
 # Major classes and modules
+require_relative 'page_objects/element_container'
 require_relative 'page_objects/base'
 require_relative 'page_objects/overlay/base'
 require_relative 'page_objects/widgets/base'
