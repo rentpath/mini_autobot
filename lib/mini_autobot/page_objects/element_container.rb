@@ -2,18 +2,18 @@ module MiniAutobot
   module PageObjects
   	module ElementContainer
 
-	    def element(element_name, find_args)
-	      build element_name, find_args do
+	    def element(element_name, *find_args)
+	      build element_name, *find_args do |how, what|
 	        define_method element_name.to_s do
-            find_first(*find_args)
+            find_first(how, what)
 	        end
 	      end
 	    end
 
-	    def elements(collection_name, find_args)
-	      build collection_name, find_args do
+	    def elements(collection_name, *find_args)
+	      build collection_name, *find_args do |how, what|
 	        define_method collection_name.to_s do
-            find_all(*find_args)
+            find_all(how, what)
 	        end
 	      end
 	    end
@@ -26,12 +26,16 @@ module MiniAutobot
 
 	    private
 
-	    def build(name, find_args)
+	    def build(name, *find_args)
 	      if find_args.empty?
 	        create_no_selector name
 	      else
 	        add_to_mapped_items name
-	        yield
+	        if find_args.size == 1
+		        yield(:css, *find_args)
+		      else
+            yield(*find_args)
+		      end
 	      end
 	    end
 
