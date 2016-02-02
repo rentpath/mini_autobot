@@ -4,18 +4,18 @@ module MiniAutobot
 
       def element(element_name, *find_args)
         build element_name, *find_args do |how, what|
-                            define_method element_name.to_s do
-                              find_first(how, what)
-                            end
-                          end
+          define_method element_name.to_s do
+            find_first(how, what)
+          end
+        end
       end
 
       def elements(collection_name, *find_args)
         build collection_name, *find_args do |how, what|
-                               define_method collection_name.to_s do
-                                 find_all(how, what)
-                               end
-                             end
+          define_method collection_name.to_s do
+            find_all(how, what)
+          end
+        end
       end
       alias_method :collection, :elements
 
