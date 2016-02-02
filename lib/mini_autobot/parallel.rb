@@ -36,6 +36,33 @@ module MiniAutobot
       puts "Cleaning result files.\n"
     end
 
+    def remove_redundant_tap
+      result_dir = 'logs/tap_results'
+      ever_failed_tests_file = "#{result_dir}/ever_failed_tests.json"
+      if File.file? ever_failed_tests_file
+        data_hash = JSON.parse(File.read(ever_failed_tests_file))
+        data_hash.keys.each do |test|
+          if test.start_with? 'test_'
+            tap_result_file = "#{result_dir}/#{test}.t"
+            result_lines = IO.readlines(tap_result_file)
+            last_tap_start_index = 0
+            last_tap_end_index = result_lines.size - 1
+            result_lines.each_with_index do |l, index|
+              last_tap_start_index = index if l.delete!("\n") == '1..1'
+            end
+            File.open(tap_result_file, 'w') do |f|
+              f.puts result_lines[last_tap_start_index..last_tap_end_index]
+            end
+            puts "Processed #{tap_result_file}"
+          else
+            next
+          end
+        end
+      else
+        puts "==> File #{ever_failed_tests_file} doesn't exist - all tests passed!"
+      end
+    end
+
     def count_autobot_process
       counting_process_output = IO.popen "ps -ef | grep 'bin/#{@static_run_command}' -c"
       counting_process_output.readlines[0].to_i - 1 # minus grep process
@@ -60,7 +87,6 @@ module MiniAutobot
 
       Process.waitall
       puts "\nAll Complete! Started at #{@start_time} and finished at #{Time.now}\n"
-      exit
     end
 
     # runs each test from a test set in a separate child process
