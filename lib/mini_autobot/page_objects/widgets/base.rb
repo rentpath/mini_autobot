@@ -9,6 +9,7 @@ module MiniAutobot
         include Utils::Castable
         include Utils::PageObjectHelper
         include Utils::OverlayAndWidgetHelper
+        extend ElementContainer
 
         attr_reader :driver, :element, :page
 
@@ -23,8 +24,13 @@ module MiniAutobot
           @page
         end
 
-        attr_reader :driver
-        attr_reader :element
+        def find_first(how, what)
+          element.find_element(how, what)
+        end
+
+        def find_all(how, what)
+          element.all(how, what)
+        end
 
         # Explicitly wait for a certain condition to be true:
         #   wait.until { driver.find_element(:css, 'body.tmpl-srp') }
