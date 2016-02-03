@@ -101,6 +101,7 @@ module MiniAutobot
 
           if @@runnables_count == mini_autobot_runnables.size
             parallel = Parallel.new(MiniAutobot.settings.parallel, @@selected_methods)
+            parallel.clean_result!
             parallel.run_in_parallel!
             parallel.remove_redundant_tap if MiniAutobot.settings.rerun_failure
             exit

@@ -5,7 +5,8 @@ module MiniAutobot
 
     def initialize(simultaneous_jobs, all_tests)
       @start_time = Time.now
-      clean_result!
+
+      @result_dir = 'logs/tap_results'
 
       connector = MiniAutobot.settings.connector
       @on_sauce = true if connector.include? 'saucelabs'
@@ -30,20 +31,22 @@ module MiniAutobot
       @platform.include?('osx')
     end
 
-    # remove all results files under logs/tap_results/ if there's any
+    # remove all results files under @result_dir if there's any
     def clean_result!
-      FileUtils.rm_rf(Dir.glob('logs/tap_results/*')) unless Dir.glob('logs/tap_results/*').empty?
+      raise Exception, '@result_dir is not set' if @result_dir.nil?
+      unless Dir.glob("#{@result_dir}/*").empty?
+        FileUtils.rm_rf(Dir.glob("#{@result_dir}/*"))
+      end
       puts "Cleaning result files.\n"
     end
 
     def remove_redundant_tap
-      result_dir = 'logs/tap_results'
-      ever_failed_tests_file = "#{result_dir}/ever_failed_tests.json"
+      ever_failed_tests_file = "#{@result_dir}/ever_failed_tests.json"
       if File.file? ever_failed_tests_file
         data_hash = JSON.parse(File.read(ever_failed_tests_file))
         data_hash.keys.each do |test|
           if test.start_with? 'test_'
-            tap_result_file = "#{result_dir}/#{test}.t"
+            tap_result_file = "#{@result_dir}/#{test}.t"
             result_lines = IO.readlines(tap_result_file)
             last_tap_start_index = 0
             last_tap_end_index = result_lines.size - 1
@@ -92,7 +95,7 @@ module MiniAutobot
     # runs each test from a test set in a separate child process
     def run_test_set(test_set)
       test_set.each do |test|
-        run_command = "#{@static_run_command} -n #{test} #{@pipe_tap} > logs/tap_results/#{test}.t"
+        run_command = "#{@static_run_command} -n #{test} #{@pipe_tap} > #{@result_dir}/#{test}.t"
         pipe = IO.popen(run_command)
         puts "Running #{test}  #{pipe.pid}"
       end
