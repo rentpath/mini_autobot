@@ -66,6 +66,21 @@ module MiniAutobot
       end
     end
 
+    def aggregate_tap_results
+      results_count = Dir.glob("#{@result_dir}/*.t").size
+      File.open('aggregated_result', 'a+') do |result_file|
+        result_file.puts "1..#{results_count}"
+        Dir.glob("#{@result_dir}/*.t") do |filename|
+          File.open(filename, 'r') do |file|
+            file.each_with_index do |line, index|
+              next if index == 0
+              result_file.puts line
+            end
+          end
+        end
+      end
+    end
+
     def count_autobot_process
       counting_process_output = IO.popen "ps -ef | grep 'bin/#{@static_run_command}' -c"
       counting_process_output.readlines[0].to_i - 1 # minus grep process
