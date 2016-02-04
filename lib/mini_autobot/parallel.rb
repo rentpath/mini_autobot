@@ -69,16 +69,41 @@ module MiniAutobot
     def aggregate_tap_results
       results_count = Dir.glob("#{@result_dir}/*.t").size
       File.open("#{@result_dir}/test_aggregated_result", 'a+') do |result_file|
+        result_stats = {
+            'pass' => 0,
+            'fail' => 0,
+            'errs' => 0,
+            'todo' => 0,
+            'omit' => 0
+        }
+        result_stats_line_start = '  # 1 tests:'
         result_file.puts "1..#{results_count}"
         Dir.glob("#{@result_dir}/*.t") do |filename|
           File.open(filename, 'r') do |file|
+            breakpoint_line = 0
             file.each_with_index do |line, index|
-              next if index == 0
-              result_file.puts line
+              next if index == 0 || (breakpoint_line > 0 && index > breakpoint_line)
+              if line.start_with?(result_stats_line_start)
+                pass, fail, errs, todo, omit = line.match(/(\d+) pass, (\d+) fail, (\d+) errs, (\d+) todo, (\d+) omit/).captures
+                one_test_result = {
+                    'pass' => pass.to_i,
+                    'fail' => fail.to_i,
+                    'errs' => errs.to_i,
+                    'todo' => todo.to_i,
+                    'omit' => omit.to_i
+                }
+                result_stats = result_stats.merge(one_test_result) { |k, total, one| total + one }
+                breakpoint_line = index
+              elsif line.strip == '#'
+                next
+              else
+                result_file.puts line
+              end
             end
           end
           File.delete(filename)
         end
+        result_file.puts "  # #{results_count} tests: #{result_stats['pass']} pass, #{result_stats['fail']} fail, #{result_stats['errs']} errs, #{result_stats['todo']} todo, #{result_stats['omit']} omit"
       end
     end
 
