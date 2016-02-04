@@ -68,7 +68,7 @@ module MiniAutobot
 
     def aggregate_tap_results
       results_count = Dir.glob("#{@result_dir}/*.t").size
-      File.open('aggregated_result', 'a+') do |result_file|
+      File.open('test_aggregated_result', 'a+') do |result_file|
         result_file.puts "1..#{results_count}"
         Dir.glob("#{@result_dir}/*.t") do |filename|
           File.open(filename, 'r') do |file|
@@ -77,6 +77,7 @@ module MiniAutobot
               result_file.puts line
             end
           end
+          File.delete(filename)
         end
       end
     end
