@@ -68,7 +68,7 @@ module MiniAutobot
 
     def aggregate_tap_results
       results_count = Dir.glob("#{@result_dir}/*.t").size
-      File.open("#{@result_dir}/test_aggregated_result", 'a+') do |result_file|
+      File.open("#{@result_dir}/test_aggregated_result.tap", 'a+') do |result_file|
         result_stats = {
             'pass' => 0,
             'fail' => 0,
