@@ -66,6 +66,9 @@ module MiniAutobot
       end
     end
 
+    # Aggregate all individual test_*.t files
+    # replace them with one file - test_aggregated_result.tap
+    # so they will be considered as one test plan by tap result parser
     def aggregate_tap_results
       results_count = Dir.glob("#{@result_dir}/*.t").size
       File.open("#{@result_dir}/test_aggregated_result.tap", 'a+') do |result_file|
