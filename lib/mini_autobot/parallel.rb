@@ -66,6 +66,59 @@ module MiniAutobot
       end
     end
 
+    # Aggregate all individual test_*.t files
+    # replace them with one file - test_aggregated_result.tap
+    # so they will be considered as one test plan by tap result parser
+    def aggregate_tap_results
+      results_count = Dir.glob("#{@result_dir}/*.t").size
+      File.open("#{@result_dir}/test_aggregated_result.tap", 'a+') do |result_file|
+        result_stats = {
+            'pass' => 0,
+            'fail' => 0,
+            'errs' => 0,
+            'todo' => 0,
+            'omit' => 0
+        }
+        result_stats_line_start = '  # 1 tests:'
+        result_file.puts "1..#{results_count}"
+        file_count = 0
+        Dir.glob("#{@result_dir}/*.t") do |filename|
+          file_count += 1
+          File.open(filename, 'r') do |file|
+            breakpoint_line = 0
+            file.each_with_index do |line, index|
+              next if index == 0 || (breakpoint_line > 0 && index > breakpoint_line)
+              if line.start_with?(result_stats_line_start)
+                pass, fail, errs, todo, omit = line.match(/(\d+) pass, (\d+) fail, (\d+) errs, (\d+) todo, (\d+) omit/).captures
+                one_test_result = {
+                    'pass' => pass.to_i,
+                    'fail' => fail.to_i,
+                    'errs' => errs.to_i,
+                    'todo' => todo.to_i,
+                    'omit' => omit.to_i
+                }
+                result_stats = result_stats.merge(one_test_result) { |k, total, one| total + one }
+                breakpoint_line = index
+              elsif line.strip == '#'
+                next
+              else
+                if line.start_with?('ok 1') || line.start_with?('not ok 1')
+                  line_begin, line_end = line.split('1 -')
+                  result_file.puts [line_begin, line_end].join("#{file_count} -")
+                else
+                  result_file.puts line
+                end
+              end
+            end
+          end
+          File.delete(filename)
+        end
+        result_file.puts '  #'
+        result_file.puts "  # #{results_count} tests: #{result_stats['pass']} pass, #{result_stats['fail']} fail, #{result_stats['errs']} errs, #{result_stats['todo']} todo, #{result_stats['omit']} omit"
+        result_file.puts "  # [00:00:00.00 0.00t/s 00.0000s/t] Finished at: #{Time.now}"
+      end
+    end
+
     def count_autobot_process
       counting_process_output = IO.popen "ps -ef | grep 'bin/#{@static_run_command}' -c"
       counting_process_output.readlines[0].to_i - 1 # minus grep process

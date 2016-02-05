@@ -104,6 +104,7 @@ module MiniAutobot
             parallel.clean_result!
             parallel.run_in_parallel!
             parallel.remove_redundant_tap if MiniAutobot.settings.rerun_failure
+            parallel.aggregate_tap_results
             exit
           end
 
