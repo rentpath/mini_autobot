@@ -78,7 +78,9 @@ module MiniAutobot
         }
         result_stats_line_start = '  # 1 tests:'
         result_file.puts "1..#{results_count}"
+        file_count = 0
         Dir.glob("#{@result_dir}/*.t") do |filename|
+          file_count += 1
           File.open(filename, 'r') do |file|
             breakpoint_line = 0
             file.each_with_index do |line, index|
@@ -97,7 +99,12 @@ module MiniAutobot
               elsif line.strip == '#'
                 next
               else
-                result_file.puts line
+                if line.start_with?('ok 1') || line.start_with?('not ok 1')
+                  line_begin, line_end = line.split('1 -')
+                  result_file.puts [line_begin, line_end].join("#{file_count} -")
+                else
+                  result_file.puts line
+                end
               end
             end
           end
