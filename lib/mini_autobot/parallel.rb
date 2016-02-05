@@ -113,6 +113,8 @@ module MiniAutobot
         result_file.puts '  #'
         result_file.puts "  # #{results_count} tests: #{result_stats['pass']} pass, #{result_stats['fail']} fail, #{result_stats['errs']} errs, #{result_stats['todo']} todo, #{result_stats['omit']} omit"
         result_file.puts "  # [00:00:00.00 0.00t/s 00.0000s/t] Finished at: #{Time.now}"
+        total_ok = result_stats['pass'] + result_stats['omit']
+        result_file.puts "^[]#{total_ok};[Minitest results] #{results_count} tests (#{result_stats['omit']} skipped)^G"
       end
     end
 
