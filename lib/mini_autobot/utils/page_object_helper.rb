@@ -83,17 +83,6 @@ module MiniAutobot
         @driver.save_screenshot("logs/#{name}.png")
       end
 
-      # Save test name to ever_failed_tests file only for the first time it failed
-      def save_to_ever_failed
-        ever_failed_tests = 'logs/tap_results/ever_failed_tests'
-        File.open(ever_failed_tests, 'a') do |f|
-          existing_failed_tests = File.readlines(ever_failed_tests).map do |line|
-            line.delete "\n"
-          end
-          f.puts name unless existing_failed_tests.include? name
-        end
-      end
-
       # Create new/override same file ever_failed_tests.json with fail count
       def json_save_to_ever_failed
         ever_failed_tests = 'logs/tap_results/ever_failed_tests.json'
