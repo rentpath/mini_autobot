@@ -2,7 +2,6 @@
 # modules and classes in the hierarchy:
 #
 # * `Connector` provides support for drivers and connector profiles;
-# * `Emails` introduces email-specific drivers for MiniAutobot;
 # * `PageObjects` provides a hierarchy of page objects, page modules, widgets,
 #   and overlays;
 # * `Settings` provides support for internal MiniAutobot settings; and
@@ -56,8 +55,6 @@ require_relative 'connector'
 require_relative 'page_objects'
 require_relative 'parallel'
 require_relative 'settings'
-
-require_relative 'emails'
 
 require_relative 'test_case'
 require_relative 'console'
