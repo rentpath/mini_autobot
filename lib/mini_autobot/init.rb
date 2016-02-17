@@ -24,11 +24,6 @@ module MiniAutobot
     self.settings.merge!(options)
   end
 
-  def self.google_sheets
-    puts settings.google_sheets?
-    @@google_sheets ||= GoogleSheets.new if settings.google_sheets?
-  end
-
   # Root directory of the automation repository.
   # Automation repo can use it to refer to files within itself,
   # and this gem also uses it to refer to config files of automation,
@@ -48,6 +43,10 @@ module MiniAutobot
   # can be used both within this gem and in automation repo
   def self.gem_root
     @@__gem_root__ ||= Pathname.new(File.realpath(File.join(File.dirname(__FILE__), '..', '..')))
+  end
+
+  def self.google_sheets
+    @@google_sheets ||= GoogleSheets.new
   end
 
 end
