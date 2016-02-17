@@ -24,6 +24,10 @@ module MiniAutobot
     self.settings.merge!(options)
   end
 
+  def self.google_sheets
+    @@google_sheets = GoogleSheets.new if settings.google_sheets?
+  end
+
   # Root directory of the automation repository.
   # Automation repo can use it to refer to files within itself,
   # and this gem also uses it to refer to config files of automation,
