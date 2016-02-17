@@ -25,6 +25,7 @@ module MiniAutobot
   end
 
   def self.google_sheets
+    puts settings.google_sheets?
     @@google_sheets ||= GoogleSheets.new if settings.google_sheets?
   end
 
