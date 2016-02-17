@@ -25,7 +25,7 @@ module MiniAutobot
   end
 
   def self.google_sheets
-    @@google_sheets = GoogleSheets.new if settings.google_sheets?
+    @@google_sheets ||= GoogleSheets.new if settings.google_sheets?
   end
 
   # Root directory of the automation repository.
