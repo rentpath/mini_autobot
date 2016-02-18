@@ -38,6 +38,8 @@ module MiniAutobot
         desired_browser_string = 'Chrome'
       when /ff/
         desired_browser_string = 'FF'
+      when /fierfox/
+        desired_browser_string = 'FF'
       when /ie11/
         desired_browser_string = 'IE11'
       end
