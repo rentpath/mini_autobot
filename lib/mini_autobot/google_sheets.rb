@@ -12,7 +12,7 @@ module MiniAutobot
     end
 
     def session
-      GoogleDrive.saved_session(MiniAutobot.root.join('/config/mini_autobot', 'google_drive_config.json'))
+      GoogleDrive.saved_session(MiniAutobot.root.join(MiniAutobot.root, '/config/mini_autobotgoogle_drive_config.json'))
     end
 
     def worksheet
