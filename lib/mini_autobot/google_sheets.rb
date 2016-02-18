@@ -13,7 +13,7 @@ module MiniAutobot
     end
 
     def session
-      GoogleDrive.saved_session(MiniAutobot.root.join('config/mini_autobot, google_drive_config.json'))
+      GoogleDrive.saved_session(MiniAutobot.root.join('config/mini_autobot', 'google_drive_config.json'))
     end
 
     def worksheet
@@ -26,6 +26,12 @@ module MiniAutobot
         automation_serial_column = col if @worksheet[1, col] == 'Automation Serial Key'
       end
       automation_serial_column
+    end
+
+    def selected_browser_column
+      connector = MiniAutobot.settings.connector
+      if connector.detect('chrome')
+      end
     end
 
   end
