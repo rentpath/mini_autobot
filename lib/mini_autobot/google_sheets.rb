@@ -33,11 +33,11 @@ module MiniAutobot
       connector = MiniAutobot.settings.connector
       desired_browser_string = nil
       selected_browser_column = nil
-      if connector.detect('chrome')
+      if connector.include?('chrome')
         desired_browser_string = 'Chrome'
-      elsif connector.detect('ff')
+      elsif connector.include?('ff')
         desired_browser_string = 'FF'
-      elsif connector.detect('ie11')
+      elsif connector.include?('ie11')
         desired_browser_string = 'IE11'
       end
       (1..@worksheet.num_cols).each do |col|
