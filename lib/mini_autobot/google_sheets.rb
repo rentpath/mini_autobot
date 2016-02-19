@@ -1,5 +1,11 @@
 module MiniAutobot
 
+  # Class that supports integration with Google Sheets
+  # See documentation here: https://developers.google.com/drive/v3/web/about-auth to set up OAuth 2.0
+  # access to your sheets. Place the info in google_drive_config.json in your config/mini_autobot folder
+  #
+  # To use, use the -g or --google_sheets parameter with the id of your sheet
+  # Example: -g 1gWbpPq7rrTdNtSJSN2ljDlPE-okf0w3w7ai5PlhY8bk
   class GoogleSheets
     require 'rubygems'
     require 'google/api_client'
@@ -21,10 +27,13 @@ module MiniAutobot
       @session.spreadsheet_by_key(MiniAutobot.settings.google_sheet).worksheets[0]
     end
 
+    # Determines which column the keys are that define the link between your automated test cases
+    # and the test cases in your Google Sheets spreadsheet
     def automation_serial_column
       (1..@worksheet.num_cols).find { |col| @worksheet[1, col] == 'Automation Serial Key' }
     end
 
+    # This is the column where you record the results for a specific browser
     def selected_browser_column
       connector = MiniAutobot.settings.connector
       desired_browser_string = nil
@@ -45,6 +54,10 @@ module MiniAutobot
       (1..@worksheet.num_rows).find_all { |row| @worksheet[row, @automation_serial_column] == key }
     end
 
+    # Updates all cells with the value provided that have the corresponding key in the Automation Serial Column
+    # At the end of your test, place the following line:
+    # Example:
+    # MiniAutobot.google_sheets.update_cells('Auto Pass', 'HP-1') if MiniAutobot.settings.google_sheets?
     def update_cells(value, key)
       rows = target_rows(key)
       rows.each do |row|
