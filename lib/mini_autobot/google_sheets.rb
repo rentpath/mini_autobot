@@ -14,7 +14,7 @@ module MiniAutobot
 
     def initialize
       @session = session
-      @worksheet = worksheet
+      @spreadsheet = spreadsheet
       @automation_serial_column = automation_serial_column
       @selected_browser_column = selected_browser_column
     end
@@ -23,8 +23,15 @@ module MiniAutobot
       GoogleDrive.saved_session(MiniAutobot.root.join('config/mini_autobot', 'google_drive_config.json'))
     end
 
-    def worksheet
+    def spreadsheet
       @session.spreadsheet_by_key(MiniAutobot.settings.google_sheet).worksheets[0]
+    end
+
+    def worksheet
+      worksheets = @spreadsheet.worksheets
+      worksheets.each do |worksheet|
+        puts worksheet.title.text
+      end
     end
 
     # Determines which column the keys are that define the link between your automated test cases
