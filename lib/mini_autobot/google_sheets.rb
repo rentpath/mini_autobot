@@ -25,7 +25,7 @@ module MiniAutobot
     end
 
     def spreadsheet
-      @session.spreadsheet_by_key(MiniAutobot.settings.google_sheet).worksheets[0]
+      @session.spreadsheet_by_key(MiniAutobot.settings.google_sheet)
     end
 
     def worksheet
