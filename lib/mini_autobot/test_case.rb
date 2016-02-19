@@ -157,11 +157,11 @@ module MiniAutobot
       #
       # @return [void]
       def teardown(&block)
+        puts MiniAutobot.settings.google_sheets?
+        puts passed?
         define_method(:teardown) do
           super()
           instance_eval(&block)
-          puts MiniAutobot.settings.google_sheets?
-          puts passed?
         end
       end
 
