@@ -32,7 +32,6 @@ module MiniAutobot
     def selected_browser_column
       connector = MiniAutobot.settings.connector
       desired_browser_string = nil
-      selected_browser_column = nil
       case connector
       when /chrome/
         desired_browser_string = 'Chrome'
@@ -43,10 +42,7 @@ module MiniAutobot
       when /ie11/
         desired_browser_string = 'IE11'
       end
-      (1..@worksheet.num_cols).each do |col|
-        selected_browser_column = col if @worksheet[1, col] == desired_browser_string
-      end
-      selected_browser_column
+      (1..@worksheet.num_cols).find { |col| @worksheet[1, col] == desired_browser_string }
     end
 
     def target_rows(key)
