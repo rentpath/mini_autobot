@@ -20,6 +20,20 @@ module MiniAutobot
       @selected_browser_column = selected_browser_column
     end
 
+    # Updates all cells with the value provided that have the corresponding key in the Automation Serial Column
+    # At the end of your test, place the following line:
+    # Example:
+    # MiniAutobot.google_sheets.update_cells('Auto Pass', 'HP-1') if MiniAutobot.settings.google_sheets?
+    def update_cells(value, key)
+      rows = target_rows(key)
+      rows.each do |row|
+        @worksheet[row, @selected_browser_column] = value
+      end
+      @worksheet.save
+    end
+
+    private
+
     def session
       GoogleDrive.saved_session(MiniAutobot.root.join('config/mini_autobot', 'google_drive_config.json'))
     end
@@ -66,18 +80,6 @@ module MiniAutobot
 
     def target_rows(key)
       (1..@worksheet.num_rows).find_all { |row| @worksheet[row, @automation_serial_column] == key }
-    end
-
-    # Updates all cells with the value provided that have the corresponding key in the Automation Serial Column
-    # At the end of your test, place the following line:
-    # Example:
-    # MiniAutobot.google_sheets.update_cells('Auto Pass', 'HP-1') if MiniAutobot.settings.google_sheets?
-    def update_cells(value, key)
-      rows = target_rows(key)
-      rows.each do |row|
-        @worksheet[row, @selected_browser_column] = value
-      end
-      @worksheet.save
     end
 
   end
