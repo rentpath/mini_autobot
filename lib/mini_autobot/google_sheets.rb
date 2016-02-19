@@ -46,11 +46,7 @@ module MiniAutobot
     end
 
     def target_rows(key)
-      rows = []
-      (1..@worksheet.num_rows).each do |row|
-        rows.push(row) if @worksheet[row, @automation_serial_column] == key
-      end
-      rows
+      (1..@worksheet.num_rows).find_all { |row| @worksheet[row, @automation_serial_column] == key }
     end
 
     def update_cells(value, key)
