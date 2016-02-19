@@ -22,11 +22,7 @@ module MiniAutobot
     end
 
     def automation_serial_column
-      automation_serial_column = 0
-      (1..@worksheet.num_cols).each do |col|
-        automation_serial_column = col if @worksheet[1, col] == 'Automation Serial Key'
-      end
-      automation_serial_column
+      (1..@worksheet.num_cols).find { |col| @worksheet[1, col] == 'Automation Serial Key' }
     end
 
     def selected_browser_column
