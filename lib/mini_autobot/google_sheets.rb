@@ -35,7 +35,7 @@ module MiniAutobot
       environment = environment_params[0] + ' ' + environment_params[1]
       worksheets = @spreadsheet.worksheets
       worksheet = worksheets.find { |worksheet| worksheet.title == environment }
-      if worksheet.empty?
+      if worksheet.nil?
         worksheet = worksheets.find { |worksheet| worksheet.title == environment_params[1] }
       end
       worksheet
