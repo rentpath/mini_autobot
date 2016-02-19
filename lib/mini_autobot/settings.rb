@@ -94,11 +94,11 @@ module MiniAutobot
     end
 
     def google_sheets?
-      true unless hsh[:google_sheets] == false
+      !hsh[:google_sheets]
     end
 
     def google_sheet
-      hsh.fetch(:google_sheets)
+      hsh[:google_sheets]
     end
 
     private
