@@ -31,7 +31,7 @@ module MiniAutobot
     def worksheet
       worksheets = @spreadsheet.worksheets
       worksheets.each do |worksheet|
-        puts worksheet.title.text
+        puts worksheet.title
       end
     end
 
