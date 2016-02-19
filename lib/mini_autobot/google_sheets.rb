@@ -12,7 +12,7 @@ module MiniAutobot
     require 'google_drive'
     require 'json'
 
-    def initialize
+    def initialize(args)
       @session = session
       @spreadsheet = spreadsheet
       @worksheet = worksheet
@@ -35,11 +35,13 @@ module MiniAutobot
     private
 
     def session
-      GoogleDrive.saved_session(MiniAutobot.root.join('config/mini_autobot', 'google_drive_config.json'))
+      GoogleDrive.saved_session(args[:session])
+      #GoogleDrive.saved_session(MiniAutobot.root.join('config/mini_autobot', 'google_drive_config.json'))
     end
 
     def spreadsheet
-      @session.spreadsheet_by_key(MiniAutobot.settings.google_sheet)
+      @session.spreadsheet_by_key(args[:spreadsheet])
+      #@session.spreadsheet_by_key(MiniAutobot.settings.google_sheet)
     end
 
     def worksheet

@@ -46,7 +46,7 @@ module MiniAutobot
   end
 
   def self.google_sheets
-    @@google_sheets ||= GoogleSheets.new
+    @@google_sheets ||= GoogleSheets.new(session: MiniAutobot.root.join('config/mini_autobot', 'google_drive_config.json'), spreadsheet: MiniAutobot.settings.google_sheet)
   end
 
 end
