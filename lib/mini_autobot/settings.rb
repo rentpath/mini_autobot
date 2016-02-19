@@ -94,7 +94,7 @@ module MiniAutobot
     end
 
     def google_sheets?
-      true unless hsh[:google_sheets] == false
+      hsh[:google_sheets] != false
     end
 
     def google_sheet
