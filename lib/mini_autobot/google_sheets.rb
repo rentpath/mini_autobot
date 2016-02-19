@@ -29,10 +29,9 @@ module MiniAutobot
     end
 
     def worksheet
+      environment = MiniAutobot.settings.env
       worksheets = @spreadsheet.worksheets
-      worksheets.each do |worksheet|
-        puts worksheet.title
-      end
+      worksheets.find { |worksheet| worksheet.title == environment }
     end
 
     # Determines which column the keys are that define the link between your automated test cases
