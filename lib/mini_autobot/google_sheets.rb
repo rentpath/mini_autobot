@@ -15,6 +15,7 @@ module MiniAutobot
     def initialize
       @session = session
       @spreadsheet = spreadsheet
+      @worksheet = worksheet
       @automation_serial_column = automation_serial_column
       @selected_browser_column = selected_browser_column
     end
