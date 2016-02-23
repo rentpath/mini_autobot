@@ -45,6 +45,10 @@ module MiniAutobot
     @@__gem_root__ ||= Pathname.new(File.realpath(File.join(File.dirname(__FILE__), '..', '..')))
   end
 
+  def self.google_sheets
+    @@google_sheets ||= GoogleSheets.new(session: MiniAutobot.root.join('config/mini_autobot', 'google_drive_config.json'), spreadsheet: MiniAutobot.settings.google_sheet)
+  end
+
 end
 
 require_relative 'runner'
@@ -55,6 +59,7 @@ require_relative 'connector'
 require_relative 'page_objects'
 require_relative 'parallel'
 require_relative 'settings'
+require_relative 'google_sheets'
 
 require_relative 'test_case'
 require_relative 'console'

@@ -93,6 +93,14 @@ module MiniAutobot
       hsh.fetch(:verbosity_level, 0).to_i
     end
 
+    def google_sheets?
+      hsh[:google_sheets] != false
+    end
+
+    def google_sheet
+      hsh[:google_sheets]
+    end
+
     private
     attr_reader :hsh
 

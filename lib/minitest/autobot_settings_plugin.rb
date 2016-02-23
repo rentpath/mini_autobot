@@ -78,6 +78,11 @@ module Minitest
       integer_value = value.nil? ? 1 : value.to_i
       options[:rerun_failure] = integer_value
     end
+
+    options[:google_sheets] = false
+    parser.on('-g', '--google-sheets SHEET', 'Report results to specified Google Sheets spreadsheet') do |value|
+      options[:google_sheets] = value
+    end
   end
 
 end
