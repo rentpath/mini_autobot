@@ -24,11 +24,15 @@ module MiniAutobot
           klass = begin
             klass_name.constantize
           rescue => exc
-            msg = ""
-            msg << "Cannot find page object '#{name}', "
-            msg << "because could not load class '#{klass_name}' "
-            msg << "with underlying error:\n  #{exc.class}: #{exc.message}\n"
-            msg << exc.backtrace.map { |str| "    #{str}" }.join("\n")
+            msg = <<-MSG
+              Cannot find page object '#{name}', because could not load class '#{klass_name}'
+              with underlying error:
+
+                #{exc.class}: #{exc.message}
+
+            MSG
+            msg << exc.backtrace.map { |str| "  #{str}" }.join("\n")
+
             raise NameError, msg
           end
 
