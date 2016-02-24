@@ -301,6 +301,24 @@ To make it part of integration in addition to regression, add tag :integration;
 To exclude it from regression, add tag :non_regression (by default),
 or find the appropriate tag_to_exclude in config/mini_autobot/test_suite.yml
 
+#### Google Sheets
+
+As of v1.1, mini_autobot now supports automatically updating test plans stored in Google Sheets.
+
+To make this work, you will first need to set up OAuth2 access by setting up a project in the Google
+Developers Console and obtaining a client ID and client Secret.
+More information can be found here: https://developers.google.com/identity/protocols/OAuth2
+
+Place your client ID and client Secret in a new file at the following location:
+config/mini_autobot/google_drive_config.json
+
+At the end of each test, you will need to place the following line:
+MiniAutobot.google_sheets.update_cells('Test_Result', 'Test_ID') if MiniAutobot.settings.google_sheets?
+- Replace Test_Result with the text that you would like to be printed to the sheet after your test has passed
+- Replace Test_ID with the unique identifier for the test - this must match what is in your sheet
+
+In your Google Sheets spreadsheet, add a column with 'Automation Serial Key' in the top cell
+For each test, add the unique identifier that corresponds to Test_ID above in this column for the applicable row
 
 ## Executing Tests
 
