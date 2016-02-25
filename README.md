@@ -301,6 +301,37 @@ To make it part of integration in addition to regression, add tag :integration;
 To exclude it from regression, add tag :non_regression (by default),
 or find the appropriate tag_to_exclude in config/mini_autobot/test_suite.yml
 
+#### Google Sheets
+
+As of v1.1, mini_autobot now supports automatically updating test plans stored in Google Sheets.
+
+To make this work, you will first need to set up OAuth2 access by setting up a project in the Google
+Developers Console and obtaining a client ID and client Secret.
+More information can be found here: https://developers.google.com/identity/protocols/OAuth2
+
+Place your client ID and client Secret in a new file at the following location:
+config/mini_autobot/google_drive_config.json
+(See config/mini_autobot/google_drive_config.sample.json for an example)
+
+At the end of each test, you will need to place the following line:
+MiniAutobot.google_sheets.update_cells('Test_Result', 'Test_ID') if MiniAutobot.settings.google_sheets?
+- Replace Test_Result with the text that you would like to be printed to the sheet after your test
+  has passed
+- Replace Test_ID with the unique identifier for the test - this must match what is in your sheet
+
+In your Google Sheets spreadsheet, add a column with 'Automation Serial Key' in the top cell
+For each test, add the unique identifier that corresponds to Test_ID above in this column for the
+applicable row
+
+When running a test, use the -g or --google_sheets parameter followed by the ID of your spreadheet.
+Ex: -g 5xFshUc5kdXcHwKSIE4idIKOW-jdk5c5x5ed4XkhX4kl
+You can find the ID in the URL for your google sheet spreadsheet before the '/edit':
+https://docs.google.com/spreadsheets/d/5xFshUc5kdXcHwKSIE4idIKOW-jdk5c5x5ed4XkhX4kl/edit#gid=198261705
+
+The first time you run a test with a google sheet update, you will be prompted to go to a URL and
+enter the string found there. After this, there will be additional information added to your
+google_drive_config.json that will include a refresh token - if the refresh token expires, you will
+need to repeat this step.
 
 ## Executing Tests
 
