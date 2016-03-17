@@ -261,6 +261,18 @@ module MiniAutobot
         cast(page_type)
       end
 
+      def navigation_start
+        driver.execute_script('return window.performance.timing.navigationStart')
+      end
+
+      def dom_content_loaded_event_end
+        driver.execute_script('return window.performance.timing.domContentLoadedEventEnd')
+      end
+
+      def time_to_dom_content_loaded
+        dom_content_loaded_event_end - navigation_start
+      end
+
     end
   end
 end
