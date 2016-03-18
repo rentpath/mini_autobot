@@ -53,7 +53,9 @@ module MiniAutobot
     end
 
     def row_of_first_blank_cell_in_column(column, ws)
-      (1..ws.num_rows).find { |row| ws[row, column].empty? }
+      puts ws[1, column]
+      puts ws[2, column]
+      (1..ws.num_rows).find { |row| ws[row, column] == ' ' }
     end
 
   end
