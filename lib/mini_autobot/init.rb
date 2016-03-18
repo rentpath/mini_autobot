@@ -46,7 +46,7 @@ module MiniAutobot
   end
 
   def self.performance_sheet
-    @@performance_sheet ||= PerfomanceSheets.new(session: MiniAutobot.root.join('config/mini_autobot', 'google_drive_config.json'), spreadsheet: MiniAutobot.settings.performance_sheet)
+    @@performance_sheet ||= PerformanceSheets.new(session: MiniAutobot.root.join('config/mini_autobot', 'google_drive_config.json'), spreadsheet: MiniAutobot.settings.performance_sheet)
   end
 
   def self.google_sheets
