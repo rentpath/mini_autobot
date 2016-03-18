@@ -9,6 +9,7 @@ module MiniAutobot
   # we'll be amending the way Hash objects work; once AS updates themselves to
   # ruby 2.0 refinements, let's move towards that.
   class Settings
+    require 'yaml'
 
     def initialize
       @hsh = {}
@@ -102,7 +103,7 @@ module MiniAutobot
     end
 
     def performance_sheet
-      performance_config = load(MiniAutobot.root.join('config/mini_autobot', 'google_performance_tracking_sheet.yml'))
+      performance_config = YAML.load_file(MiniAutobot.root.join('config/mini_autobot', 'google_performance_tracking_sheet.yml'))
       performance_config[env]
     end
 
