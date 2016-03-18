@@ -25,7 +25,7 @@ module MiniAutobot
     def update_cells(page, metric, value)
       ws = worksheet(page)
       perf_col = performance_metric_column(metric, ws)
-      first_blank = first_blank_cell_in_column(perf_col, ws)
+      first_blank = row_of_first_blank_cell_in_column(perf_col, ws)
       ws[first_blank, perf_col] = value
       ws.save
     end
