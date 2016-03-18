@@ -55,7 +55,7 @@ module MiniAutobot
     def row_of_first_blank_cell_in_column(column, ws)
       puts ws[1, column]
       puts ws[2, column]
-      (1..ws.num_rows).find { |row| ws[row, column] == ' ' }
+      (1..ws.num_rows).find { |row| ws[row, column].to_s == '' }
     end
 
   end
