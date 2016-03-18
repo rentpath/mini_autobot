@@ -45,6 +45,10 @@ module MiniAutobot
     @@__gem_root__ ||= Pathname.new(File.realpath(File.join(File.dirname(__FILE__), '..', '..')))
   end
 
+  def self.performance_sheet
+    @@performance_sheet ||= PerfomanceSheets.new(session: MiniAutobot.root.join('config/mini_autobot', 'google_drive_config.json'), spreadsheet: MiniAutobot.settings.performance_sheet)
+  end
+
   def self.google_sheets
     @@google_sheets ||= GoogleSheets.new(session: MiniAutobot.root.join('config/mini_autobot', 'google_drive_config.json'), spreadsheet: MiniAutobot.settings.google_sheet)
   end

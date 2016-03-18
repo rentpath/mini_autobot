@@ -101,6 +101,11 @@ module MiniAutobot
       hsh[:google_sheets]
     end
 
+    def performance_sheet
+      performance_config = load(MiniAutobot.root.join('config/mini_autobot', 'google_performance_tracking_sheet.yml'))
+      performance_config[env]
+    end
+
     private
     attr_reader :hsh
 
