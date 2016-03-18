@@ -22,24 +22,18 @@ module MiniAutobot
     # At the end of your test, place the following line:
     # Example:
     # MiniAutobot.google_sheets.update_cells('Auto Pass', 'HP-1') if MiniAutobot.settings.google_sheets?
-    def update_cells(page, metric, value)
-      ws = worksheet(page)
-      perf_col = performance_metric_column(metric, ws)
-      first_blank = row_of_first_blank_cell_in_column(perf_col, ws)
-      ws[first_blank, perf_col] = value
-      ws[first_blank, (perf_col + 1)] = Time.now()
+    def update_cells(args)
+      ws = worksheet(args[:page])
+      if args[:domcontentloaded]
+        perf_col = performance_metric_column('DOMContentLoaded', ws)
+        first_blank = row_of_first_blank_cell_in_column(perf_col, ws)
+        ws[first_blank, perf_col] = args[:domcontentloaded]
+        ws[first_blank, (perf_col + 1)] = Time.now()
+      end
       ws.save
     end
 
     private
-
-    def session
-      GoogleDrive.saved_session(@args[:session])
-    end
-
-    def spreadsheet
-      @session.spreadsheet_by_key(@args[:spreadsheet])
-    end
 
     def worksheet(page)
       page_name = page.class.name.split('::').last
