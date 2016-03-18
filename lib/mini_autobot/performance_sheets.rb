@@ -36,10 +36,19 @@ module MiniAutobot
     private
 
     def worksheet(page)
+      browser = page.driver.browser
+      browser_name = nil
+      case browser
+      when /chrome/
+        browser_name = 'Chrome'
+      when /firefox/
+        browser_name = 'Firefox'
+      when /internet_explorer/
+        browser_name = 'IE'
+      end
       page_name = page.class.name.split('::').last
       worksheets = @spreadsheet.worksheets
-      worksheet = worksheets.find { |worksheet| worksheet.title == page_name }
-      worksheet
+      worksheets.find { |worksheet| worksheet.title == "#{browser_name} #{page_name}" }
     end
 
     # Determines which column the values for the specified metric are being reported to
