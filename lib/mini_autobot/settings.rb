@@ -107,6 +107,10 @@ module MiniAutobot
       performance_config[env]
     end
 
+    def performance_sheet?
+      !performance_sheet.empty?
+    end
+
     private
     attr_reader :hsh
 
