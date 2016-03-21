@@ -108,7 +108,7 @@ module MiniAutobot
     end
 
     def performance_sheet?
-      !performance_sheet.empty?
+      !performance_sheet.nil?
     end
 
     private
