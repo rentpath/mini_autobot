@@ -216,7 +216,7 @@ module MiniAutobot
 
         # Initialize the driver and declare explicit browser timeouts
         MiniAutobot.logger.debug("Connector(##{self.object_id}): using WebDriver(#{driver.inspect}, #{driver_config.inspect})")
-        puts driver_config
+        puts driver_config[:desired_capabilities]
         @driver = Selenium::WebDriver.for(driver.to_sym, driver_config)
 
         # Resize browser window for local browser with 'resolution'
