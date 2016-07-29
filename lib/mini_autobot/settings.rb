@@ -101,6 +101,10 @@ module MiniAutobot
       hsh[:google_sheets]
     end
 
+    def test_name
+      hsh[:filter]
+    end
+
     private
     attr_reader :hsh
 
@@ -115,10 +119,6 @@ module MiniAutobot
       cfg = Connector.resolve(cfg, overrides)
       cfg.freeze
       cfg["hub"]
-    end
-
-    def test_name
-      hsh[:filter]
     end
 
   end
