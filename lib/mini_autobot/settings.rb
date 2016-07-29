@@ -117,6 +117,10 @@ module MiniAutobot
       cfg["hub"]
     end
 
+    def test_name
+      hsh[:filter]
+    end
+
   end
 
 end
