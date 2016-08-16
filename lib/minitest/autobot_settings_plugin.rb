@@ -86,7 +86,7 @@ module Minitest
 
     parser.on('-f', '--feature-flips FEATURE', 'Flip tests to run against a different feature set') do |value|
       options[:feature_flips] = []
-      options[:feature_flips] << value.to_s.split(',').map { |f| f.to_sym }
+      options[:feature_flips] << value.to_s.split(',').map(&:to_sym)
     end
   end
 
