@@ -101,6 +101,10 @@ module MiniAutobot
       hsh[:google_sheets]
     end
 
+    def feature_flips
+      hsh[:feature_flips]
+    end
+
     private
     attr_reader :hsh
 
