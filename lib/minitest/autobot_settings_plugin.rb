@@ -84,7 +84,7 @@ module Minitest
       options[:google_sheets] = value
     end
 
-    options[:feautre_flips] = []
+    options[:feautre_flips] = Array.new
     parser.on('-f', '--feature-flips FEATURE', 'Flip tests to run against a different feature set') do |value|
       options[:feature_flips].insert(value)
     end
