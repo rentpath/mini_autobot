@@ -68,15 +68,28 @@ module MiniAutobot
       desired_browser_string = nil
       case connector
       when /chrome/
-        desired_browser_string = 'Chrome'
+        desired_browser_string = 'Chrome (Automated)'
       when /ff/
-        desired_browser_string = 'FF'
+        desired_browser_string = 'FF (Automated)'
       when /firefox/
-        desired_browser_string = 'FF'
+        desired_browser_string = 'FF (Automated)'
       when /ie11/
-        desired_browser_string = 'IE11'
+        desired_browser_string = 'IE11 (Automated)'
+      when /iphone/
+        desired_browser_string = 'iPhone (Automated)'
+      when /android/
+        desired_browser_string = 'Android (Automated)'
       end
-      (1..@worksheet.num_cols).find { |col| @worksheet[1, col] == desired_browser_string }
+      column = (1..@worksheet.num_cols).find { |col| @worksheet[1, col] == desired_browser_string }
+      if column.nil?
+        create_column(desired_browser_string)
+        column = (1..@worksheet.num_cols).find { |col| @worksheet[1, col] == desired_browser_string }
+      end
+      column
+    end
+
+    def create_column(desired_browser_string)
+      @worksheet[1, @worksheet.num_cols] = desired_browser_string
     end
 
     def target_rows(key)
