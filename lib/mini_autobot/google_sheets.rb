@@ -89,7 +89,7 @@ module MiniAutobot
     end
 
     def create_column(desired_browser_string)
-      @worksheet[1, @worksheet.num_cols] = desired_browser_string
+      @worksheet[1, (@worksheet.num_cols + 1)] = desired_browser_string
     end
 
     def target_rows(key)
