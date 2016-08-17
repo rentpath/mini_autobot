@@ -83,6 +83,11 @@ module Minitest
     parser.on('-g', '--google-sheets SHEET', 'Report results to specified Google Sheets spreadsheet') do |value|
       options[:google_sheets] = value
     end
+
+    options[:feature_flips] = false
+    parser.on('-f', '--feature-flips FEATURE', 'Flip tests to run against a different feature set') do |value|
+      options[:feature_flips] = value
+    end
   end
 
 end

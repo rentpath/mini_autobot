@@ -24,6 +24,9 @@ module MiniAutobot
       if MiniAutobot.settings.google_sheets?
         @static_run_command += " -g #{MiniAutobot.settings.google_sheet}"
       end
+      if MiniAutobot.settings.feature_flips
+        @static_run_command += " -f #{MiniAutobot.settings.feature_flips}"
+      end
       tap_reporter_path = MiniAutobot.gem_root.join('lib/tapout/custom_reporters/fancy_tap_reporter.rb')
       @pipe_tap = "--tapy | tapout --no-color -r #{tap_reporter_path.to_s} fancytap"
     end
